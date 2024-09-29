@@ -1,10 +1,12 @@
+import { nextui } from '@nextui-org/theme';
 import type { Config } from "tailwindcss";
 
 const config: Config = {
   content: [
-    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/pages/**/*.{js,ts,jsx,tsx,mdx}",  // Cập nhật đường dẫn
+    "./src/components/**/*.{js,ts,jsx,tsx,mdx}",  // Cập nhật đường dẫn
+    "./src/app/**/*.{js,ts,jsx,tsx,mdx}",  // Cập nhật đường dẫn
+    "./node_modules/@nextui-org/theme/dist/components/[object Object].js"
   ],
   theme: {
     extend: {
@@ -15,6 +17,6 @@ const config: Config = {
       },
     },
   },
-  plugins: [],
+  plugins: [nextui()],
 };
 export default config;
