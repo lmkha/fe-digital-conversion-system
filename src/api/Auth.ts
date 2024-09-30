@@ -1,5 +1,6 @@
 import { set } from "@/hooks/useLocalStorage";
 import Base from "./Base";
+import { AxiosError } from "axios";
 
 
 class Auth extends Base {
@@ -37,6 +38,20 @@ class Auth extends Base {
             return false;
         }
     }
+
+    async sendRecoverySMS(phone: string) {
+        try {
+            const response = await this.post('/auth/forgot-password-sms', {
+                phone: phone,
+            });
+
+            return { success: true, message: response.message };
+        } catch (err: any) {
+            return { success: false, message: err.response.data.message };
+        }
+    }
+
+
 }
 
 const auth = new Auth();

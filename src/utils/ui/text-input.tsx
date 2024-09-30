@@ -5,13 +5,15 @@ interface TextInputProps {
     value: string;
     onChange: (value: string) => void;
     highlightWhenEmpty?: boolean;
+    onKeyDown?: React.KeyboardEventHandler<HTMLInputElement>;
 }
 
 export default function TextInput({
     textLabel,
     value,
     onChange,
-    highlightWhenEmpty = false
+    highlightWhenEmpty = false,
+    onKeyDown = () => { }
 }: TextInputProps) {
     const inputClasses = `
         peer h-10 w-full border 
@@ -31,6 +33,7 @@ export default function TextInput({
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 placeholder=" "
+                onKeyDown={onKeyDown}
             />
             <label
                 className="
