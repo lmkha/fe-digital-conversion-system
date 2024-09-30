@@ -42,6 +42,7 @@ export default function Toast({
                         clearInterval(interval);
                         return 0;
                     }
+                    console.log(`newProgress: ${newProgress}`);
                     return newProgress;
                 });
             }, 100);
@@ -52,7 +53,7 @@ export default function Toast({
                 clearTimeout(timer); // 
             };
         }
-    }, [open, onClose, duration, autoClose]);
+    }, [open]);
 
     // Custom styles cho success và error
     const customStyles = {

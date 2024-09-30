@@ -1,7 +1,5 @@
-import { set } from "@/hooks/useLocalStorage";
+import { set, get } from "@/hooks/useLocalStorage";
 import Base from "./Base";
-import { AxiosError } from "axios";
-
 
 class Auth extends Base {
     async login(userName: string, password: string, deptId: string) {
@@ -12,8 +10,9 @@ class Auth extends Base {
                 deptId: deptId
             });
             set("accessToken", response.data.access_token);
-        } catch (err) {
-            throw err;
+            return { success: true, message: response.message, code: response.code };
+        } catch (err: any) {
+            return { success: false, message: err.response.data.message, code: err.response.data.code };
         }
     }
 
@@ -51,7 +50,16 @@ class Auth extends Base {
         }
     }
 
-
+    async changePassword(password: string) {
+        try {
+            const response = await this.put('/user/change-password', {
+                newPassword: password,
+            });
+            return { success: true, message: response.message };
+        } catch (err: any) {
+            return { success: false, message: err.response.data.message };
+        }
+    }
 }
 
 const auth = new Auth();

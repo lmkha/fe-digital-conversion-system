@@ -29,20 +29,14 @@ export default function Page() {
         });
 
     const handleLogin = async (data: { username: string, password: string, deptId: string }) => {
-        try {
-            await auth.login(data.username, data.password, data.deptId);
-            setToastInfo({
-                showToast: true,
-                severity: 'success',
-                message: 'Đăng nhập thành công'
-            });
-            router.push('/');
-        } catch (err) {
-            setToastInfo({
-                showToast: true,
-                severity: 'error',
-                message: 'Tài khoản hoặc mật khẩu không đúng. Xin vui lòng thử lại'
-            });
+        const result = await auth.login(data.username, data.password, data.deptId);
+        setToastInfo({
+            showToast: true,
+            severity: result.success ? 'success' : 'error',
+            message: result.message
+        });
+        if (result.code === 3000) {
+            router.replace('/reset-password');
         }
     }
 
