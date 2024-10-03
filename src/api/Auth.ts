@@ -1,5 +1,5 @@
-import { set, get } from "@/hooks/useLocalStorage";
-import Base from "./Base";
+import { set, get } from "@/hooks/use-local-storage";
+import Base from "./base";
 
 class Auth extends Base {
     async login(userName: string, password: string, deptId: string) {

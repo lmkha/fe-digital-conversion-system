@@ -1,4 +1,6 @@
 import React from 'react';
+import { IoEye } from "react-icons/io5";
+import { IoEyeOff } from "react-icons/io5";
 
 interface PasswordInputProps {
     value: string;
@@ -55,15 +57,10 @@ export default function PasswordInput({
             >
                 {showPassword ? (
                     // Icon for showing password
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4l16 16M4 20l16-16" />
-                    </svg>
+                    <IoEye />
                 ) : (
                     // Icon for hiding password
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12s2-5 9-5 9 5 9 5-2 5-9 5-9-5-9-5z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 12l2 2-2-2zm0 0l-2-2 2 2zm0 0l2-2-2 2z" />
-                    </svg>
+                    <IoEyeOff />
                 )}
             </button>
         </div>

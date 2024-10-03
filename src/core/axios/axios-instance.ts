@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Router from 'next/router';
-import { get, set } from '@/hooks/useLocalStorage';
+import { get, set } from '@/hooks/use-local-storage';
 
 const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
@@ -26,6 +26,7 @@ axiosInstance.interceptors.response.use(
         return response;
     },
     (error) => {
+        console.log('Axios error!');
         const { response } = error;
         if (response?.status === 401 || response?.status === 403) {
             Router.push('/login');

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import Toast from "@/utils/ui/toast";
-import TextInput from "@/utils/ui/text-input";
-import auth from "@/api/Auth";
-import isValidPhoneNumber from "@/utils/logic/phoneNumberValidator";
+import Toast from "@/core/components/toast";
+import TextInput from "@/core/components/text-input";
+import auth from "@/api/auth";
+import isValidPhoneNumber from "@/core/logic/phone-number-validator";
 
 export default function RecoveryBySMSForm({ isVisible, onclose }: { isVisible: boolean, onclose: () => void }) {
     const ref = useRef<HTMLDivElement | null>(null);

@@ -1,5 +1,5 @@
 // Department.ts
-import Base from "./Base";
+import Base from "./base";
 
 export interface Department {
     deptId: string;

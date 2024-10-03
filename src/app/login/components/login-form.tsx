@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import LoginButton from "./login-button";
-import TextInput from "@/utils/ui/text-input";
+import TextInput from "@/core/components/text-input";
 import PasswordInput from "./password-input";
 import Image from "next/image";
-import isValidEmail from "@/utils/logic/emailValidator";
-import isValidPassword from "@/utils/logic/passwordValidator";
-import department from "@/api/Department";
+import isValidPassword from "@/core/logic/password-validator";
+import department from "@/api/department";
 import DepartmentDropdown from "./department-dropdown";
 
 interface Department {

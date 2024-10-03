@@ -3,12 +3,12 @@
 import { Fragment, useState } from 'react';
 import LoginForm from './components/login-form';
 import LoginImage from './components/login-image';
-import RecoveryOptionChooser from '@/app/forgot-password/choose-method';
-import Toast from '@/utils/ui/toast';
-import RecoveryByEmailForm from '@/app/forgot-password/via-email/email-recovery-form';
+import RecoveryOptionChooser from '@/app/forgot-password/choose-method-modal';
+import Toast from '@/core/components/toast';
+import RecoveryByEmailForm from '@/app/forgot-password/via-email/email-recovery-modal';
 import { useRouter } from 'next/navigation';
-import auth from '@/api/Auth';
-import RecoveryBySMSForm from '../forgot-password/via-sms/sms-recovery-form';
+import auth from '@/api/auth';
+import RecoveryBySMSForm from '../forgot-password/via-sms/sms-recovery-modal';
 
 export default function Page() {
     const router = useRouter();

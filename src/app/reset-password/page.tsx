@@ -1,10 +1,10 @@
 'use client';
 
-import Toast from "@/utils/ui/toast";
+import Toast from "@/core/components/toast";
 import { useEffect, useState } from "react";
-import TextInput from "@/utils/ui/text-input";
-import isValidPassword from "@/utils/logic/passwordValidator";
-import auth from "@/api/Auth";
+import TextInput from "@/core/components/text-input";
+import isValidPassword from "@/core/logic/password-validator";
+import auth from "@/api/auth";
 import { useRouter } from 'next/navigation';
 
 export default function Page() {

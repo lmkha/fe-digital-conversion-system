@@ -1,10 +1,10 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import isValidEmail from "@/utils/logic/emailValidator";
-import Toast from "@/utils/ui/toast";
-import TextInput from "@/utils/ui/text-input";
-import auth from "@/api/Auth";
+import isValidEmail from "@/core/logic/email-validator";
+import Toast from "@/core/components/toast";
+import TextInput from "@/core/components/text-input";
+import auth from "@/api/auth";
 
 export default function RecoveryByEmailForm({ isVisible, onclose }: { isVisible: boolean, onclose: () => void }) {
     const ref = useRef<HTMLDivElement | null>(null);

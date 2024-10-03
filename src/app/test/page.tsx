@@ -1,17 +1,20 @@
 'use client';
-import auth from "@/api/Auth";
+
+import Sidebar from "./components/sidebar";
 
 export default function Page() {
 
     return (
-        <div>
-            <button onClick={() => {
-                auth.login(
-                    'Kha',
-                    'MinhKh@21',
-                    '3d4df854-0cfe-4baf-bf3f-b566311c6d2e'
-                )
-            }}>Login</button>
+        <div className="w-screen h-screen">
+            <Sidebar />
+
+            <div className="flex flex-col w-screen h-screen justify-center items-center">
+                <div className="w-40 h-40 
+                              bg-red-400 mb-4 hover:bg-red-500
+                                rounded-xl hover:rounded-3xl 
+                                transition-all duration-100"
+                />
+            </div>
         </div>
     );
 }

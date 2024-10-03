@@ -1,4 +1,4 @@
-import axiosInstance from "@/utils/axiosInstance";
+import axiosInstance from "@/core/axios/axios-instance";
 
 type HttpMethod = 'get' | 'post' | 'put' | 'delete';
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { get } from '@/hooks/useLocalStorage';
+import { get } from '@/hooks/use-local-storage';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface AuthContextType {
