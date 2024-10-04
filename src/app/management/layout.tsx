@@ -12,7 +12,7 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
     return (
         <ManagementProvider>
-            <div className='flex w-screen h-screen'>
+            <div className='flex w-screen h-screen bg-white'>
                 {/* SideBar, on the left */}
                 <SideNav />
                 {/* Header and Content on the right */}

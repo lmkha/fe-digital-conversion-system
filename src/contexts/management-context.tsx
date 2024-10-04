@@ -7,18 +7,18 @@
 
 'use client';
 
-import { HeaderActionButtonProps } from '@/app/management/components/header';
+import { ActionButtonProps } from '@/app/management/components/button';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface ManagementContextType {
-    headerButtons: HeaderActionButtonProps[];
-    setHeaderButtons: (buttons: HeaderActionButtonProps[]) => void;
+    headerButtons: ActionButtonProps[];
+    setHeaderButtons: (buttons: ActionButtonProps[]) => void;
 }
 
 const ManagementContext = createContext<ManagementContextType | undefined>(undefined);
 
 export const ManagementProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const [headerButtons, setHeaderButtons] = useState<HeaderActionButtonProps[]>([]);
+    const [headerButtons, setHeaderButtons] = useState<ActionButtonProps[]>([]);
 
     return (
         <ManagementContext.Provider value={{ headerButtons, setHeaderButtons }}>

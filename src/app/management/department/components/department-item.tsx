@@ -5,8 +5,16 @@ import { ImCheckboxChecked } from "react-icons/im";
 import { ImCheckboxUnchecked } from "react-icons/im";
 import { MdModeEditOutline } from "react-icons/md";
 
+interface DepartmentItemProps {
+    name: string;
+    level: string;
+    district: string;
+    ward: string;
+    isCheck: boolean;
+    onEdit: () => void;
+}
 
-export default function DepartmentItem() {
+export default function DepartmentItem({ name, level, district, ward, isCheck, onEdit }: DepartmentItemProps) {
     const [data, setData] = useState<{
         isCheck: boolean;
         name: string;
@@ -14,11 +22,11 @@ export default function DepartmentItem() {
         district: string;
         ward: string;
     }>({
-        isCheck: false,
-        name: "Ủy ban nhân dân tỉnh Bình Thuận",
-        level: "1",
-        district: "Đức Linh",
-        ward: "Đức Tài"
+        isCheck: isCheck,
+        name: name,
+        level: level,
+        district: district,
+        ward: ward
     });
 
     const changeData = (key: 'isCheck' | 'name' | 'level' | 'district' | 'ward', value: boolean | string) => {
@@ -36,14 +44,16 @@ export default function DepartmentItem() {
     }, [data]);
 
     return (
-        <div className="flex bg-white p-2 rounded-t-md border-b-2">
+        <div className="flex bg-white p-2 rounded-t-md border-b-2 text-black">
             <div className="flex items-end justify-center gap-1 mr-5 w-20">
                 <button
                     onClick={() => changeData('isCheck', !data.isCheck)}
                 >
                     {checkIcon}
                 </button>
-                <button>
+                <button
+                    onClick={onEdit}
+                >
                     {<MdModeEditOutline className="text-2xl" />}
                 </button>
             </div>

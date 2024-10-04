@@ -4,7 +4,7 @@ import Dropdown from "@/core/components/dropdown";
 
 export default function Selector() {
     return (
-        <div className="flex justify-between items-center w-full h-11 mt-6 pb-4 bg-white border-b-1">
+        <div className="flex justify-between items-center w-full h-11 mt-6 pb-4 bg-white border-b-1 text-black">
             <Dropdown
                 label="Provinces"
                 options={[

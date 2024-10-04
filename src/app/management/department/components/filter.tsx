@@ -34,7 +34,7 @@ export default function Filter() {
     }, [data]);
 
     return (
-        <div className="flex bg-gray-200 p-2 rounded-t-md">
+        <div className="flex bg-gray-200 p-2 rounded-t-md text-black">
             <div className="flex items-start gap-1 mr-5">
                 <button
                     onClick={() => { changeData('isCheck', !data.isCheck); }}

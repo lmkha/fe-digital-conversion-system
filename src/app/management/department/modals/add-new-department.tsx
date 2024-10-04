@@ -1,16 +1,15 @@
 'use client';
 
-interface AddNewDepartmentModalProps {
-    isVisible: boolean;
-    onClose: () => void;
-}
+import BaseDepartmentModal, { BaseDepartmentModalProps } from "./base-department-modal";
 
-export default function AddNewDepartmentModal({ isVisible, onClose }: AddNewDepartmentModalProps) {
-    if (!isVisible) return null;
 
+export default function AddNewDepartmentModal({ label, isVisible, onSubmit, onClose }: BaseDepartmentModalProps) {
     return (
-        <div>
-            This is AddNewDepartmentModal
-        </div>
+        <BaseDepartmentModal
+            label={label}
+            isVisible={isVisible}
+            onSubmit={onSubmit}
+            onClose={onClose}
+        />
     );
 }
