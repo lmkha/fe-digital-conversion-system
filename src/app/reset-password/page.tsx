@@ -11,7 +11,6 @@ export default function Page() {
     const router = useRouter();
     const numberOfSeconds = 20;
     const [timer, setTimer] = useState(numberOfSeconds);
-    const [isButtonDisabled, setIsButtonDisabled] = useState(false);
     const [changePasswordSuccess, setChangePasswordSuccess] = useState(false);
     const [passwordInfo, setPasswordInfo] = useState<{
         currentPassword: string;
@@ -43,28 +42,7 @@ export default function Page() {
         }
     }, [changePasswordSuccess, toastInfo]);
 
-    useEffect(() => {
-        let interval: NodeJS.Timeout;
-
-        if (isButtonDisabled && timer > 0) {
-            interval = setInterval(() => {
-                setTimer((prev) => prev - 1);
-            }, 1000);
-        }
-
-        if (timer === 0) {
-            setToastInfo({ ...toastInfo, showToast: false });
-            setIsButtonDisabled(false);
-            setTimer(numberOfSeconds);
-        }
-
-        return () => clearInterval(interval);
-    }, [isButtonDisabled, timer, toastInfo]);
-
-
     const handleSendRequest = async () => {
-        setIsButtonDisabled(true);
-
         // Check if password is empty
         if (passwordInfo.newPassword === '' || passwordInfo.confirmNewPassword === '') {
             setToastInfo({
@@ -110,7 +88,7 @@ export default function Page() {
     };
 
     const handleKeyDown = (event: React.KeyboardEvent) => {
-        if (event.key === 'Enter' && !isButtonDisabled) {
+        if (event.key === 'Enter') {
             handleSendRequest();
         }
     };
@@ -154,16 +132,11 @@ export default function Page() {
 
                         <button
                             type='submit'
-                            className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-1 rounded w-full mt-4 ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            className='bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-1 rounded w-full mt-4'
                             onClick={handleSendRequest}
-                            disabled={isButtonDisabled}
                         >
-                            Gửi yêu cầu
+                            Đổi mật khẩu
                         </button>
-
-                        <p className="mt-4 text-black">Gửi yêu cầu tiếp theo:&nbsp;
-                            <span className="text-blue-500">{isButtonDisabled ? `${timer}s` : `${numberOfSeconds}s`}</span>
-                        </p>
                     </div>
                 </div>
             </div>

@@ -25,8 +25,12 @@ import Toast from "@/core/components/toast";
 import { GrFormPrevious } from "react-icons/gr";
 import { GrFormNext } from "react-icons/gr";
 import { TfiImport } from "react-icons/tfi";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/contexts/auth-context";
 
 export default function Page() {
+    const { isLoggedIn } = useAuth();
+    const router = useRouter();
     const [selectorData, setSelectorData] = useState({
         provinceId: '',
         provinceName: '',
@@ -107,6 +111,12 @@ export default function Page() {
             });
         });
     }
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            router.replace('/login');
+        }
+    }, [isLoggedIn]);
 
     // Set header buttons
     useEffect(() => {

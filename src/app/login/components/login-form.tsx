@@ -6,6 +6,7 @@ import Image from "next/image";
 import isValidPassword from "@/core/logic/password-validator";
 import department from "@/api/department";
 import Dropdown from "@/core/components/dropdown";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 interface Department {
     deptId: string;
@@ -48,7 +49,8 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
         password: '',
         rememberPassword: false,
         showPassword: false,
-        submitted: false
+        submitted: false,
+        isLoading: false
     });
 
     const handleChange = (name: string, value: string | boolean | Department) => { // Allow Department type
@@ -56,8 +58,8 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
     };
 
     const handleSubmit = (event: React.FormEvent) => {
+        setFormData({ ...formData, isLoading: true });
         event.preventDefault();
-
         if (formData.username === '' || formData.password === '') {
             validateInput({ status: 'error', message: 'Vui lòng nhập đầy đủ thông tin' });
         } else if (!isValidPassword(formData.password)) {
@@ -74,9 +76,8 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
             console.log('Submitting form with data:', dataToSubmit);
             onLogin(dataToSubmit);
         }
-
+        setFormData({ ...formData, isLoading: false });
         setFormData({ ...formData, submitted: true });
-
     };
 
     return (
@@ -85,7 +86,7 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
                 <Image src="/img/gov_logo.png" width={100} height={100} alt="Government Logo" />
             </div>
 
-            <h2 className="text-center text-xl font-bold text-gray-800 mb-4">DTI Digital Conversion System</h2>
+            <h2 className="text-center text-xl font-bold text-gray-800 mb-4">Hệ thống đánh giá chuyển đổi số DTI</h2>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
                 <Dropdown
@@ -127,7 +128,13 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
                     </a>
                 </div>
 
-                <LoginButton onClick={() => { }} />
+                <button
+                    type="submit"
+                    className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleSubmit}
+                >
+                    Đăng nhập {formData.isLoading && <AiOutlineLoading3Quarters className="animate-spin" />}
+                </button>
             </form>
         </div>
     );
