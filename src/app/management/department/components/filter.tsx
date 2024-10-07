@@ -1,10 +1,19 @@
 'use client';
 import TextInput from "@/core/components/text-input";
+import { DetailedDepartment, findDepartmentFilterFull } from "@/services/department";
 import { useEffect, useState } from "react";
 import { RiCheckboxIndeterminateFill } from "react-icons/ri";
 import { RiCheckboxIndeterminateLine } from "react-icons/ri";
 
-export default function Filter() {
+interface FilterProps {
+    provinceId: string;
+    isCheck: boolean;
+    onTextChange: (key: 'name' | 'level' | 'district' | 'ward', value: string) => void;
+    onCheckAllChange: (isCheck: boolean) => void;
+    onSentToTableListChange: (sentToTableList: DetailedDepartment[]) => void;
+}
+
+export default function Filter({ provinceId, isCheck, onTextChange, onCheckAllChange, onSentToTableListChange }: FilterProps) {
     const [data, setData] = useState<{
         isCheck: boolean;
         name: string;
@@ -12,18 +21,22 @@ export default function Filter() {
         district: string;
         ward: string;
     }>({
-        isCheck: false,
-        name: "",
-        level: "",
-        district: "",
-        ward: ""
+        isCheck: isCheck,
+        name: '',
+        level: '',
+        district: '',
+        ward: ''
     });
-
+    const [sentToTableList, setSentToTableList] = useState<DetailedDepartment[]>([]);
     const changeData = (key: 'isCheck' | 'name' | 'level' | 'district' | 'ward', value: boolean | string) => {
         setData({ ...data, [key]: value });
     };
-
     const [checkAllIcon, setCheckAllIcon] = useState(<RiCheckboxIndeterminateLine className="text-2xl" />);
+    const handleKeyDown = (event: React.KeyboardEvent) => {
+        if (event.key === 'Enter') {
+            findDepartmentFilterFull(provinceId, '', data.name, data.level, data.ward, data.district, '', '', setSentToTableList);
+        }
+    };
 
     useEffect(() => {
         if (data.isCheck) {
@@ -33,11 +46,18 @@ export default function Filter() {
         }
     }, [data]);
 
+    useEffect(() => {
+        onSentToTableListChange(sentToTableList);
+    }, [sentToTableList])
+
     return (
         <div className="flex bg-gray-200 p-2 rounded-t-md text-black">
             <div className="flex items-start gap-1 mr-5">
                 <button
-                    onClick={() => { changeData('isCheck', !data.isCheck); }}
+                    onClick={() => {
+                        onCheckAllChange(!data.isCheck);
+                        changeData('isCheck', !data.isCheck);
+                    }}
                 >
                     {checkAllIcon}
                 </button>
@@ -45,39 +65,51 @@ export default function Filter() {
             </div>
             <div className="flex-1 flex items-center gap-2 h-auto">
                 <div className="flex-col flex-1">
-                    {/* Department name */}
                     <h1 className="font-bold">Department Name</h1>
                     <TextInput
                         textLabel=""
-                        value=""
-                        onChange={() => { }}
+                        value={data.name}
+                        onChange={(value) => {
+                            setData({ ...data, name: value });
+                            onTextChange('name', data.name);
+                        }}
+                        onKeyDown={handleKeyDown}
                     />
                 </div>
                 <div className="flex-col w-24">
-                    {/* Department name */}
                     <h1 className="font-bold">Level</h1>
                     <TextInput
                         textLabel=""
-                        value=""
-                        onChange={() => { }}
+                        value={data.level}
+                        onChange={(value) => {
+                            setData({ ...data, level: value });
+                            onTextChange('level', data.level);
+                        }}
+                        onKeyDown={handleKeyDown}
                     />
                 </div>
                 <div className="flex-col w-48">
-                    {/* Department name */}
                     <h1 className="font-bold">District</h1>
                     <TextInput
                         textLabel=""
-                        value=""
-                        onChange={() => { }}
+                        value={data.district}
+                        onChange={(value) => {
+                            setData({ ...data, district: value });
+                            onTextChange('district', data.district);
+                        }}
+                        onKeyDown={handleKeyDown}
                     />
                 </div>
                 <div className="flex-col w-48">
-                    {/* Department name */}
                     <h1 className="font-bold">Ward</h1>
                     <TextInput
                         textLabel=""
-                        value=""
-                        onChange={() => { }}
+                        value={data.ward}
+                        onChange={(value) => {
+                            setData({ ...data, ward: value });
+                            onTextChange('ward', data.ward);
+                        }}
+                        onKeyDown={handleKeyDown}
                     />
                 </div>
 

@@ -1,35 +1,59 @@
 import React from 'react';
 
-interface Department {
-    deptId: string;
-    deptName: string;
+interface Option {
+    value: string;
+    name: string;
 }
 
 interface DropdownProps {
     label: string;
-    options: Department[];
-    selectedValue: string;
-    onChange: (department: Department) => void;
+    options: Option[];
+    alternativeOption?: Option;
+    onChange: (option: Option) => void;
 }
 
-export default function Dropdown({ label, options, selectedValue, onChange }: DropdownProps) {
+export default function Dropdown({
+    label,
+    options,
+    alternativeOption = { value: '', name: '' },
+    onChange
+}: DropdownProps) {
+    // Lọc options để loại bỏ option trùng với alternativeOption
+    const filteredOptions = options.filter(option => option.value !== alternativeOption.value);
+
     return (
         <div className="relative">
             <select
                 id="department"
-                className="peer h-10 w-full border border-gray-300 rounded px-3 text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                value={selectedValue}
+                className="peer h-10 w-full border border-gray-300 rounded px-3 text-gray-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 onChange={(e) => {
-                    const selectedDeptId = e.target.value;
-                    const selectedDepartment = options.find(dept => dept.deptId === selectedDeptId);
-                    onChange(selectedDepartment!!);
+                    try {
+                        const selectedValue = e.target.value;
+                        const selectedDepartment = options.find(option => option.value === selectedValue);
+                        onChange(selectedDepartment!!);
+                    } catch (error) {
+                        onChange({ value: '', name: '' });
+                    }
                 }}
             >
-                {options.map((department) => (
-                    <option key={department.deptId} value={department.deptId}>
-                        {department.deptName}
+                {/* Hiển thị alternativeOption trước */}
+                <option
+                    key={`${alternativeOption.value}-0`}
+                    value={alternativeOption.value}
+                >
+                    {alternativeOption.name}
+                </option>
+
+                {/* Hiển thị các options đã được lọc */}
+                {filteredOptions.map((option, index) => (
+                    <option
+                        key={`${option.value}-${index}`}
+                        value={option.value}
+                    >
+                        {option.name}
                     </option>
                 ))}
+
             </select>
             <label
                 htmlFor="department"
@@ -39,5 +63,4 @@ export default function Dropdown({ label, options, selectedValue, onChange }: Dr
             </label>
         </div>
     );
-};
-
+}

@@ -5,7 +5,7 @@ import PasswordInput from "./password-input";
 import Image from "next/image";
 import isValidPassword from "@/core/logic/password-validator";
 import department from "@/api/department";
-import DepartmentDropdown from "./department-dropdown";
+import Dropdown from "@/core/components/dropdown";
 
 interface Department {
     deptId: string;
@@ -30,11 +30,12 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
 
     useEffect(() => {
         const fetchDepartments = async () => {
-            try {
-                const data = await department.getDepartments();
+            const result = await department.getDepartments();
+            if (result.success) {
+                const data = result.data;
                 setDepartments(data);
-            } catch (err) {
-
+            } else {
+                console.error("Error fetching departments:", result.message);
             }
         };
 
@@ -87,10 +88,11 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
             <h2 className="text-center text-xl font-bold text-gray-800 mb-4">DTI Digital Conversion System</h2>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-                <DepartmentDropdown
-                    departmentOptions={departments}
-                    selectedValue={formData.unit.deptId}
-                    onChange={(value: Department) => handleChange('unit', value)}
+                <Dropdown
+                    label="Đơn vị *"
+                    options={departments.map(dept => ({ value: dept.deptId, name: dept.deptName }))}
+                    alternativeOption={{ value: '', name: 'Chọn đơn vị' }}
+                    onChange={(department) => handleChange('unit', { deptId: department.value, deptName: department.name })}
                 />
 
                 <TextInput
