@@ -74,11 +74,11 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                 >
                     {checkAllIcon}
                 </button>
-                <h1 className="font-bold">Action</h1>
+                <h1 className="font-bold">Chọn</h1>
             </div>
             <div className="flex-1 flex items-center gap-2 h-auto">
                 <div className="flex-col flex-1">
-                    <h1 className="font-bold">Department Name</h1>
+                    <h1 className="font-bold">Tên phòng ban</h1>
                     <TextInput
                         textLabel=""
                         value={data.name}
@@ -87,7 +87,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     />
                 </div>
                 <div className="flex-col w-24">
-                    <h1 className="font-bold">Level</h1>
+                    <h1 className="font-bold">Cấp</h1>
                     <TextInput
                         textLabel=""
                         value={data.level}
@@ -96,7 +96,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     />
                 </div>
                 <div className="flex-col w-48">
-                    <h1 className="font-bold">District</h1>
+                    <h1 className="font-bold">Quận / huyện</h1>
                     <TextInput
                         textLabel=""
                         value={data.district}
@@ -105,7 +105,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     />
                 </div>
                 <div className="flex-col w-48">
-                    <h1 className="font-bold">Ward</h1>
+                    <h1 className="font-bold">Phường / Xã</h1>
                     <TextInput
                         textLabel=""
                         value={data.ward}

@@ -212,7 +212,7 @@ export default function EditDepartmentModal({
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">
                                 <TextInput
-                                    textLabel="Department name"
+                                    textLabel="Tên phòng ban"
                                     value={department.deptName}
                                     onChange={(value) => {
                                         setDepartment({
@@ -224,7 +224,7 @@ export default function EditDepartmentModal({
                             </div>
                             <div className="w-1/2">
                                 <Dropdown
-                                    label="Province/ City"
+                                    label="Tỉnh / Thành phố"
                                     options={provinceList.map(province => ({ value: province.provinceId, name: province.provinceName }))}
                                     alternativeOption={{
                                         name: department.provinceName,
@@ -243,7 +243,7 @@ export default function EditDepartmentModal({
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">
                                 <Dropdown
-                                    label="District"
+                                    label="Quận / Huyện"
                                     options={districtList.map(district => ({ value: district.districtId, name: district.districtName }))}
                                     alternativeOption={
                                         {
@@ -262,7 +262,7 @@ export default function EditDepartmentModal({
                             </div>
                             <div className="w-1/2">
                                 <Dropdown
-                                    label="Ward"
+                                    label="Phường / Xã"
                                     options={wardList.map(ward => ({ value: ward.wardId, name: ward.wardName }))}
                                     alternativeOption={
                                         {
@@ -281,19 +281,19 @@ export default function EditDepartmentModal({
                             </div>
                         </div>
                         <div>
-
                         </div>
-                        <div className="flex justify-end h-1/5">
-                            <ActionButton
-                                type="save"
-                                label="Save"
+
+                        <div className="flex h-14 w-full bg-white justify-end">
+                            <button className="w-20 h-full bg-blue-500 rounded-md text-white hover:bg-white hover:text-blue-600 hover:border-blue-500 border-2"
                                 onClick={async () => {
                                     if (!validateDataBeforeSubmit()) return;
                                     const result = await updateDepartment(department);
                                     onSubmitted(result.success, result.message, result.code);
                                     onClose();
                                 }}
-                            />
+                            >
+                                Lưu
+                            </button>
                         </div>
                     </div>
                 </div>

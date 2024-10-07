@@ -1,14 +1,27 @@
-import { ReactNode, useState } from 'react';
+'use client';
+
+import { ReactNode, useEffect, useState } from 'react';
 import SideNav from './components/sidenav';
 import Header from './components/header';
 
 import { ManagementProvider } from '@/contexts/management-context';
+import { useAuth } from '@/contexts/auth-context';
+import { useRouter } from 'next/navigation';
 
 type LayoutProps = {
     children: ReactNode;
 };
 
 export default function Layout({ children }: LayoutProps) {
+    const router = useRouter();
+    const { isLoggedIn } = useAuth();
+
+    useEffect(() => {
+        if (!isLoggedIn) {
+            router.replace('/login');
+        }
+    }, [isLoggedIn]);
+
     return (
         <ManagementProvider>
             <div className='flex w-screen h-screen bg-white'>

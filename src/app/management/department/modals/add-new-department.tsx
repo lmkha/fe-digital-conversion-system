@@ -241,7 +241,7 @@ export default function AddNewDepartmentModal({
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">
                                 <TextInput
-                                    textLabel="Department name"
+                                    textLabel="Tên phòng ban"
                                     value={department.deptName}
                                     onChange={(value) => {
                                         setDepartment({
@@ -253,7 +253,7 @@ export default function AddNewDepartmentModal({
                             </div>
                             <div className="w-1/2">
                                 <Dropdown
-                                    label="Province/ City"
+                                    label="Tỉnh / Thành phố"
                                     options={provinceList.map(province => ({ value: province.provinceId, name: province.provinceName }))}
                                     alternativeOption={{
                                         name: provinceName,
@@ -272,7 +272,7 @@ export default function AddNewDepartmentModal({
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">
                                 <Dropdown
-                                    label="District"
+                                    label="Quận / Huyện"
                                     options={districtList.map(district => ({ value: district.districtId, name: district.districtName }))}
                                     alternativeOption={
                                         {
@@ -291,7 +291,7 @@ export default function AddNewDepartmentModal({
                             </div>
                             <div className="w-1/2">
                                 <Dropdown
-                                    label="Ward"
+                                    label="Phường / Xã"
                                     options={wardList.map(ward => ({ value: ward.wardId, name: ward.wardName }))}
                                     alternativeOption={
                                         {
@@ -312,10 +312,10 @@ export default function AddNewDepartmentModal({
                         <div>
 
                         </div>
-                        <div className="flex justify-end h-1/5">
+                        {/* <div className="flex justify-end h-1/5 w-full">
                             <ActionButton
                                 type="save"
-                                label="Save"
+                                label="Thêm"
                                 onClick={async () => {
                                     if (!validateDataBeforeSubmit()) return;
                                     console.log(`DeptName: ${department.deptName} provinceId: ${department.provinceId} districtId: ${department.districtId} wardId: ${department.wardId}`);
@@ -340,6 +340,35 @@ export default function AddNewDepartmentModal({
                                     onClose();
                                 }}
                             />
+                        </div> */}
+                        <div className="flex h-14 w-full bg-white justify-end">
+                            <button className="w-40 h-full bg-blue-500 rounded-md text-white hover:bg-white hover:text-blue-600 hover:border-blue-500 border-2"
+                                onClick={async () => {
+                                    if (!validateDataBeforeSubmit()) return;
+                                    console.log(`DeptName: ${department.deptName} provinceId: ${department.provinceId} districtId: ${department.districtId} wardId: ${department.wardId}`);
+                                    if (parentDepartment.deptId) {
+                                        const result = await createDepartment({
+                                            deptName: department.deptName,
+                                            wardId: department.wardId,
+                                            districtId: department.districtId,
+                                            provinceId: department.provinceId,
+                                            parentId: parentDepartment.deptId
+                                        });
+                                        onSubmitted(result.success, result.message, result.code);
+                                    } else {
+                                        const result = await createDepartmentLevel1({
+                                            deptName: department.deptName,
+                                            wardId: department.wardId,
+                                            districtId: department.districtId,
+                                            provinceId: department.provinceId
+                                        });
+                                        onSubmitted(result.success, result.message, result.code);
+                                    }
+                                    onClose();
+                                }}
+                            >
+                                Thêm phòng ban
+                            </button>
                         </div>
                     </div>
                 </div>

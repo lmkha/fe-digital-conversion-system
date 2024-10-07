@@ -3,11 +3,12 @@
 import Image from "next/image";
 import Link from "next/link"
 import { BiMenu } from "react-icons/bi";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { IoSettingsOutline } from "react-icons/io5";
 import { IoMdArrowDropdown, IoMdArrowDropright } from "react-icons/io";
 import { GrNext } from "react-icons/gr";
 import { LuDot } from "react-icons/lu";
+import { useAuth } from '@/contexts/auth-context';
 
 export default function SideNav() {
     return (
@@ -90,8 +91,11 @@ const MiddleSideNav = () => {
 }
 
 const BottomSideNav = () => {
+    const { logout } = useAuth();
     return (
-        <button className="flex items-center justify-between text-white border-y-2 border-white mb-1 mx-4 hover:bg-blue-950">
+        <button className="flex items-center justify-between text-white border-y-2 border-white mb-1 mx-4 hover:bg-blue-950"
+            onClick={logout}
+        >
             <div className="flex items-center gap-2 py-2">
                 {/* Avatar */}
                 <Image
@@ -102,7 +106,7 @@ const BottomSideNav = () => {
                     height={50}
                 />
                 {/* Username */}
-                <h1>Pablo Gavi</h1>
+                <h1>Le Minh Kha</h1>
                 {/* Action button icon */}
             </div>
             <GrNext />

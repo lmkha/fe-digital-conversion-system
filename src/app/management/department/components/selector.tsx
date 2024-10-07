@@ -76,6 +76,10 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
                 findDepartmentsByFilter(province.provinceId, deptLevel3.deptId, '', '4', '', '', '', '').then(result => {
                     setDeptLevel4List(result);
                 });
+            } else {
+                findDepartmentsByFilter(province.provinceId, deptLevel3.deptId, '', '4', '', '', '', '').then(result => {
+                    setDeptLevel4List(result);
+                });
             }
             onRefreshDataFinished();
         }
@@ -143,7 +147,13 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
     }, [deptLevel3.deptId])
     //====================================================
     useEffect(() => {
-        if (deptLevel3.deptId) {
+        if (deptLevel4.deptId) {
+            setCallBackInfo({
+                ...callBackInfo,
+                provinceId: province.provinceId,
+                parentId: deptLevel3.deptId,
+            });
+        } else if (deptLevel3.deptId) {
             setCallBackInfo({
                 ...callBackInfo,
                 provinceId: province.provinceId,
@@ -179,7 +189,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
     return (
         <div className="flex justify-between items-center w-full h-11 mt-6 pb-4 bg-white border-b-1 text-black">
             <Dropdown
-                label="Provinces"
+                label="Tỉnh/Thành phố *"
                 options={provinceList.map(province => ({ value: province.provinceId, name: province.provinceName }))}
                 alternativeOption={{
                     name: ' -- Chọn tỉnh/thành phố --',

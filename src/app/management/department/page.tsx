@@ -24,12 +24,8 @@ import Toast from "@/core/components/toast";
 import { GrFormPrevious } from "react-icons/gr";
 import { GrFormNext } from "react-icons/gr";
 import { TfiImport } from "react-icons/tfi";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/contexts/auth-context";
 
 export default function Page() {
-    const { isLoggedIn } = useAuth();
-    const router = useRouter();
     const [selectorData, setSelectorData] = useState({
         provinceId: '',
         provinceName: '',
@@ -111,19 +107,13 @@ export default function Page() {
         });
     }
 
-    useEffect(() => {
-        if (!isLoggedIn) {
-            router.replace('/login');
-        }
-    }, [isLoggedIn]);
-
     // Set header buttons
     useEffect(() => {
         setHeaderTitle('Phòng ban');
         setHeaderButtons([
             {
                 type: 'add',
-                label: 'Add new',
+                label: 'Thêm phòng ban',
                 onClick: () => {
                     setShowAddNewDepartmentModal(true)
                 }
@@ -151,33 +141,6 @@ export default function Page() {
         }
     }, [checkedItems]);
 
-    // useEffect(() => {
-    //     if (departmentListInfo.provinceId) {
-    //         findDepartmentsByFilter(
-    //             departmentListInfo.provinceId,
-    //             departmentListInfo.parentId,
-    //             departmentListInfo.deptName,
-    //             departmentListInfo.level,
-    //             departmentListInfo.districtName,
-    //             departmentListInfo.wardName,
-    //             departmentListInfo.pageSize,
-    //             departmentListInfo.pageNumber
-    //         ).then((result) => {
-    //             setDepartmentList(result.map(item => ({
-    //                 department: item,
-    //                 isCheck: false
-    //             })));
-    //         });
-    //     } else {
-    //         getDepartments().then((result) => {
-    //             setDepartmentList(result.map(item => ({
-    //                 department: item,
-    //                 isCheck: false
-    //             })));
-    //         })
-    //     }
-    // }, [departmentListInfo]);
-    //---------------------------------------------------------------------------------------------------------
     useEffect(() => {
         if (departmentListInfo.provinceId) {
             updateDepartmentListAndPageInfo();
@@ -190,7 +153,6 @@ export default function Page() {
             })
         }
     }, [departmentListInfo]);
-    //---------------------------------------------------------------------------------------------------------
 
     return (
         <Fragment>
@@ -278,7 +240,14 @@ export default function Page() {
                     <div className="w-10/12 fixed bottom-0 right-8 text-black">
                         <Footer
                             exportDataFooter={() => {
-                                console.log('Check var info: ', departmentListInfo);
+                                if (!departmentListInfo.provinceId) {
+                                    setToastInfo({
+                                        showToast: true,
+                                        severity: 'error',
+                                        message: 'Vui lòng chọn tỉnh/thành phố trước khi tải file!'
+                                    });
+                                    return;
+                                }
                                 downloadDepartmentsExcelFile(
                                     departmentListInfo.provinceId,
                                     departmentListInfo.parentId,
@@ -306,6 +275,7 @@ export default function Page() {
                             }}
                             pageNumber={pageInfoResult.pageNumber}
                             totalPage={pageInfoResult.totalPage}
+                            totalSelected={departmentList.length.toString()}
                             onChangePageNumber={(pageNumber) => {
                                 setDepartmentListInfo({
                                     ...departmentListInfo,
@@ -326,7 +296,7 @@ export default function Page() {
 
             <AddNewDepartmentModal
                 isVisible={showAddNewDepartmentModal}
-                label="Add New"
+                label="Thêm phòng ban"
                 onClose={() => setShowAddNewDepartmentModal(false)}
                 onSubmitted={(success, message, code) => {
                     if (success) {
@@ -352,7 +322,7 @@ export default function Page() {
             />
             <EditDepartmentModal
                 isVisible={showEditDepartmentModal}
-                label="Edit"
+                label="Chỉnh sửa phòng ban"
                 onClose={() => setShowEditDepartmentModal(false)}
                 onSubmitted={(success, message, code) => {
                     if (success) {
@@ -389,12 +359,7 @@ export default function Page() {
                                 message: 'Xóa phòng ban thành công!'
                             });
                             setCheckedItems([]);
-                            getDepartments().then((result) => {
-                                setDepartmentList(result.map(item => ({
-                                    department: item,
-                                    isCheck: false
-                                })));
-                            });
+                            updateDepartmentListAndPageInfo()
                         } else {
                             setToastInfo({
                                 showToast: true,
@@ -405,7 +370,10 @@ export default function Page() {
                     }
                     dl();
                 }}
-                onClose={() => console.log('Close')}
+                onClose={() => {
+                    handleUnselectAll(setCheckedItems, setDepartmentList);
+                    setShowSelectedDataToolbar(false);
+                }}
             />
             <Toast
                 open={toastInfo.showToast}
@@ -423,10 +391,11 @@ interface FooterProps {
     exportDataFooter: () => void;
     pageNumber: string;
     totalPage: string;
+    totalSelected: string;
     onChangePageNumber: (pageNumber: string) => void;
     onChangePageSize: (pageSize: string) => void;
 }
-function Footer({ exportDataFooter, pageNumber, totalPage, onChangePageNumber, onChangePageSize }: FooterProps) {
+function Footer({ exportDataFooter, pageNumber, totalPage, totalSelected, onChangePageNumber, onChangePageSize }: FooterProps) {
     return (
         <div className='flex justify-between items-center h-10 w-full mx-4 mb-4 rounded-b-md bg-white shadow-md'>
             <button className="flex justify-center items-center gap-2 px-3 py-1 ml-2
@@ -437,7 +406,7 @@ function Footer({ exportDataFooter, pageNumber, totalPage, onChangePageNumber, o
                 }}
             >
                 <TfiImport />
-                <span>Export Data</span>
+                <span>Tải xuống</span>
             </button>
 
             <div className="mr-2 flex gap-4">
@@ -454,7 +423,7 @@ function Footer({ exportDataFooter, pageNumber, totalPage, onChangePageNumber, o
                     <option value="20">20</option>
                 </select>
 
-                <h1>{pageNumber} of {totalPage}</h1>
+                <h1>{pageNumber} / {totalPage} trang</h1>
                 <div className="flex gap-2">
                     <div className="flex flex-col w-6 h-6 justify-center items-center 
                                     text-gray-500 hover:text-black hover:bg-gray-200 hover:rounded-md">
