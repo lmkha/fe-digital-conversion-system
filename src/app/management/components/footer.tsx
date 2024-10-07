@@ -1,12 +1,20 @@
+'use client';
+
 import { GrFormPrevious } from "react-icons/gr";
 import { GrFormNext } from "react-icons/gr";
 import { TfiImport } from "react-icons/tfi";
 
-export default function Footer() {
+
+export default function Footer({ exportDataFooter }: { exportDataFooter: () => void }) {
     return (
         <div className='flex justify-between items-center h-10 mx-2 mb-4 rounded-b-md bg-white shadow-md'>
             <button className="flex justify-center items-center gap-2 px-3 py-1 ml-2
-                            text-gray-500 hover:text-black hover:bg-gray-200 hover:rounded-md">
+                            text-gray-500 hover:text-black hover:bg-gray-200 hover:rounded-md"
+                onClick={() => {
+                    console.log('Export data');
+                    exportDataFooter();
+                }}
+            >
                 <TfiImport />
                 <span>Export Data</span>
             </button>

@@ -39,61 +39,80 @@ export interface FilterData {
 }
 
 // Call API =========================================================================================================
-export const getProvinces = async (
-    setProvinceList: React.Dispatch<React.SetStateAction<Province[]>>
-) => {
+export const getProvinces = async (): Promise<Province[]> => {
     const result = await address.getProvinces();
     if (result.success) {
-        setProvinceList(result.data);
+        return result.data;
     } else {
         console.error("Error fetching provinces:", result.message);
-        setProvinceList([]);
+        return [];
     }
 }
 
-export const getDistricts = async (
-    provinceId: string,
-    setDistrictList: React.Dispatch<React.SetStateAction<District[]>>
-) => {
+export const getDistricts = async (provinceId: string): Promise<District[]> => {
     const result = await address.getDistricts(provinceId);
     if (result.success) {
-        setDistrictList(result.data.map((district: any) => ({
+        return result.data.map((district: any) => ({
             districtId: district.districtId,
             districtName: district.districtName
-        })));
+        }));
     } else {
         console.error("Error fetching districts:", result.message);
-        setDistrictList([]);
+        return [];
     }
 }
 
-export const getWards = async (
-    districtId: string,
-    setWardList: React.Dispatch<React.SetStateAction<Ward[]>>
-) => {
+export const getWards = async (districtId: string): Promise<Ward[]> => {
     const result = await address.getWards(districtId);
     if (result.success) {
-        setWardList(result.data.map((ward: any) => ({
+        return result.data.map((ward: any) => ({
             wardId: ward.wardId,
             wardName: ward.wardName
-        })));
+        }));
     } else {
         console.error("Error fetching wards:", result.message);
-        setWardList([]);
+        return [];
     }
 }
 
-export const getDepartments = async (
-    setDepartmentList: React.Dispatch<React.SetStateAction<{
-        department: DetailedDepartment;
-        isCheck: boolean;
-    }[]>>
-) => {
+export const getDepartments = async (): Promise<DetailedDepartment[]> => {
     const result = await department.getDepartments();
     console.log(result.data);
     if (result.success) {
-        setDepartmentList(result.data.map((dept: any) => ({
-            department: {
+        return result.data.map((dept: any) => ({
+            deptId: dept.deptId,
+            deptName: dept.deptName,
+            level: dept.level,
+            provinceId: dept.provinceId,
+            districtId: dept.districtId,
+            wardId: dept.wardId,
+            provinceName: dept.provinceName,
+            districtName: dept.districtName,
+            wardName: dept.wardName
+        }));
+    } else {
+        console.error("Error fetching departments:", result.message);
+        return [];
+    }
+};
+
+// Khai báo kiểu dữ liệu cho kết quả trả về
+type DepartmentsResult = {
+    pageNumber: number;
+    totalPage: number;
+    departments: DetailedDepartment[];
+} | null; // Hoặc dùng undefined tùy ý
+
+export const getDepartmentsWithPageInfo = async (
+
+): Promise<DepartmentsResult> => {
+    const result = await department.getDepartments();
+    console.log(result.data);
+    if (result.success) {
+        return {
+            pageNumber: result.data.pageNumber,
+            totalPage: result.data.totalPage,
+            departments: result.data.depts.map((dept: any) => ({
                 deptId: dept.deptId,
                 deptName: dept.deptName,
                 level: dept.level,
@@ -103,40 +122,37 @@ export const getDepartments = async (
                 provinceName: dept.provinceName,
                 districtName: dept.districtName,
                 wardName: dept.wardName
-            },
-            isCheck: false
-        })));
+            }))
+        };
     } else {
         console.error("Error fetching departments:", result.message);
-        setDepartmentList([]);
+        return null; // Đảm bảo rằng không có mảng rỗng được trả về
     }
 };
 
-export const getDepartmentById = async (
-    deptId: string,
-    setDetailedDepartment: React.Dispatch<React.SetStateAction<DetailedDepartment>>
-) => {
+
+
+export const getDepartmentById = async (deptId: string): Promise<DetailedDepartment> => {
     const result = await department.getDepartmentById(deptId);
     if (result.success) {
-        setDetailedDepartment({
-            deptId: result.data.deptId,
-            deptName: result.data.deptName,
-            level: result.data.level,
-            provinceId: result.data.provinceId,
-            districtId: result.data.districtId,
-            wardId: result.data.wardId,
-            provinceName: result.data.provinceName,
-            districtName: result.data.districtName,
-            wardName: result.data.wardName
-        });
+        return result.data;
     } else {
         console.error("Error fetching department by id:", result.message);
+        return {
+            deptId: '',
+            deptName: '',
+            level: 0,
+            provinceId: '',
+            districtId: '',
+            wardId: '',
+            provinceName: '',
+            districtName: '',
+            wardName: ''
+        };
     }
 }
 
-export const deleteDepartments = async (
-    ids: string[],
-) => {
+export const deleteDepartments = async (ids: string[]) => {
     const result = await department.deleteDepartments(ids);
     return result;
 }
@@ -148,8 +164,7 @@ export const createDepartment = async (
         districtId: string;
         provinceId: string;
         parentId: string;
-    },
-) => {
+    }) => {
     const result = await department.createDepartment(data);
     return result;
 }
@@ -179,33 +194,7 @@ export const updateDepartment = async (
     return result;
 }
 
-export const findDepartmentFilter = async (
-    provinceId: string,
-    parentId: string,
-    deptName: string,
-    level: number,
-    setDetailedDepartmentList: React.Dispatch<React.SetStateAction<DetailedDepartment[]>>
-) => {
-    const result = await department.findDepartmentFilter(provinceId, parentId, deptName, level);
-    if (result.success) {
-        setDetailedDepartmentList(result.data.depts.map((dept: any) => ({
-            deptId: dept.deptid,
-            deptName: dept.deptname,
-            level: dept.level,
-            provinceName: dept.provincename,
-            districtName: dept.districtname,
-            wardName: dept.wardname,
-            provinceId: '',
-            districtId: '',
-            wardId: ''
-        })));
-    } else {
-        console.error("Error filtering department:", result.message);
-        setDetailedDepartmentList([]);
-    }
-}
-
-export const findDepartmentFilterFull = async (
+export const findDepartmentsByFilter = async (
     provinceId: string,
     parentId: string,
     deptName: string,
@@ -214,11 +203,11 @@ export const findDepartmentFilterFull = async (
     districtName: string,
     pageSize: string,
     pageNumber: string,
-    setDetailedDepartmentList: React.Dispatch<React.SetStateAction<DetailedDepartment[]>>
-) => {
-    const result = await department.findDepartmentFilterFull(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
+): Promise<DetailedDepartment[]> => {
+    const result = await department.findDepartmentsByFilter(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
+
     if (result.success) {
-        setDetailedDepartmentList(result.data.depts.map((dept: any) => ({
+        return result.data.depts.map((dept: any): DetailedDepartment => ({
             deptName: dept.deptname,
             deptId: dept.deptid,
             level: dept.level,
@@ -228,11 +217,25 @@ export const findDepartmentFilterFull = async (
             provinceId: '',
             districtId: '',
             wardId: ''
-        })));
+        }));
     } else {
         console.error("Error filtering department:", result.message);
-        setDetailedDepartmentList([]);
+        return [];
     }
+}
+
+export const downloadDepartmentsExcelFile = async (
+    provinceId: string,
+    parentId: string,
+    deptName: string,
+    level: string,
+    wardName: string,
+    districtName: string,
+    pageSize: string,
+    pageNumber: string,
+) => {
+    const result = await department.downloadDepartmentsExcelFile(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
+    return result;
 }
 
 //=========================================================================================================

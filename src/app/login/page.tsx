@@ -1,6 +1,6 @@
 'use client';
 
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import LoginForm from './components/login-form';
 import LoginImage from './components/login-image';
 import RecoveryOptionChooser from '@/app/forgot-password/choose-method-modal';
@@ -9,8 +9,10 @@ import RecoveryByEmailForm from '@/app/forgot-password/via-email/email-recovery-
 import { useRouter } from 'next/navigation';
 import auth from '@/api/auth';
 import RecoveryBySMSForm from '../forgot-password/via-sms/sms-recovery-modal';
+import { useAuth } from '@/contexts/auth-context';
 
 export default function Page() {
+    const { isLoggedIn, login } = useAuth();
     const router = useRouter();
     const [showRecoveryOptionChooser, setShowRecoveryOptionChooser] = useState(false);
     const [showRecoveryByEmailForm, setShowRecoveryByEmailForm] = useState(false);
@@ -35,10 +37,16 @@ export default function Page() {
             severity: result.success ? 'success' : 'error',
             message: result.message
         });
-        if (result.code === 3000) {
-            router.replace('/reset-password');
+        if (result.success) {
+            login();
         }
-    }
+    };
+
+    useEffect(() => {
+        if (isLoggedIn) {
+            router.push('/management');
+        }
+    }, [isLoggedIn]);
 
     return (
         <Fragment>

@@ -52,9 +52,13 @@ export default function EditDepartmentModal({
     useEffect(() => {
         const fetchDepartment = async () => {
             if (isVisible && deptId) {
-                await getDepartmentById(deptId, setDepartment);
+                await getDepartmentById(deptId).then(result => {
+                    setDepartment(result);
+                });
             }
-            getProvinces(setProvinceList);
+            getProvinces().then(result => {
+                setProvinceList(result);
+            });
         }
         fetchDepartment();
     }, [isVisible, deptId]);
@@ -64,7 +68,9 @@ export default function EditDepartmentModal({
         const fetchDistricts = async () => {
             try {
                 if (department.provinceId) {
-                    await getDistricts(department.provinceId, setDistrictList);
+                    await getDistricts(department.provinceId).then(result => {
+                        setDistrictList(result);
+                    });
                 }
             } catch (error) {
                 console.error("Error fetching districts:");
@@ -78,7 +84,9 @@ export default function EditDepartmentModal({
         const fetchWards = async () => {
             try {
                 if (department.districtId) {
-                    await getWards(department.districtId, setWardList);
+                    await getWards(department.districtId).then(result => {
+                        setWardList(result);
+                    });
                 }
             } catch (error) {
                 console.error("Error fetching wards:");

@@ -1,10 +1,11 @@
 // Department.ts
+import axiosInstance from "@/core/axios/axios-instance";
 import Base from "./base";
 
 class DepartmentAPI extends Base {
     async getDepartments() {
         try {
-            const response = await this.get('/department?provinceId');
+            const response = await this.get('/department');
             return {
                 success: true,
                 data: response.data,
@@ -107,27 +108,7 @@ class DepartmentAPI extends Base {
         }
     }
 
-    async findDepartmentFilter(provinceId: string, parentId: string, deptName: string, level: number) {
-        try {
-            const url = parentId ? `/department/find-filter?provinceId=${provinceId}&parentId=${parentId}&deptName=${deptName}&level=${level}` :
-                `/department/find-filter?provinceId=${provinceId}&deptName=${deptName}&level=${level}`;
-            const response = await this.get(url);
-            return {
-                success: true,
-                data: response.data,
-                message: response.message,
-                code: response.code
-            }
-        } catch (err: any) {
-            return {
-                success: false,
-                message: err.response.data.message,
-                code: err.response.data.code
-            }
-        }
-    }
-
-    async findDepartmentFilterFull(
+    async findDepartmentsByFilter(
         provinceId: string,
         parentId: string,
         deptName: string,
@@ -161,6 +142,51 @@ class DepartmentAPI extends Base {
             }
         }
     }
+
+    async downloadDepartmentsExcelFile(
+        provinceId: string,
+        parentId: string,
+        deptName: string,
+        level: string,
+        wardName: string,
+        districtName: string,
+        pageSize: string,
+        pageNumber: string
+    ) {
+        try {
+            const partOfParentId = parentId ? `&parentId=${parentId}` : '';
+            const partOfDeptName = deptName ? `&deptName=${deptName}` : '';
+            const partOfLevel = level ? `&level=${level}` : '';
+            const partOfWardName = wardName ? `&wardName=${wardName}` : '';
+            const partOfDistrictName = districtName ? `&districtName=${districtName}` : '';
+            const partOfPageSize = pageSize ? `&pageSize=${pageSize}` : '';
+            const partOfPageNumber = pageNumber ? `&pageNumber=${pageNumber}` : '';
+            const url = `/department/download-excel?provinceId=${provinceId}${partOfParentId}${partOfDeptName}${partOfLevel}${partOfWardName}${partOfDistrictName}${partOfPageSize}${partOfPageNumber}`;
+
+            // Gọi API và lấy dữ liệu như một tệp nhị phân
+            const response = await axiosInstance.get(url, { responseType: 'blob' });
+
+            // Tạo URL từ blob
+            const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'departments.xlsx'; // Tên tệp tải về
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            return {
+                success: true,
+                data: response.data,
+            };
+        } catch (err: any) {
+            console.error(err); // Ghi lỗi để kiểm tra
+            return {
+                success: false,
+            };
+        }
+    }
+
 }
 
 const department = new DepartmentAPI();

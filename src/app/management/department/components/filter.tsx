@@ -1,19 +1,18 @@
 'use client';
 import TextInput from "@/core/components/text-input";
-import { DetailedDepartment, findDepartmentFilterFull } from "@/services/department";
+import { DetailedDepartment, findDepartmentsByFilter } from "@/services/department";
 import { useEffect, useState } from "react";
 import { RiCheckboxIndeterminateFill } from "react-icons/ri";
 import { RiCheckboxIndeterminateLine } from "react-icons/ri";
 
 interface FilterProps {
-    provinceId: string;
     isCheck: boolean;
     onTextChange: (key: 'name' | 'level' | 'district' | 'ward', value: string) => void;
     onCheckAllChange: (isCheck: boolean) => void;
-    onSentToTableListChange: (sentToTableList: DetailedDepartment[]) => void;
+    onSubmitted: ({ name, level, district, ward }: { name: string; level: string; district: string; ward: string }) => void;
 }
 
-export default function Filter({ provinceId, isCheck, onTextChange, onCheckAllChange, onSentToTableListChange }: FilterProps) {
+export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubmitted }: FilterProps) {
     const [data, setData] = useState<{
         isCheck: boolean;
         name: string;
@@ -34,7 +33,7 @@ export default function Filter({ provinceId, isCheck, onTextChange, onCheckAllCh
     const [checkAllIcon, setCheckAllIcon] = useState(<RiCheckboxIndeterminateLine className="text-2xl" />);
     const handleKeyDown = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
-            findDepartmentFilterFull(provinceId, '', data.name, data.level, data.ward, data.district, '', '', setSentToTableList);
+            onSubmitted({ name: data.name, level: data.level, district: data.district, ward: data.ward });
         }
     };
 
@@ -45,10 +44,6 @@ export default function Filter({ provinceId, isCheck, onTextChange, onCheckAllCh
             setCheckAllIcon(<RiCheckboxIndeterminateLine className="text-2xl" />);
         }
     }, [data]);
-
-    useEffect(() => {
-        onSentToTableListChange(sentToTableList);
-    }, [sentToTableList])
 
     return (
         <div className="flex bg-gray-200 p-2 rounded-t-md text-black">

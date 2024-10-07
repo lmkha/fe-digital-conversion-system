@@ -1,6 +1,5 @@
 'use client';
 
-import { get } from '@/hooks/use-local-storage';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface AuthContextType {
@@ -12,7 +11,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const initialState = {
-    isLoggedIn: get('accessToken'),
+    isLoggedIn: false,
     login: () => { },
     logout: () => { },
 };

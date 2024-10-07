@@ -42,7 +42,6 @@ export default function Toast({
                         clearInterval(interval);
                         return 0;
                     }
-                    console.log(`newProgress: ${newProgress}`);
                     return newProgress;
                 });
             }, 100);

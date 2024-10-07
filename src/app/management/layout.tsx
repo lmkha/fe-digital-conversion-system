@@ -1,8 +1,7 @@
-// components/layout.tsx
-import { ReactNode } from 'react';
+import { ReactNode, useState } from 'react';
 import SideNav from './components/sidenav';
 import Header from './components/header';
-import Footer from './components/footer';
+
 import { ManagementProvider } from '@/contexts/management-context';
 
 type LayoutProps = {
@@ -24,7 +23,7 @@ export default function Layout({ children }: LayoutProps) {
                             {children}
                         </div>
                     </div>
-                    <Footer />
+                    {/* <Footer/> */}
                 </div>
             </div>
         </ManagementProvider>

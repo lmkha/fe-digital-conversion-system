@@ -69,7 +69,9 @@ export default function AddNewDepartmentModal({
         console.log(`Parent department id: ${parentId}`);
         if (isVisible) {
             if (parentId) {
-                getDepartmentById(parentId, setParentDepartment);
+                getDepartmentById(parentId).then(result => {
+                    setParentDepartment(result);
+                });
                 setDepartment({
                     ...department,
                     provinceId: parentDepartment.provinceId,
@@ -80,7 +82,9 @@ export default function AddNewDepartmentModal({
                     wardName: parentDepartment.wardName
                 });
             }
-            getProvinces(setProvinceList);
+            getProvinces().then(result => {
+                setProvinceList(result);
+            });
             if (provinceId) {
                 setDepartment({
                     ...department,
@@ -110,7 +114,9 @@ export default function AddNewDepartmentModal({
         const fetchDistricts = async () => {
             try {
                 if (department.provinceId) {
-                    await getDistricts(department.provinceId, setDistrictList);
+                    await getDistricts(department.provinceId).then(result => {
+                        setDistrictList(result);
+                    });
                 }
             } catch (error) {
                 console.error("Error fetching districts:");
@@ -124,7 +130,9 @@ export default function AddNewDepartmentModal({
         const fetchWards = async () => {
             try {
                 if (department.districtId) {
-                    await getWards(department.districtId, setWardList);
+                    await getWards(department.districtId).then(result => {
+                        setWardList(result);
+                    });
                 }
             } catch (error) {
                 console.error("Error fetching wards:");

@@ -4,7 +4,7 @@ import { get, set } from '@/hooks/use-local-storage';
 
 const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,
-    timeout: 5000
+    timeout: 10000
 });
 
 axiosInstance.interceptors.request.use(
