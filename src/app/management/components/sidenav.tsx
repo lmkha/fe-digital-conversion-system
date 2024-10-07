@@ -40,11 +40,11 @@ const TopSideNav = () => {
 const MiddleSideNav = () => {
     /* System toggle, manage department, permission, role, user, report configuration */
     const list = [
-        { route: 'department', name: 'Department' },
-        { route: 'permission', name: 'Permission' },
-        { route: 'role', name: 'Role' },
-        { route: 'user', name: 'User' },
-        { route: 'report-configuration', name: 'Report Configuration' },
+        { route: 'department', name: 'Phòng ban' },
+        { route: 'permission', name: 'Phân quyền' },
+        { route: 'role', name: 'Chức vụ' },
+        { route: 'user', name: 'Người dùng' },
+        { route: 'report-configuration', name: 'Cấu hình báo cáo' },
     ]
     const [isOpen, setIsOpen] = useState(true);
     const handleToggle = () => {
@@ -69,7 +69,7 @@ const MiddleSideNav = () => {
             >
                 <div className="flex items-center gap-2">
                     {<IoSettingsOutline />}
-                    <h1>Setting</h1>
+                    <h1>Cài đặt</h1>
                 </div>
                 {icon}
             </button>
@@ -77,7 +77,7 @@ const MiddleSideNav = () => {
                 <ul className="ml-6 max-h-screen">
                     {list.map((item, index) => (
                         <li key={index}>
-                            <Link href={`/management/${item.route}`} className="flex items-center hover:bg-blue-950">
+                            <Link href={`/management/${item.route}`} className="flex items-center hover:bg-blue-950 py-3">
                                 <LuDot />
                                 {item.name}
                             </Link>

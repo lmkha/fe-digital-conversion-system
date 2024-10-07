@@ -6,21 +6,21 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 interface ManagementContextType {
     headerButtons: ActionButtonProps[];
     setHeaderButtons: (buttons: ActionButtonProps[]) => void;
-    exportDataFooter: () => void;
-    setExportDataFooter: (callback: () => void) => void; // Cập nhật kiểu của setExportDataFooter
+    headerTitle: string;
+    setHeaderTitle: (title: string) => void;
 }
 
 const ManagementContext = createContext<ManagementContextType | undefined>(undefined);
 
 export const ManagementProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [headerButtons, setHeaderButtons] = useState<ActionButtonProps[]>([]);
+    const [headerTitle, setHeaderTitle] = useState<string>('');
     const [exportDataFooter, setExportDataFooter] = useState<() => void>(() => {
         console.log('Export data footer not set yet');
     });
 
-    // Truyền cả exportDataFooter và setExportDataFooter vào provider
     return (
-        <ManagementContext.Provider value={{ headerButtons, setHeaderButtons, exportDataFooter, setExportDataFooter }}>
+        <ManagementContext.Provider value={{ headerButtons, headerTitle, setHeaderTitle, setHeaderButtons }}>
             {children}
         </ManagementContext.Provider>
     );

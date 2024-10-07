@@ -5,6 +5,7 @@ import isValidEmail from "@/core/logic/email-validator";
 import Toast from "@/core/components/toast";
 import TextInput from "@/core/components/text-input";
 import auth from "@/api/auth";
+import { MdCancelPresentation } from "react-icons/md";
 
 export default function RecoveryByEmailForm({ isVisible, onclose }: { isVisible: boolean, onclose: () => void }) {
     const ref = useRef<HTMLDivElement | null>(null);
@@ -122,7 +123,12 @@ export default function RecoveryByEmailForm({ isVisible, onclose }: { isVisible:
             {/* Modal */}
             <div className="fixed inset-0 z-50 flex items-center justify-center">
                 <div ref={ref} className="bg-white p-6 rounded-lg shadow-lg w-[624px] h-[300px] z-50"> {/* Tailwind classes for width and height */}
-                    <h2 className="text-2xl font-bold text-center">Quên mật khẩu</h2>
+                    <div className="flex w-full items-start justify-end">
+                        <button onClick={onclose}>
+                            {<MdCancelPresentation className="text-black text-3xl hover:text-red-500" />}
+                        </button>
+                    </div>
+                    <h2 className="text-2xl font-bold text-center text-black">Quên mật khẩu</h2>
                     <p className="mt-1 text-gray-500 text-center">Vui lòng nhập email để đăng ký tài khoản</p>
                     <div className="mt-3 flex flex-col items-center justify-center w-full h-auto">
                         <TextInput

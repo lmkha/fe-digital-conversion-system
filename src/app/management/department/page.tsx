@@ -17,7 +17,6 @@ import {
     DetailedDepartment,
     CheckedItem,
     deleteDepartments,
-    findDepartmentsByFilter,
     downloadDepartmentsExcelFile,
     findDepartmentsByFilterWithPageInfo
 } from '@/services/department';
@@ -42,7 +41,7 @@ export default function Page() {
         district: '',
         ward: ''
     });
-    const { setHeaderButtons, setExportDataFooter } = useManagement();
+    const { setHeaderButtons, setHeaderTitle } = useManagement();
     const [showAddNewDepartmentModal, setShowAddNewDepartmentModal] = useState(false);
     const [showEditDepartmentModal, setShowEditDepartmentModal] = useState(false);
     const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState(false);
@@ -120,6 +119,7 @@ export default function Page() {
 
     // Set header buttons
     useEffect(() => {
+        setHeaderTitle('Phòng ban');
         setHeaderButtons([
             {
                 type: 'add',
@@ -129,7 +129,7 @@ export default function Page() {
                 }
             }
         ]);
-    }, [setHeaderButtons]);
+    }, [setHeaderTitle, setHeaderButtons]);
 
     // Get department list
     useEffect(() => {
@@ -194,7 +194,7 @@ export default function Page() {
 
     return (
         <Fragment>
-            <div className="flex-col">
+            <div className="flex-col text-black">
                 <Selector
                     onChange={(provinceId, provinceName, parentId) => {
                         setSelectorData({
@@ -275,7 +275,7 @@ export default function Page() {
                     ))}
 
                     {/* Footer */}
-                    <div className="w-10/12 fixed bottom-0 right-8">
+                    <div className="w-10/12 fixed bottom-0 right-8 text-black">
                         <Footer
                             exportDataFooter={() => {
                                 console.log('Check var info: ', departmentListInfo);

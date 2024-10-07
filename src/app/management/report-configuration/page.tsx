@@ -3,9 +3,10 @@ import { useManagement } from "@/contexts/management-context";
 import { useEffect } from "react";
 
 export default function Page() {
-    const { setHeaderButtons } = useManagement();
+    const { setHeaderButtons, setHeaderTitle } = useManagement();
 
     useEffect(() => {
+        setHeaderTitle('Cấu hình báo cáo');
         setHeaderButtons([
             {
                 type: 'add',
@@ -13,7 +14,7 @@ export default function Page() {
                 onClick: () => console.log('Add new report configuration')
             }
         ]);
-    }, []);
+    }, [setHeaderButtons, setHeaderTitle]);
 
     return (
         <div>Report configuration Page</div>

@@ -196,7 +196,7 @@ export default function EditDepartmentModal({
                 <div className="fixed inset-0 bg-gray-600 bg-opacity-50 z-40" />
 
                 {/* Modal content */}
-                <div className="fixed inset-0 z-50 flex items-center justify-center">
+                <div className="fixed inset-0 z-50 flex items-center justify-center text-black">
                     <div
                         ref={ref}
                         className="flex-col bg-white p-6 rounded-lg shadow-lg w-1/2 h-1/3" // Tailwind classes for width and height

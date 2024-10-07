@@ -81,7 +81,7 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
     };
 
     return (
-        <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md">
+        <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-md text-black">
             <div className="flex justify-center mb-6 bg-white">
                 <Image src="/img/gov_logo.png" width={100} height={100} alt="Government Logo" />
             </div>
