@@ -19,7 +19,7 @@ import {
     deleteDepartments,
     findDepartmentsByFilter,
     downloadDepartmentsExcelFile,
-    getDepartmentsWithPageInfo
+    findDepartmentsByFilterWithPageInfo
 } from '@/services/department';
 import Toast from "@/core/components/toast";
 import { GrFormPrevious } from "react-icons/gr";
@@ -45,6 +45,10 @@ export default function Page() {
     const [checkedItems, setCheckedItems] = useState<CheckedItem[]>([]);
     const [refreshData, setRefreshData] = useState(false);
     // When user change selector, filter or department list, this state will be updated. Use it to call API to get department list
+    const [pageInfoResult, setPageInfoResult] = useState({
+        pageNumber: '',
+        totalPage: '',
+    });
     const [departmentListInfo, setDepartmentListInfo] = useState<{
         provinceId: string,
         parentId: string,
@@ -66,7 +70,6 @@ export default function Page() {
         pageNumber: '',
         toTalPage: ''
     });
-
     const [departmentList, setDepartmentList] = useState<{
         department: DetailedDepartment;
         isCheck: boolean;
@@ -82,6 +85,28 @@ export default function Page() {
             severity: 'success',
             message: ''
         });
+
+    const updateDepartmentListAndPageInfo = () => {
+        findDepartmentsByFilterWithPageInfo(
+            departmentListInfo.provinceId,
+            departmentListInfo.parentId,
+            departmentListInfo.deptName,
+            departmentListInfo.level,
+            departmentListInfo.wardName,
+            departmentListInfo.districtName,
+            departmentListInfo.pageSize,
+            departmentListInfo.pageNumber
+        ).then((result) => {
+            setDepartmentList(result.departments.map(item => ({
+                department: item,
+                isCheck: false
+            })));
+            setPageInfoResult({
+                pageNumber: result.pageNumber.toString(),
+                totalPage: result.totalPage.toString()
+            });
+        });
+    }
 
     // Set header buttons
     useEffect(() => {
@@ -116,23 +141,36 @@ export default function Page() {
         }
     }, [checkedItems]);
 
+    // useEffect(() => {
+    //     if (departmentListInfo.provinceId) {
+    //         findDepartmentsByFilter(
+    //             departmentListInfo.provinceId,
+    //             departmentListInfo.parentId,
+    //             departmentListInfo.deptName,
+    //             departmentListInfo.level,
+    //             departmentListInfo.districtName,
+    //             departmentListInfo.wardName,
+    //             departmentListInfo.pageSize,
+    //             departmentListInfo.pageNumber
+    //         ).then((result) => {
+    //             setDepartmentList(result.map(item => ({
+    //                 department: item,
+    //                 isCheck: false
+    //             })));
+    //         });
+    //     } else {
+    //         getDepartments().then((result) => {
+    //             setDepartmentList(result.map(item => ({
+    //                 department: item,
+    //                 isCheck: false
+    //             })));
+    //         })
+    //     }
+    // }, [departmentListInfo]);
+    //---------------------------------------------------------------------------------------------------------
     useEffect(() => {
         if (departmentListInfo.provinceId) {
-            findDepartmentsByFilter(
-                departmentListInfo.provinceId,
-                departmentListInfo.parentId,
-                departmentListInfo.deptName,
-                departmentListInfo.level,
-                departmentListInfo.districtName,
-                departmentListInfo.wardName,
-                departmentListInfo.pageSize,
-                departmentListInfo.pageNumber
-            ).then((result) => {
-                setDepartmentList(result.map(item => ({
-                    department: item,
-                    isCheck: false
-                })));
-            });
+            updateDepartmentListAndPageInfo();
         } else {
             getDepartments().then((result) => {
                 setDepartmentList(result.map(item => ({
@@ -142,6 +180,7 @@ export default function Page() {
             })
         }
     }, [departmentListInfo]);
+    //---------------------------------------------------------------------------------------------------------
 
     return (
         <Fragment>
@@ -184,6 +223,15 @@ export default function Page() {
                         setFilterData({ ...filterData, [key]: value });
                     }}
                     onSubmitted={(filterData) => {
+                        console.log(`Filter data, name: ${filterData.name}, level: ${filterData.level}, district: ${filterData.district}, ward: ${filterData.ward}`);
+                        if (!departmentListInfo.provinceId) {
+                            setToastInfo({
+                                showToast: true,
+                                severity: 'error',
+                                message: 'Vui lòng chọn tỉnh/thành phố trước khi tìm kiếm!'
+                            });
+                            return;
+                        }
                         setDepartmentListInfo({
                             ...departmentListInfo,
                             deptName: filterData.name,
@@ -246,8 +294,8 @@ export default function Page() {
                                     }
                                 });
                             }}
-                            pageNumber={departmentListInfo.pageNumber}
-                            totalPage={departmentListInfo.toTalPage}
+                            pageNumber={pageInfoResult.pageNumber}
+                            totalPage={pageInfoResult.totalPage}
                             onChangePageNumber={(pageNumber) => {
                                 setDepartmentListInfo({
                                     ...departmentListInfo,
@@ -257,7 +305,8 @@ export default function Page() {
                             onChangePageSize={(pageSize) => {
                                 setDepartmentListInfo({
                                     ...departmentListInfo,
-                                    pageSize: pageSize
+                                    pageSize: pageSize,
+                                    pageNumber: '1'
                                 });
                             }}
                         />
@@ -273,21 +322,7 @@ export default function Page() {
                     if (success) {
                         setRefreshData(true);
                         // Refresh department list
-                        findDepartmentsByFilter(
-                            departmentListInfo.provinceId,
-                            departmentListInfo.parentId,
-                            departmentListInfo.deptName,
-                            departmentListInfo.level,
-                            departmentListInfo.districtName,
-                            departmentListInfo.wardName,
-                            departmentListInfo.pageSize,
-                            departmentListInfo.pageNumber
-                        ).then((result) => {
-                            setDepartmentList(result.map(item => ({
-                                department: item,
-                                isCheck: false
-                            })));
-                        });
+                        updateDepartmentListAndPageInfo()
                         setToastInfo({
                             showToast: true,
                             severity: 'success',
@@ -311,12 +346,9 @@ export default function Page() {
                 onClose={() => setShowEditDepartmentModal(false)}
                 onSubmitted={(success, message, code) => {
                     if (success) {
-                        getDepartments().then((result) => {
-                            setDepartmentList(result.map(item => ({
-                                department: item,
-                                isCheck: false
-                            })));
-                        });
+                        // Refresh department list
+                        updateDepartmentListAndPageInfo()
+
                         setToastInfo({
                             showToast: true,
                             severity: 'success',
@@ -412,7 +444,7 @@ function Footer({ exportDataFooter, pageNumber, totalPage, onChangePageNumber, o
                     <option value="20">20</option>
                 </select>
 
-                <h1>1 - 2 of {totalPage}</h1>
+                <h1>{pageNumber} of {totalPage}</h1>
                 <div className="flex gap-2">
                     <div className="flex flex-col w-6 h-6 justify-center items-center 
                                     text-gray-500 hover:text-black hover:bg-gray-200 hover:rounded-md">

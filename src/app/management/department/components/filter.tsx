@@ -1,9 +1,7 @@
 'use client';
 import TextInput from "@/core/components/text-input";
-import { DetailedDepartment, findDepartmentsByFilter } from "@/services/department";
-import { useEffect, useState } from "react";
-import { RiCheckboxIndeterminateFill } from "react-icons/ri";
-import { RiCheckboxIndeterminateLine } from "react-icons/ri";
+import { useEffect, useState, useRef } from "react";
+import { RiCheckboxIndeterminateFill, RiCheckboxIndeterminateLine } from "react-icons/ri";
 
 interface FilterProps {
     isCheck: boolean;
@@ -26,13 +24,33 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
         district: '',
         ward: ''
     });
-    const [sentToTableList, setSentToTableList] = useState<DetailedDepartment[]>([]);
-    const changeData = (key: 'isCheck' | 'name' | 'level' | 'district' | 'ward', value: boolean | string) => {
-        setData({ ...data, [key]: value });
-    };
+
     const [checkAllIcon, setCheckAllIcon] = useState(<RiCheckboxIndeterminateLine className="text-2xl" />);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null); // To store the timeout reference
+
+    const changeData = (key: 'name' | 'level' | 'district' | 'ward', value: string) => {
+        setData(prevData => {
+            const newData = { ...prevData, [key]: value };
+            onTextChange(key, value);
+
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
+
+            timeoutRef.current = setTimeout(() => {
+                console.log(`Final data: ${newData.name}, ${newData.level}, ${newData.district}, ${newData.ward}`);
+                onSubmitted({ name: newData.name, level: newData.level, district: newData.district, ward: newData.ward });
+            }, 3000);
+
+            return newData;
+        });
+    };
+
     const handleKeyDown = (event: React.KeyboardEvent) => {
         if (event.key === 'Enter') {
+            if (timeoutRef.current) {
+                clearTimeout(timeoutRef.current);
+            }
             onSubmitted({ name: data.name, level: data.level, district: data.district, ward: data.ward });
         }
     };
@@ -51,7 +69,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                 <button
                     onClick={() => {
                         onCheckAllChange(!data.isCheck);
-                        changeData('isCheck', !data.isCheck);
+                        setData({ ...data, isCheck: !data.isCheck });
                     }}
                 >
                     {checkAllIcon}
@@ -64,10 +82,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     <TextInput
                         textLabel=""
                         value={data.name}
-                        onChange={(value) => {
-                            setData({ ...data, name: value });
-                            onTextChange('name', data.name);
-                        }}
+                        onChange={(value) => changeData('name', value)}
                         onKeyDown={handleKeyDown}
                     />
                 </div>
@@ -76,10 +91,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     <TextInput
                         textLabel=""
                         value={data.level}
-                        onChange={(value) => {
-                            setData({ ...data, level: value });
-                            onTextChange('level', data.level);
-                        }}
+                        onChange={(value) => changeData('level', value)}
                         onKeyDown={handleKeyDown}
                     />
                 </div>
@@ -88,10 +100,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     <TextInput
                         textLabel=""
                         value={data.district}
-                        onChange={(value) => {
-                            setData({ ...data, district: value });
-                            onTextChange('district', data.district);
-                        }}
+                        onChange={(value) => changeData('district', value)}
                         onKeyDown={handleKeyDown}
                     />
                 </div>
@@ -100,14 +109,10 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     <TextInput
                         textLabel=""
                         value={data.ward}
-                        onChange={(value) => {
-                            setData({ ...data, ward: value });
-                            onTextChange('ward', data.ward);
-                        }}
+                        onChange={(value) => changeData('ward', value)}
                         onKeyDown={handleKeyDown}
                     />
                 </div>
-
             </div>
         </div>
     );

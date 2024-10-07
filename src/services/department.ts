@@ -96,42 +96,6 @@ export const getDepartments = async (): Promise<DetailedDepartment[]> => {
     }
 };
 
-// Khai báo kiểu dữ liệu cho kết quả trả về
-type DepartmentsResult = {
-    pageNumber: number;
-    totalPage: number;
-    departments: DetailedDepartment[];
-} | null; // Hoặc dùng undefined tùy ý
-
-export const getDepartmentsWithPageInfo = async (
-
-): Promise<DepartmentsResult> => {
-    const result = await department.getDepartments();
-    console.log(result.data);
-    if (result.success) {
-        return {
-            pageNumber: result.data.pageNumber,
-            totalPage: result.data.totalPage,
-            departments: result.data.depts.map((dept: any) => ({
-                deptId: dept.deptId,
-                deptName: dept.deptName,
-                level: dept.level,
-                provinceId: dept.provinceId,
-                districtId: dept.districtId,
-                wardId: dept.wardId,
-                provinceName: dept.provinceName,
-                districtName: dept.districtName,
-                wardName: dept.wardName
-            }))
-        };
-    } else {
-        console.error("Error fetching departments:", result.message);
-        return null; // Đảm bảo rằng không có mảng rỗng được trả về
-    }
-};
-
-
-
 export const getDepartmentById = async (deptId: string): Promise<DetailedDepartment> => {
     const result = await department.getDepartmentById(deptId);
     if (result.success) {
@@ -221,6 +185,47 @@ export const findDepartmentsByFilter = async (
     } else {
         console.error("Error filtering department:", result.message);
         return [];
+    }
+}
+
+export const findDepartmentsByFilterWithPageInfo = async (
+    provinceId: string,
+    parentId: string,
+    deptName: string,
+    level: string,
+    wardName: string,
+    districtName: string,
+    pageSize: string,
+    pageNumber: string,
+): Promise<{
+    pageNumber: number,
+    totalPage: number,
+    departments: DetailedDepartment[]
+}> => {
+    const result = await department.findDepartmentsByFilter(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
+    if (result.success) {
+        return {
+            pageNumber: result.data.pageNumber,
+            totalPage: result.data.totalPage,
+            departments: result.data.depts.map((dept: any): DetailedDepartment => ({
+                deptName: dept.deptname,
+                deptId: dept.deptid,
+                level: dept.level,
+                provinceName: dept.provincename,
+                districtName: dept.districtname,
+                wardName: dept.wardname,
+                provinceId: '',
+                districtId: '',
+                wardId: ''
+            }))
+        }
+    } else {
+        console.error("Error filtering department:", result.message);
+        return {
+            pageNumber: 0,
+            totalPage: 0,
+            departments: []
+        }
     }
 }
 

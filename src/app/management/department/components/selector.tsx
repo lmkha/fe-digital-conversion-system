@@ -172,7 +172,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
 
     // Callback to parent component
     useEffect(() => {
-        console.log(`CallBackInfoChange!: ${JSON.stringify(callBackInfo)}`);
+        console.log('Dung co vo han nha thay oi')
         onCallBackInfoChange(callBackInfo);
     }, [callBackInfo])
 
