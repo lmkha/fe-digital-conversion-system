@@ -7,6 +7,7 @@ import Header from './components/header';
 import { ManagementProvider } from '@/contexts/management-context';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
+import Footer from './components/footer';
 
 type LayoutProps = {
     children: ReactNode;
@@ -36,7 +37,7 @@ export default function Layout({ children }: LayoutProps) {
                             {children}
                         </div>
                     </div>
-                    {/* <Footer/> */}
+                    <Footer />
                 </div>
             </div>
         </ManagementProvider>

@@ -1,6 +1,7 @@
 'use client';
 
 import { ActionButtonProps } from '@/app/management/components/button';
+import { FooterProps } from '@/app/management/components/footer';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface ManagementContextType {
@@ -8,6 +9,8 @@ interface ManagementContextType {
     setHeaderButtons: (buttons: ActionButtonProps[]) => void;
     headerTitle: string;
     setHeaderTitle: (title: string) => void;
+    footerInfo: FooterProps;
+    setFooterInfo: (footer: FooterProps) => void;
 }
 
 const ManagementContext = createContext<ManagementContextType | undefined>(undefined);
@@ -15,18 +18,22 @@ const ManagementContext = createContext<ManagementContextType | undefined>(undef
 export const ManagementProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [headerButtons, setHeaderButtons] = useState<ActionButtonProps[]>([]);
     const [headerTitle, setHeaderTitle] = useState<string>('');
-    const [exportDataFooter, setExportDataFooter] = useState<() => void>(() => {
-        console.log('Export data footer not set yet');
+    const [footerInfo, setFooterInfo] = useState<FooterProps>({
+        exportDataFooter: () => { },
+        pageNumber: '',
+        totalPage: '',
+        totalSelected: '',
+        onChangePageNumber: (pageNumber: string) => { },
+        onChangePageSize: (pageSize: string) => { },
     });
 
     return (
-        <ManagementContext.Provider value={{ headerButtons, headerTitle, setHeaderTitle, setHeaderButtons }}>
+        <ManagementContext.Provider value={{ headerButtons, headerTitle, setHeaderTitle, setHeaderButtons, footerInfo, setFooterInfo }}>
             {children}
         </ManagementContext.Provider>
     );
 };
 
-// Custom hook để sử dụng context
 export const useManagement = () => {
     const context = useContext(ManagementContext);
     if (context === undefined) {

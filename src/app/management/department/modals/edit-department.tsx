@@ -83,7 +83,6 @@ export default function EditDepartmentModal({
                         setDistrictList(result);
                     });
                 } else {
-                    console.log('ProvinceId is empty');
                     setDepartment({
                         ...department,
                         districtName: ' -- Chọn quận/huyện -- ',
@@ -212,7 +211,7 @@ export default function EditDepartmentModal({
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">
                                 <TextInput
-                                    textLabel="Tên phòng ban"
+                                    textLabel="Tên phòng ban (*)"
                                     value={department.deptName}
                                     onChange={(value) => {
                                         setDepartment({

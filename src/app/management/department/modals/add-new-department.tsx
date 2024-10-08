@@ -77,7 +77,6 @@ export default function AddNewDepartmentModal({
 
     // Initialize the form with the parent department's information
     useEffect(() => {
-        console.log(`Parent department id: ${parentId}`);
         if (isVisible) {
             if (parentId) {
                 getDepartmentById(parentId).then(result => {
@@ -104,8 +103,6 @@ export default function AddNewDepartmentModal({
                 });
             }
         } else {
-            // Clear the form
-            console.log("Clear the form");
             setDepartment({
                 ...department,
                 deptName: '',
@@ -117,7 +114,6 @@ export default function AddNewDepartmentModal({
                 wardName: ''
             });
         }
-        console.log(`Check provinceId in AddNewDepartmentModal: ${provinceId}`);
     }, [isVisible, parentId, provinceId]);
 
     // Province change
@@ -241,7 +237,7 @@ export default function AddNewDepartmentModal({
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">
                                 <TextInput
-                                    textLabel="Tên phòng ban"
+                                    textLabel="Tên phòng ban (*)"
                                     value={department.deptName}
                                     onChange={(value) => {
                                         setDepartment({
@@ -310,42 +306,11 @@ export default function AddNewDepartmentModal({
                             </div>
                         </div>
                         <div>
-
                         </div>
-                        {/* <div className="flex justify-end h-1/5 w-full">
-                            <ActionButton
-                                type="save"
-                                label="Thêm"
-                                onClick={async () => {
-                                    if (!validateDataBeforeSubmit()) return;
-                                    console.log(`DeptName: ${department.deptName} provinceId: ${department.provinceId} districtId: ${department.districtId} wardId: ${department.wardId}`);
-                                    if (parentDepartment.deptId) {
-                                        const result = await createDepartment({
-                                            deptName: department.deptName,
-                                            wardId: department.wardId,
-                                            districtId: department.districtId,
-                                            provinceId: department.provinceId,
-                                            parentId: parentDepartment.deptId
-                                        });
-                                        onSubmitted(result.success, result.message, result.code);
-                                    } else {
-                                        const result = await createDepartmentLevel1({
-                                            deptName: department.deptName,
-                                            wardId: department.wardId,
-                                            districtId: department.districtId,
-                                            provinceId: department.provinceId
-                                        });
-                                        onSubmitted(result.success, result.message, result.code);
-                                    }
-                                    onClose();
-                                }}
-                            />
-                        </div> */}
                         <div className="flex h-14 w-full bg-white justify-end">
                             <button className="w-40 h-full bg-blue-500 rounded-md text-white hover:bg-white hover:text-blue-600 hover:border-blue-500 border-2"
                                 onClick={async () => {
                                     if (!validateDataBeforeSubmit()) return;
-                                    console.log(`DeptName: ${department.deptName} provinceId: ${department.provinceId} districtId: ${department.districtId} wardId: ${department.wardId}`);
                                     if (parentDepartment.deptId) {
                                         const result = await createDepartment({
                                             deptName: department.deptName,

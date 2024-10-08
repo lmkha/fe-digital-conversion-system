@@ -87,13 +87,17 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
 
     //====================================================
     useEffect(() => {
-        console.log(`ProvinceChange, provinceId: ${province.provinceId}`);
         if (province.provinceId) {
             findDepartmentsByFilter(province.provinceId, '', '', '1', '', '', '', '').then(result => {
                 setDeptLevel1List(result);
             });
         } else {
             setDeptLevel1List([]);
+            setCallBackInfo({
+                ...callBackInfo,
+                provinceId: '',
+                parentId: '',
+            });
         }
         setDeptLevel1({
             deptId: '',
@@ -102,7 +106,6 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
     }, [province.provinceId])
 
     useEffect(() => {
-        console.log(`DeptLevel1Change, deptId: ${deptLevel1.deptId}`);
         if (deptLevel1.deptId) {
             findDepartmentsByFilter(province.provinceId, deptLevel1.deptId, '', '2', '', '', '', '').then(result => {
                 setDeptLevel2List(result);
@@ -117,7 +120,6 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
     }, [deptLevel1.deptId])
 
     useEffect(() => {
-        console.log(`DeptLevel2Change, deptId: ${deptLevel2.deptId}`);
         if (deptLevel2.deptId) {
             findDepartmentsByFilter(province.provinceId, deptLevel2.deptId, '', '3', '', '', '', '').then(result => {
                 setDeptLevel3List(result);
@@ -132,7 +134,6 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
     }, [deptLevel2.deptId])
 
     useEffect(() => {
-        console.log(`DeptLevel3Change, deptId: ${deptLevel3.deptId}`);
         if (deptLevel3.deptId) {
             findDepartmentsByFilter(province.provinceId, deptLevel3.deptId, '', '4', '', '', '', '').then(result => {
                 setDeptLevel4List(result);
@@ -182,7 +183,6 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
 
     // Callback to parent component
     useEffect(() => {
-        console.log('Dung co vo han nha thay oi')
         onCallBackInfoChange(callBackInfo);
     }, [callBackInfo])
 
