@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useState } from 'react';
 import LoginForm from './components/login-form';
+// import LoginForm from './components/login-form-update';
 import LoginImage from './components/login-image';
 import RecoveryOptionChooser from '@/app/forgot-password/choose-method-modal';
 import Toast from '@/core/components/toast';

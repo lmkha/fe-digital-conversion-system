@@ -65,7 +65,7 @@ const MiddleSideNav = () => {
     return (
         <div className="pt-2 text-white">
             <button
-                className="flex w-full items-center justify-between px-2 hover:bg-blue-950"
+                className="flex w-full items-center justify-between px-2 py-3 hover:bg-blue-950"
                 onClick={handleToggle}
             >
                 <div className="flex items-center gap-2">

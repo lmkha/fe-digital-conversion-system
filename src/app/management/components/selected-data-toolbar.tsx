@@ -12,9 +12,9 @@ export default function SelectedDataToolbar({ isShow, totalSelected, onDelete, o
     if (!isShow) return null;
 
     return (
-        <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 
-                        flex justify-between items-center 
-                        h-10 w-1/4 mb-10 shadow-md border border-gray-300 text-black rounded-md"
+        <div className="fixed bottom-14 left-1/2 transform -translate-x-1/2 
+                        flex justify-between items-center w
+                        h-10 w-1/4 shadow-md border border-gray-300 text-black rounded-md"
         >
             <div className="flex w-2/3 h-full gap-2 items-center">
                 <div className="w-1/5 h-full bg-blue-500 flex items-center justify-center rounded-l-md">

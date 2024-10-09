@@ -39,10 +39,11 @@ export default function Page() {
     const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState(false);
     const [checkedItems, setCheckedItems] = useState<CheckedItem[]>([]);
     const [refreshData, setRefreshData] = useState(false);
-    // When user change selector, filter or department list, this state will be updated. Use it to call API to get department list
-    const [pageInfoResult, setPageInfoResult] = useState({
-        pageNumber: '',
-        totalPage: '',
+    const [pageInfo, setPageInfo] = useState({
+        pageNumber: 0,
+        total: 0,
+        start: 0,
+        end: 0,
     });
     const [departmentListInfo, setDepartmentListInfo] = useState<{
         provinceId: string,
@@ -70,17 +71,17 @@ export default function Page() {
         isCheck: boolean;
     }[]>([]);
     const [editingDepartment, setEditingDepartment] = useState<BasicDepartment | null>(null);
-    const [toastInfo, setToastInfo] = useState
-        <{
-            showToast: boolean
-            severity: 'success' | 'error';
-            message: string
-        }>({
-            showToast: false,
-            severity: 'success',
-            message: ''
-        });
+    const [toastInfo, setToastInfo] = useState<{
+        showToast: boolean
+        severity: 'success' | 'error';
+        message: string
+    }>({
+        showToast: false,
+        severity: 'success',
+        message: ''
+    });
 
+    // Update department list and page info
     const updateDepartmentListAndPageInfo = async () => {
         if (departmentListInfo.provinceId) {
             await findDepartmentsByFilterWithPageInfo(
@@ -93,9 +94,11 @@ export default function Page() {
                 departmentListInfo.pageSize,
                 departmentListInfo.pageNumber
             ).then((result) => {
-                setPageInfoResult({
-                    pageNumber: result.pageNumber.toString(),
-                    totalPage: result.totalPage.toString()
+                setPageInfo({
+                    pageNumber: result.pageNumber,
+                    total: result.total,
+                    start: result.start,
+                    end: result.end
                 });
                 setDepartmentList(result.departments.map(item => ({
                     department: item,
@@ -104,17 +107,21 @@ export default function Page() {
             });
         } else {
             setDepartmentList([]);
-            setPageInfoResult({
-                pageNumber: '0',
-                totalPage: '0'
+            setPageInfo({
+                pageNumber: 0,
+                total: 0,
+                start: 0,
+                end: 0
             });
         }
     }
 
+    // Update department list and page info when departmentListInfo changes
     useEffect(() => {
         updateDepartmentListAndPageInfo();
     }, [departmentListInfo]);
 
+    // Set footer info
     useEffect(() => {
         setFooterInfo({
             exportDataFooter: () => {
@@ -151,42 +158,50 @@ export default function Page() {
                     }
                 });
             },
-            pageNumber: pageInfoResult.pageNumber,
-            totalPage: pageInfoResult.totalPage,
-            totalSelected: departmentList.length.toString(),
-            onChangePageNumber: (pageNumber) => {
+            pageNumber: pageInfo.pageNumber,
+            total: pageInfo.total,
+            start: pageInfo.start,
+            end: pageInfo.end,
+            onChangePageNumber: (pageNumber: number) => {
                 setDepartmentListInfo({
                     ...departmentListInfo,
-                    pageNumber: pageNumber
+                    pageNumber: pageNumber.toString()
                 });
             },
-            onChangePageSize: (pageSize) => {
+            onChangePageSize: (pageSize: number) => {
                 setDepartmentListInfo({
                     ...departmentListInfo,
-                    pageSize: pageSize,
-                    pageNumber: '1'
+                    pageSize: pageSize.toString()
                 });
             }
         });
     }, [departmentList]);
 
 
-
     // Set header buttons
     useEffect(() => {
+        console.log('departmentListInfo.provinceId:', departmentListInfo.provinceId);
         setHeaderTitle('Phòng ban');
         setHeaderButtons([
             {
                 type: 'add',
                 label: 'Thêm phòng ban',
                 onClick: () => {
-                    setShowAddNewDepartmentModal(true)
+                    if (!departmentListInfo.provinceId) {
+                        setToastInfo({
+                            showToast: true,
+                            severity: 'error',
+                            message: 'Vui lòng chọn tỉnh/thành phố trước khi thêm phòng ban!'
+                        });
+                    } else {
+                        setShowAddNewDepartmentModal(true)
+                    }
                 }
             }
         ]);
-    }, [setHeaderTitle, setHeaderButtons]);
+    }, [setHeaderTitle, setHeaderButtons, departmentListInfo.provinceId]);
 
-    // Show selected data toolbar when selected data is not empty
+    // Show or hide selected data toolbar
     useEffect(() => {
         if (checkedItems.length > 0) {
             setShowSelectedDataToolbar(true);
@@ -197,7 +212,7 @@ export default function Page() {
 
     return (
         <Fragment>
-            <div className="flex-col text-black">
+            <div className="flex-col text-black mt-4">
                 <Selector
                     onChange={(provinceId, provinceName, parentId) => {
                         setSelectorData({
@@ -235,7 +250,6 @@ export default function Page() {
                         setFilterData({ ...filterData, [key]: value });
                     }}
                     onSubmitted={(filterData) => {
-                        console.log(`Filter data, name: ${filterData.name}, level: ${filterData.level}, district: ${filterData.district}, ward: ${filterData.ward}`);
                         if (!departmentListInfo.provinceId) {
                             setToastInfo({
                                 showToast: true,
@@ -253,7 +267,9 @@ export default function Page() {
                         });
                     }}
                 />
-                <div className="flex-1 w-full">
+
+                {/* TableList */}
+                <div className="flex-1 w-full max-h-[480px] overflow-y-auto">
                     {departmentList.map((item, index) => (
                         <DepartmentItem
                             id={item.department.deptId}

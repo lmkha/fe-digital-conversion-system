@@ -199,14 +199,18 @@ export const findDepartmentsByFilterWithPageInfo = async (
     pageNumber: string,
 ): Promise<{
     pageNumber: number,
-    totalPage: number,
+    total: number,
+    start: number,
+    end: number,
     departments: DetailedDepartment[]
 }> => {
     const result = await department.findDepartmentsByFilter(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
     if (result.success) {
         return {
             pageNumber: result.data.pageNumber,
-            totalPage: result.data.totalPage,
+            total: result.data.total,
+            start: result.data.start,
+            end: result.data.end,
             departments: result.data.depts.map((dept: any): DetailedDepartment => ({
                 deptName: dept.deptname,
                 deptId: dept.deptid,
@@ -223,7 +227,9 @@ export const findDepartmentsByFilterWithPageInfo = async (
         console.error("Error filtering department:", result.message);
         return {
             pageNumber: 0,
-            totalPage: 0,
+            total: 0,
+            start: 0,
+            end: 0,
             departments: []
         }
     }

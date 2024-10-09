@@ -18,9 +18,9 @@ export default function ActionButton({ type, label, onClick }: ActionButtonProps
     }
     return (
         <div>
-            <button className={`flex justify-center items-center w-full px-2 h-full rounded-lg gap-3 
-            ${type === 'import' ? 'text-blue-700 hover:text-white bg-white hover:bg-blue-500 border-2 '
-                    : 'text-white hover:text-blue-700 bg-blue-500 hover:bg-white hover:border-2 hover:border-blue-500'} 
+            <button className={`flex justify-center items-center w-full px-6 h-10 rounded-lg gap-3 
+            ${type === 'import' ? 'text-blue-800 hover:text-white bg-white hover:bg-blue-500 border-2 '
+                    : 'text-white hover:text-blue-800 bg-checkVarSecondary hover:bg-white hover:border-2 hover:border-blue-500'} 
                     transition-all duration-100`}
                 type="button"
                 onClick={onClick}

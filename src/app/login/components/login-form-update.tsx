@@ -7,11 +7,13 @@ import isValidPassword from "@/core/logic/password-validator";
 import department from "@/api/department";
 import Dropdown from "@/core/components/dropdown";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import ComboBox from "@/core/components/client-combobox";
+import DeptCombobox from "@/core/components/client-combobox-dept";
 
 interface Department {
     deptId: string;
     deptName: string;
+    provinceName: string;
+    districtName: string;
 }
 
 interface DataToSubmit {
@@ -35,12 +37,11 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
             const result = await department.getDepartments();
             if (result.success) {
                 const data = result.data;
-                setDepartments(data);
+                console.log('Fetched departments:', data);
             } else {
                 console.error("Error fetching departments:", result.message);
             }
         };
-
         fetchDepartments();
     }, []);
 
@@ -90,12 +91,22 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
             <h2 className="text-center text-xl font-bold text-gray-800 mb-4">Hệ thống đánh giá chuyển đổi số DTI</h2>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-                <Dropdown
-                    label="Đơn vị *"
-                    options={departments.map(dept => ({ value: dept.deptId, name: dept.deptName }))}
-                    alternativeOption={{ value: '', name: 'Chọn đơn vị' }}
-                    onChange={(department) => handleChange('unit', { deptId: department.value, deptName: department.name })}
-                />
+                {departments &&
+                    <DeptCombobox
+                        customOptions={departments.map(dept => ({
+                            name: dept.deptName,
+                            provinceName: dept.provinceName,
+                            districtName: dept.districtName,
+                            id: dept.deptId
+                        }))}
+                        onChange={(department) => handleChange('unit', {
+                            deptId: department.id,
+                            deptName: department.name,
+                            provinceName: department.provinceName,
+                            districtName: department.districtName
+                        })}
+                    />
+                }
 
                 <TextInput
                     textLabel="Tên tài khoản *"

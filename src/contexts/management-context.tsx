@@ -20,11 +20,12 @@ export const ManagementProvider: React.FC<{ children: ReactNode }> = ({ children
     const [headerTitle, setHeaderTitle] = useState<string>('');
     const [footerInfo, setFooterInfo] = useState<FooterProps>({
         exportDataFooter: () => { },
-        pageNumber: '',
-        totalPage: '',
-        totalSelected: '',
-        onChangePageNumber: (pageNumber: string) => { },
-        onChangePageSize: (pageSize: string) => { },
+        pageNumber: 0,
+        total: 0,
+        start: 0,
+        end: 0,
+        onChangePageNumber: (pageNumber: number) => { },
+        onChangePageSize: (pageSize: number) => { },
     });
 
     return (
