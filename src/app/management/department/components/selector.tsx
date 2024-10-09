@@ -1,5 +1,6 @@
 'use client';
 
+import Combobox from "@/core/components/combobox";
 import Dropdown from "@/core/components/dropdown";
 import { BasicDepartment, DetailedDepartment, findDepartmentsByFilter, getProvinces, Province } from '@/services/department';
 import { useEffect, useState } from "react";
@@ -187,81 +188,71 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
     }, [callBackInfo])
 
     return (
-        <div className="flex justify-between items-center w-full h-11 mt-6 pb-4 bg-white border-b-1 text-black">
-            <Dropdown
+        <div className="flex justify-between items-center w-full h-10 mt-6 pb-4 bg-white border-b-1 text-black gap-2">
+            <Combobox
+                className="w-1/3"
+                value={{ id: province.provinceId, name: province.provinceName }}
                 label="Tỉnh/Thành phố *"
-                options={provinceList.map(province => ({ value: province.provinceId, name: province.provinceName }))}
-                alternativeOption={{
-                    name: ' -- Chọn tỉnh/thành phố --',
-                    value: 'none'
-                }}
+                options={provinceList.map(province => ({ id: province.provinceId, name: province.provinceName }))}
                 onChange={(provinceOption) => {
                     setProvince({
-                        provinceId: provinceOption.value,
+                        provinceId: provinceOption.id,
                         provinceName: provinceOption.name
                     });
-                    onChange(provinceOption.value, provinceOption.name, '');
+                    onChange(provinceOption.id, provinceOption.name, '');
                 }}
             />
 
-            <Dropdown
-                label=""
-                options={deptLevel1List.map(department => ({ value: department.deptId, name: department.deptName }))}
-                alternativeOption={{
-                    name: ' -- Phòng ban cấp 1 --',
-                    value: ''
-                }}
+            <Combobox
+                className="w-1/4"
+                value={{ id: deptLevel1.deptId, name: deptLevel1.deptName }}
+                label="Phòng ban cấp 1 *"
+                options={deptLevel1List.map(department => ({ id: department.deptId, name: department.deptName }))}
                 onChange={(department) => {
                     setDeptLevel1({
-                        deptId: department.value,
+                        deptId: department.id,
                         deptName: department.name
                     });
-                    onChange(province.provinceId, province.provinceName, department.value);
+                    onChange(province.provinceId, province.provinceName, department.id);
                 }}
             />
 
-            <Dropdown
-                label=""
-                options={deptLevel2List.map(department => ({ value: department.deptId, name: department.deptName }))}
-                alternativeOption={{
-                    name: ' -- Phòng ban cấp 2 --',
-                    value: ''
-                }}
+            <Combobox
+                className="w-1/4"
+                value={{ id: deptLevel2.deptId, name: deptLevel2.deptName }}
+                label="Phòng ban cấp 2 *"
+                options={deptLevel2List.map(department => ({ id: department.deptId, name: department.deptName }))}
                 onChange={(department) => {
                     setDeptLevel2({
-                        deptId: department.value,
+                        deptId: department.id,
                         deptName: department.name
                     });
-                    onChange(province.provinceId, province.provinceName, department.value);
+                    onChange(province.provinceId, province.provinceName, department.id);
                 }}
             />
 
-            <Dropdown
-                label=""
-                options={deptLevel3List.map(department => ({ value: department.deptId, name: department.deptName }))}
-                alternativeOption={{
-                    name: ' -- Phòng ban cấp 3 --',
-                    value: ''
-                }}
+            <Combobox
+                className="w-1/4"
+                value={{ id: deptLevel3.deptId, name: deptLevel3.deptName }}
+                label="Phòng ban cấp 3 *"
+                options={deptLevel3List.map(department => ({ id: department.deptId, name: department.deptName }))}
                 onChange={(department) => {
                     setDeptLevel3({
-                        deptId: department.value,
+                        deptId: department.id,
                         deptName: department.name
                     });
-                    onChange(province.provinceId, province.provinceName, department.value);
+                    onChange(province.provinceId, province.provinceName, department.id);
                 }}
             />
 
-            <Dropdown
-                label=""
-                options={deptLevel4List.map(department => ({ value: department.deptId, name: department.deptName }))}
-                alternativeOption={{
-                    name: ' -- Phòng ban cấp 4 --',
-                    value: ''
-                }}
+            <Combobox
+                className="w-1/4"
+                value={{ id: deptLevel4.deptId, name: deptLevel4.deptName }}
+                label="Phòng ban cấp 4 *"
+                options={deptLevel4List.map(department => ({ id: department.deptId, name: department.deptName }))}
                 onChange={(department) => {
                     setDeptLevel4({
-                        deptId: department.value,
+                        deptId: department.id,
                         deptName: department.name
                     });
                 }}

@@ -89,6 +89,7 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
 
             <form className="space-y-6" onSubmit={handleSubmit}>
                 <Combobox
+                    value={{ id: formData.unit.deptId, name: formData.unit.deptName }}
                     className="w-full"
                     label="Đơn vị *"
                     options={departments.map(dept => ({ id: dept.deptId, name: dept.deptName }))}

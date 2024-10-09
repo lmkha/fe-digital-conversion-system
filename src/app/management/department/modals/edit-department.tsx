@@ -1,10 +1,7 @@
 'use client';
 
-import { Fragment, use, useEffect, useRef, useState } from "react";
-import ActionButton from "../../components/button";
-import Dropdown from "@/core/components/dropdown";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { MdCancelPresentation } from "react-icons/md";
-import TextInput from "@/core/components/text-input";
 import {
     District,
     Ward,
@@ -13,11 +10,12 @@ import {
     getDistricts,
     getWards,
     getDepartmentById,
-    createDepartment,
     updateDepartment,
     DetailedDepartment
 } from '@/services/department';
 import Toast from "@/core/components/toast";
+import Combobox from "@/core/components/combobox";
+import TextField from '@mui/material/TextField';
 
 export interface EditDepartmentModalProps {
     isVisible: boolean;
@@ -49,17 +47,17 @@ export default function EditDepartmentModal({
         districtName: '',
         wardName: ''
     });
-    const [toastInfo, setToastInfo] = useState
-        <{
-            showToast: boolean
-            severity: 'success' | 'error';
-            message: string
-        }>({
-            showToast: false,
-            severity: 'success',
-            message: ''
-        });
+    const [toastInfo, setToastInfo] = useState<{
+        showToast: boolean
+        severity: 'success' | 'error';
+        message: string
+    }>({
+        showToast: false,
+        severity: 'success',
+        message: ''
+    });
 
+    // Fetch department data when modal is visible
     useEffect(() => {
         const fetchDepartment = async () => {
             if (isVisible && deptId) {
@@ -74,7 +72,7 @@ export default function EditDepartmentModal({
         fetchDepartment();
     }, [isVisible, deptId]);
 
-    // Province change
+    // Fetch districts when province changes
     useEffect(() => {
         const fetchDistricts = async () => {
             try {
@@ -85,11 +83,12 @@ export default function EditDepartmentModal({
                 } else {
                     setDepartment({
                         ...department,
-                        districtName: ' -- Chọn quận/huyện -- ',
+                        districtName: '',
                         districtId: '',
-                        wardName: ' -- Chọn phường/xã -- ',
+                        wardName: '',
                         wardId: '',
                     });
+                    setDistrictList([]);
                     setWardList([]);
                 }
             } catch (error) {
@@ -99,7 +98,7 @@ export default function EditDepartmentModal({
         fetchDistricts();
     }, [department.provinceId]);
 
-    // District change
+    // Fetch wards when district changes
     useEffect(() => {
         const fetchWards = async () => {
             try {
@@ -107,19 +106,22 @@ export default function EditDepartmentModal({
                     await getWards(department.districtId).then(result => {
                         setWardList(result);
                     });
+                } else {
+                    setDepartment({
+                        ...department,
+                        wardName: '',
+                        wardId: '',
+                    });
+                    setWardList([]);
                 }
             } catch (error) {
                 console.error("Error fetching wards:");
             }
         }
-        setDepartment({
-            ...department,
-            wardName: ' -- Chọn phường/xã -- ',
-            wardId: '',
-        });
         fetchWards();
     }, [department.districtId]);
 
+    // Validate data before submit
     const validateDataBeforeSubmit = () => {
         // Trim deptName and check if it's empty or over 30 characters
         if (department.deptName.trim() === '') {
@@ -167,23 +169,23 @@ export default function EditDepartmentModal({
     }
 
     // Handle click outside
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (ref.current && !ref.current.contains(event.target as Node)) {
-                onClose();
-            }
-        }
+    // useEffect(() => {
+    //     function handleClickOutside(event: MouseEvent) {
+    //         if (ref.current && !ref.current.contains(event.target as Node)) {
+    //             onClose();
+    //         }
+    //     }
 
-        if (isVisible) {
-            document.addEventListener('mousedown', handleClickOutside);
-        } else {
-            document.removeEventListener('mousedown', handleClickOutside);
-        }
+    //     if (isVisible) {
+    //         document.addEventListener('mousedown', handleClickOutside);
+    //     } else {
+    //         document.removeEventListener('mousedown', handleClickOutside);
+    //     }
 
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
-        };
-    }, [isVisible, onClose]);
+    //     return () => {
+    //         document.removeEventListener('mousedown', handleClickOutside);
+    //     };
+    // }, [isVisible, onClose]);
 
     if (!isVisible) return null;
 
@@ -198,7 +200,7 @@ export default function EditDepartmentModal({
                 <div className="fixed inset-0 z-50 flex items-center justify-center text-black">
                     <div
                         ref={ref}
-                        className="flex-col bg-white p-6 rounded-lg shadow-lg w-1/2 h-1/3" // Tailwind classes for width and height
+                        className="flex-col bg-white p-6 rounded-lg shadow-lg w-1/2 h-fit"
                     >
                         <div className="flex justify-between items-start">
                             <h1 className="text-black text-xl font-bold mb-4">{label}</h1>
@@ -208,71 +210,66 @@ export default function EditDepartmentModal({
                                 {<MdCancelPresentation className="text-black text-3xl hover:text-red-500" />}
                             </button>
                         </div>
+
+                        {/* First line, contain Department name TextFiled and province combobox */}
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">
-                                <TextInput
-                                    textLabel="Tên phòng ban (*)"
+                                <TextField
+                                    className="w-full"
+                                    label="Tên phòng ban (*)"
                                     value={department.deptName}
-                                    onChange={(value) => {
+                                    onChange={(e) => {
                                         setDepartment({
                                             ...department,
-                                            deptName: value
+                                            deptName: e.target.value
                                         });
                                     }}
                                 />
                             </div>
                             <div className="w-1/2">
-                                <Dropdown
+                                <Combobox
+                                    value={{ id: department.provinceId, name: department.provinceName }}
+                                    className="w-full"
                                     label="Tỉnh / Thành phố"
-                                    options={provinceList.map(province => ({ value: province.provinceId, name: province.provinceName }))}
-                                    alternativeOption={{
-                                        name: department.provinceName,
-                                        value: department.provinceId
-                                    }}
+                                    options={provinceList.map(province => ({ id: province.provinceId, name: province.provinceName }))}
                                     onChange={(province) => {
                                         setDepartment({
                                             ...department,
-                                            provinceId: province.value,
+                                            provinceId: province.id,
                                             provinceName: province.name
                                         });
                                     }}
                                 />
                             </div>
                         </div>
+
+                        {/* Second line, contain District combobox and Ward combobox */}
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">
-                                <Dropdown
+                                <Combobox
+                                    value={{ id: department.districtId, name: department.districtName }}
+                                    className="w-full"
                                     label="Quận / Huyện"
-                                    options={districtList.map(district => ({ value: district.districtId, name: district.districtName }))}
-                                    alternativeOption={
-                                        {
-                                            name: department.districtName,
-                                            value: department.districtId
-                                        }
-                                    }
+                                    options={districtList.map(district => ({ id: district.districtId, name: district.districtName }))}
                                     onChange={(district) => {
                                         setDepartment({
                                             ...department,
-                                            districtId: district.value,
+                                            districtId: district.id,
                                             districtName: district.name
                                         });
                                     }}
                                 />
                             </div>
                             <div className="w-1/2">
-                                <Dropdown
+                                <Combobox
+                                    value={{ id: department.wardId, name: department.wardName }}
+                                    className="w-full"
                                     label="Phường / Xã"
-                                    options={wardList.map(ward => ({ value: ward.wardId, name: ward.wardName }))}
-                                    alternativeOption={
-                                        {
-                                            name: department.wardName,
-                                            value: department.wardId
-                                        }
-                                    }
+                                    options={wardList.map(ward => ({ id: ward.wardId, name: ward.wardName }))}
                                     onChange={(ward) => {
                                         setDepartment({
                                             ...department,
-                                            wardId: ward.value,
+                                            wardId: ward.id,
                                             wardName: ward.name
                                         });
                                     }}
@@ -283,11 +280,22 @@ export default function EditDepartmentModal({
                         </div>
 
                         <div className="flex h-14 w-full bg-white justify-end">
-                            <button className="w-20 h-full bg-blue-500 rounded-md text-white hover:bg-white hover:text-blue-600 hover:border-blue-500 border-2"
+                            <button className="w-20 h-full bg-checkVarSecondary rounded-lg text-white hover:bg-white hover:text-blue-600 hover:border-blue-500 border-2"
                                 onClick={async () => {
                                     if (!validateDataBeforeSubmit()) return;
                                     const result = await updateDepartment(department);
                                     onSubmitted(result.success, result.message, result.code);
+                                    setDepartment({
+                                        deptId: '',
+                                        deptName: '',
+                                        level: 0,
+                                        provinceId: '',
+                                        districtId: '',
+                                        wardId: '',
+                                        provinceName: '',
+                                        districtName: '',
+                                        wardName: ''
+                                    });
                                     onClose();
                                 }}
                             >

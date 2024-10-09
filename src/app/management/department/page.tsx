@@ -171,6 +171,7 @@ export default function Page() {
             onChangePageSize: (pageSize: number) => {
                 setDepartmentListInfo({
                     ...departmentListInfo,
+                    pageNumber: '1',
                     pageSize: pageSize.toString()
                 });
             }
