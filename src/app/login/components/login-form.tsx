@@ -7,7 +7,7 @@ import isValidPassword from "@/core/logic/password-validator";
 import department from "@/api/department";
 import Dropdown from "@/core/components/dropdown";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import ComboBox from "@/core/components/client-combobox";
+import ComboBox from "@/core/components/combobox";
 
 interface Department {
     deptId: string;
