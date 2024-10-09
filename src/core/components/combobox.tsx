@@ -41,9 +41,6 @@ export default function Combobox({ label, options, defaultOption, onChange, clas
 
     return (
         <div>
-            <div>{`value: ${value !== null ? `'${value.name}'` : 'null'}`}</div>
-            <div>{`inputValue: '${inputValue}'`}</div>
-            <br />
             <Autocomplete
                 className={className}
                 value={value}

@@ -1,13 +1,11 @@
 import { useEffect, useState } from "react";
-import LoginButton from "./login-button";
 import TextInput from "@/core/components/text-input";
 import PasswordInput from "./password-input";
 import Image from "next/image";
 import isValidPassword from "@/core/logic/password-validator";
 import department from "@/api/department";
-import Dropdown from "@/core/components/dropdown";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
-import ComboBox from "@/core/components/combobox";
+import Combobox from "@/core/components/combobox";
 
 interface Department {
     deptId: string;
@@ -90,11 +88,11 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
             <h2 className="text-center text-xl font-bold text-gray-800 mb-4">Hệ thống đánh giá chuyển đổi số DTI</h2>
 
             <form className="space-y-6" onSubmit={handleSubmit}>
-                <Dropdown
+                <Combobox
+                    className="w-full"
                     label="Đơn vị *"
-                    options={departments.map(dept => ({ value: dept.deptId, name: dept.deptName }))}
-                    alternativeOption={{ value: '', name: 'Chọn đơn vị' }}
-                    onChange={(department) => handleChange('unit', { deptId: department.value, deptName: department.name })}
+                    options={departments.map(dept => ({ id: dept.deptId, name: dept.deptName }))}
+                    onChange={(department) => handleChange('unit', { deptId: department.id, deptName: department.name })}
                 />
 
                 <TextInput
