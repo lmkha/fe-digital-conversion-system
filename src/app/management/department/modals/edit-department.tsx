@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { Fragment, useEffect, useRef, useState } from "react";
@@ -168,24 +169,24 @@ export default function EditDepartmentModal({
         return true;
     }
 
-    // Handle click outside
-    // useEffect(() => {
-    //     function handleClickOutside(event: MouseEvent) {
-    //         if (ref.current && !ref.current.contains(event.target as Node)) {
-    //             onClose();
-    //         }
-    //     }
+    // Handle press ESC key to close modal
+    useEffect(() => {
+        const handleEscKey = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                onClose();
+            }
+        };
 
-    //     if (isVisible) {
-    //         document.addEventListener('mousedown', handleClickOutside);
-    //     } else {
-    //         document.removeEventListener('mousedown', handleClickOutside);
-    //     }
+        if (isVisible) {
+            document.addEventListener('keydown', handleEscKey);
+        } else {
+            document.removeEventListener('keydown', handleEscKey);
+        }
 
-    //     return () => {
-    //         document.removeEventListener('mousedown', handleClickOutside);
-    //     };
-    // }, [isVisible, onClose]);
+        return () => {
+            document.removeEventListener('keydown', handleEscKey);
+        };
+    }, [isVisible, onClose]);
 
     if (!isVisible) return null;
 

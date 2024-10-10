@@ -1,9 +1,9 @@
 'use client';
 
-import { GrFormPrevious } from "react-icons/gr";
-import { GrFormNext } from "react-icons/gr";
 import { TfiImport } from "react-icons/tfi";
 import { useManagement } from "@/contexts/management-context";
+import TablePagination from '@mui/material/TablePagination';
+import React from "react";
 
 export interface FooterProps {
     exportDataFooter: () => void;
@@ -17,6 +17,7 @@ export interface FooterProps {
 
 export default function Footer() {
     const { footerInfo } = useManagement();
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
     return (
         <div className='relative z-10 flex justify-between items-center h-fit mx-2 rounded-md bg-white shadow-md    mb-4 text-black'>
             <button className="flex justify-center items-center gap-2 px-3 py-1 ml-2
@@ -30,48 +31,22 @@ export default function Footer() {
             </button>
 
             <div className="mr-2 flex gap-4">
-                <select className="flex justify-center items-center gap-0.5 px-1 rounded-md bg-gray-200"
-                    title="itemsOfPage"
-                    defaultValue="10"
-                    onChange={(e) => {
-                        const selectedValue = parseInt(e.target.value);
-                        footerInfo.onChangePageSize(selectedValue);
+                <TablePagination
+                    component="div"
+                    count={footerInfo.total}
+                    page={footerInfo.pageNumber - 1}
+                    onPageChange={(event, newPage) => {
+                        footerInfo.onChangePageNumber(newPage + 1);
                     }}
-                >
-                    <option value="5">5</option>
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                </select>
-
-                <h1>{`${footerInfo.start}-${footerInfo.end} of ${footerInfo.total}`}</h1>
-                <div className="flex gap-2">
-                    <div className="flex flex-col w-6 h-6 justify-center items-center 
-                                    text-gray-500 hover:text-black hover:bg-gray-200 hover:rounded-md">
-                        <button
-                            onClick={() => {
-                                const newPageNumber = footerInfo.pageNumber - 1;
-                                if (newPageNumber > 0) {
-                                    footerInfo.onChangePageNumber(newPageNumber);
-                                }
-                            }}
-                        >
-                            {<GrFormPrevious />}
-                        </button>
-                    </div>
-                    <div className="flex flex-col w-6 h-6 justify-center items-center 
-                                text-gray-500 hover:text-black hover:bg-gray-200 hover:rounded-md">
-                        <button
-                            onClick={() => {
-                                if (footerInfo.end < footerInfo.total) {
-                                    const newPageNumber = footerInfo.pageNumber + 1;
-                                    footerInfo.onChangePageNumber(newPageNumber);
-                                }
-                            }}
-                        >
-                            {<GrFormNext />}
-                        </button>
-                    </div>
-                </div>
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={(event) => {
+                        const selectedValue = parseInt(event.target.value);
+                        footerInfo.onChangePageSize(selectedValue);
+                        setRowsPerPage(selectedValue);
+                    }}
+                    labelRowsPerPage=''
+                    rowsPerPageOptions={[5, 10, 20]}
+                />
             </div>
         </div>
     );

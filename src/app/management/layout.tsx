@@ -32,7 +32,7 @@ export default function Layout({ children }: LayoutProps) {
                 <div className='flex-1 flex flex-col'>
                     <Header />
                     {/* Ensure this div takes up all remaining space */}
-                    <div className='flex-1 bg-white mx-2 pt-4'>
+                    <div className='flex-1 bg-white mx-2 pt-3'>
                         <div className='m-2'>
                             {children}
                         </div>

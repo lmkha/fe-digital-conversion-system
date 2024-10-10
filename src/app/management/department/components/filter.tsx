@@ -64,7 +64,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
     }, [data]);
 
     return (
-        <div className="flex bg-gray-200 p-2 rounded-t-md text-black">
+        <div className="flex bg-gray-200 p-2 mt-3 rounded-t-md text-black">
             <div className="flex items-start gap-1 mr-5">
                 <button
                     onClick={() => {
@@ -74,11 +74,11 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                 >
                     {checkAllIcon}
                 </button>
-                <h1 className="font-bold">Chọn</h1>
+                <h1 className="font-semibold">Chọn</h1>
             </div>
             <div className="flex-1 flex items-center gap-2 h-auto">
                 <div className="flex-col flex-1">
-                    <h1 className="font-bold">Tên phòng ban</h1>
+                    <h1 className="font-semibold">Tên phòng ban</h1>
                     <TextInput
                         textLabel=""
                         value={data.name}
@@ -87,7 +87,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     />
                 </div>
                 <div className="flex-col w-24">
-                    <h1 className="font-bold">Cấp</h1>
+                    <h1 className="font-semibold">Cấp</h1>
                     <TextInput
                         textLabel=""
                         value={data.level}
@@ -96,7 +96,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     />
                 </div>
                 <div className="flex-col w-48">
-                    <h1 className="font-bold">Quận / huyện</h1>
+                    <h1 className="font-semibold">Quận / huyện</h1>
                     <TextInput
                         textLabel=""
                         value={data.district}
@@ -105,7 +105,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     />
                 </div>
                 <div className="flex-col w-48">
-                    <h1 className="font-bold">Phường / Xã</h1>
+                    <h1 className="font-semibold">Phường / Xã</h1>
                     <TextInput
                         textLabel=""
                         value={data.ward}

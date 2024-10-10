@@ -34,7 +34,12 @@ export default function Combobox({ label, value, options, onChange, className }:
             options={options}
             getOptionLabel={(option) => option.name}
             sx={{ width: 300 }}
-            renderInput={(params) => <TextField {...params} label={label} />}
+            renderInput={(params) =>
+                <TextField
+                    {...params}
+                    label={label}
+                />
+            }
         />
     );
 }

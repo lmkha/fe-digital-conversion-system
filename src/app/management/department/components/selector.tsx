@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import Combobox from "@/core/components/combobox";
@@ -188,9 +189,9 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
     }, [callBackInfo])
 
     return (
-        <div className="flex justify-between items-center w-full h-10 mt-6 pb-4 bg-white border-b-1 text-black gap-2">
+        <div className="flex justify-between items-center w-full h-fit pb-4 bg-white border-b-1 text-black gap-2">
             <Combobox
-                className="w-1/3"
+                className="w-1/3 h-10"
                 value={{ id: province.provinceId, name: province.provinceName }}
                 label="Tỉnh/Thành phố *"
                 options={provinceList.map(province => ({ id: province.provinceId, name: province.provinceName }))}
@@ -204,7 +205,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             />
 
             <Combobox
-                className="w-1/4"
+                className="w-1/3 h-10"
                 value={{ id: deptLevel1.deptId, name: deptLevel1.deptName }}
                 label="Phòng ban cấp 1 *"
                 options={deptLevel1List.map(department => ({ id: department.deptId, name: department.deptName }))}
@@ -218,7 +219,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             />
 
             <Combobox
-                className="w-1/4"
+                className="w-1/3 h-10"
                 value={{ id: deptLevel2.deptId, name: deptLevel2.deptName }}
                 label="Phòng ban cấp 2 *"
                 options={deptLevel2List.map(department => ({ id: department.deptId, name: department.deptName }))}
@@ -232,7 +233,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             />
 
             <Combobox
-                className="w-1/4"
+                className="w-1/3 h-10"
                 value={{ id: deptLevel3.deptId, name: deptLevel3.deptName }}
                 label="Phòng ban cấp 3 *"
                 options={deptLevel3List.map(department => ({ id: department.deptId, name: department.deptName }))}
@@ -246,7 +247,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             />
 
             <Combobox
-                className="w-1/4"
+                className="w-1/3 h-10"
                 value={{ id: deptLevel4.deptId, name: deptLevel4.deptName }}
                 label="Phòng ban cấp 4 *"
                 options={deptLevel4List.map(department => ({ id: department.deptId, name: department.deptName }))}

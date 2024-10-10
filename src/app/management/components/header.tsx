@@ -7,7 +7,7 @@ export default function Header() {
     const { headerButtons, headerTitle } = useManagement();
 
     return (
-        <div className='relative z-10 flex justify-between items-center h-12 mx-2 rounded-md bg-white shadow-md -mb-2 text-black'>
+        <div className='relative z-10 flex justify-between items-center h-14 mx-2 rounded-md bg-white shadow-md -mb-2 text-black'>
             <h1 className="pl-4 font-bold">{headerTitle}</h1>
             <HeaderActionPanel headerButtons={headerButtons} />
         </div>
