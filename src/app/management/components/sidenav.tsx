@@ -47,7 +47,7 @@ const MiddleSideNav = () => {
         { route: 'user', name: 'Người dùng' },
         { route: 'report-configuration', name: 'Cấu hình báo cáo' },
     ]
-    const [isOpen, setIsOpen] = useState(true);
+    const [activeLink, setActiveLink] = useState<string | null>(null); const [isOpen, setIsOpen] = useState(true);
     const handleToggle = () => {
         setIsOpen(!isOpen);
     };
@@ -62,10 +62,14 @@ const MiddleSideNav = () => {
 
     }, [isOpen]);
 
+    const handleLinkClick = (route: string) => {
+        setActiveLink(route);
+    };
+
     return (
         <div className="pt-2 text-white">
             <button
-                className="flex w-full items-center justify-between px-2 py-3 hover:bg-blue-950"
+                className="flex w-full items-center justify-between px-2 py-3 hover:bg-blue-800"
                 onClick={handleToggle}
             >
                 <div className="flex items-center gap-2">
@@ -78,7 +82,12 @@ const MiddleSideNav = () => {
                 <ul className="ml-6 max-h-screen">
                     {list.map((item, index) => (
                         <li key={index}>
-                            <Link href={`/management/${item.route}`} className="flex items-center hover:bg-blue-950 py-3">
+                            <Link
+                                href={`/management/${item.route}`}
+                                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === item.route ? "bg-blue-800" : ""
+                                    }`}
+                                onClick={() => handleLinkClick(item.route)}
+                            >
                                 <LuDot />
                                 {item.name}
                             </Link>

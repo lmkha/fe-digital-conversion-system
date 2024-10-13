@@ -19,6 +19,7 @@ export const ManagementProvider: React.FC<{ children: ReactNode }> = ({ children
     const [headerButtons, setHeaderButtons] = useState<ActionButtonProps[]>([]);
     const [headerTitle, setHeaderTitle] = useState<string>('');
     const [footerInfo, setFooterInfo] = useState<FooterProps>({
+        hasExportDataFooter: true,
         exportDataFooter: () => { },
         pageNumber: 0,
         total: 0,

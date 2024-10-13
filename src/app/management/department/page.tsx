@@ -125,6 +125,7 @@ export default function Page() {
     // Set footer info
     useEffect(() => {
         setFooterInfo({
+            hasExportDataFooter: true,
             exportDataFooter: () => {
                 if (!departmentListInfo.provinceId) {
                     setToastInfo({
