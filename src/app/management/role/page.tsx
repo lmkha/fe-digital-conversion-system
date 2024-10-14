@@ -7,7 +7,7 @@ import Selector from "./components/selector";
 import { AddRoleModal } from "./modals/add-role-modal";
 import Filter from "./components/filter";
 import RoleItem from "./components/role-item";
-import { deleteRole, getRoles, getRolesByFilter } from "@/services/role";
+import { deleteRole, downloadExcelFile, getRoles, getRolesByFilter } from "@/services/role";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
 import { EditRoleModal } from "./modals/edit-role-modal";
 
@@ -148,10 +148,31 @@ export default function Page() {
 
     // Set footer
     useEffect(() => {
+        console.log(`Data to download: ${selectorData.deptId} - ${paginationInfoToRender.pageNumber} - ${paginationInfoToRender.pageSize}`);
         setFooterInfo({
             hasExportDataFooter: true,
             exportDataFooter: () => {
-
+                downloadExcelFile(
+                    filterData.permissionCode,
+                    filterData.permissionName,
+                    selectorData.deptId,
+                    paginationInfoToGetData.pageNumber,
+                    paginationInfoToGetData.pageSize
+                ).then((result) => {
+                    if (result.success) {
+                        setToastInfo({
+                            showToast: true,
+                            severity: 'success',
+                            message: result.message
+                        });
+                    } else {
+                        setToastInfo({
+                            showToast: true,
+                            severity: 'error',
+                            message: result.message
+                        });
+                    }
+                });
             },
             pageNumber: parseInt(paginationInfoToRender.pageNumber),
             total: parseInt(paginationInfoToRender.total),

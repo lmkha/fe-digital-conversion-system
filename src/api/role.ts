@@ -1,3 +1,4 @@
+import axiosInstance from "@/core/axios/axios-instance";
 import Base from "./base";
 
 class RoleAPI extends Base {
@@ -120,6 +121,48 @@ class RoleAPI extends Base {
             }
         }
     }
+
+    async downloadExcelFile(
+        roleCode: string,
+        roleName: string,
+        deptId: string,
+        pageNumber: string,
+        pageSize: string,
+    ) {
+        try {
+            const partOfRoleCode = roleCode ? `&roleCode=${roleCode}` : '';
+            const partOfRoleName = roleName ? `&roleName=${roleName}` : '';
+            const partOfDeptId = deptId ? `&deptId=${deptId}` : '';
+            const partOfPageNumber = pageNumber ? `&pageNumber=${pageNumber}` : '';
+            const partOfPageSize = pageSize ? `&pageSize=${pageSize}` : '';
+            const url = `/role/download-excel?${partOfRoleCode}${partOfRoleName}${partOfDeptId}${partOfPageNumber}${partOfPageSize}`;
+
+            const response = await axiosInstance.get(url, { responseType: 'blob' });
+            const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'RoleData.xlsx';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            return {
+                success: true,
+                data: response.data,
+                message: 'Tải file thành công',
+            };
+        } catch (err: any) {
+            console.error(err);
+
+            return {
+                success: false,
+                message: err.response?.data?.message || 'Tải file thất bại',
+                code: err.response?.data?.code || 'ERROR'
+            };
+        }
+    }
+
+
 }
 
 const role = new RoleAPI();

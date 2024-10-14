@@ -19,9 +19,9 @@ export default function SelectedDataToolbar({ label, isShow, totalSelected, onDe
         >
             <div className="flex w-2/3 h-full gap-2 items-center">
                 <div className="w-1/5 h-full bg-blue-500 flex items-center justify-center rounded-l-md">
-                    <h1 className="text-white">{totalSelected} đã được chọn</h1>
+                    <h1 className="text-white">{totalSelected}</h1>
                 </div>
-                <h2 className="font-semibold w-fit">{label}</h2>
+                <h2 className="font-semibold w-fit">{label} đã được chọn</h2>
             </div>
             <div className="flex w-1/3 justify-between h-full gap-2">
                 <button

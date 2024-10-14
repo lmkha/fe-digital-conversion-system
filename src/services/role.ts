@@ -121,3 +121,14 @@ export const updateRole = async (
         }
     }
 }
+
+export const downloadExcelFile = async (
+    roleCode: string,
+    roleName: string,
+    deptId: string,
+    pageNumber: string,
+    pageSize: string,
+) => {
+    const result = await role.downloadExcelFile(roleCode, roleName, deptId, pageNumber, pageSize);
+    return result;
+}
