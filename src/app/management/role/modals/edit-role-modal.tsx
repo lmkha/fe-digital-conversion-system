@@ -119,7 +119,12 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
             return item;
         }));
     }
-
+    const validateName = (name: string) => {
+        return name.length <= 30 && name !== '';
+    }
+    const validateCode = (code: string) => {
+        return code.length <= 30 && code !== '';
+    }
     // useEffect --------------------------------------------------------------------------------------
     // Init data when open modal
     React.useEffect(() => {
@@ -279,6 +284,8 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                         sx={{ my: 2 }}
                     >
                         <TextField
+                            error={roleData.roleCode === '' || roleData.roleCode.length > 30}
+                            helperText={roleData.roleCode === '' ? 'Mã vai trò không được để trống' : roleData.roleCode.length > 30 ? 'Mã vai trò không được quá 30 ký tự' : ''}
                             id="role-code"
                             label="Mã vai trò"
                             variant="outlined"
@@ -290,6 +297,8 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                             value={roleData.roleCode}
                         />
                         <TextField
+                            error={submitData.roleName === '' || submitData.roleName.length > 30}
+                            helperText={submitData.roleName === '' ? 'Tên vai trò không được để trống' : submitData.roleName.length > 30 ? 'Tên vai trò không được quá 30 ký tự' : ''}
                             id="role-name"
                             label="Tên vai trò"
                             variant="outlined"
@@ -368,20 +377,11 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                     <TablePagination
                         component="div"
                         count={parseInt(pageInfo.total)}
-                        page={parseInt(pageInfo.pageNumber)}
+                        page={parseInt(pageInfo.pageNumber) - 1}
                         onPageChange={(event, newPage) => {
-                            setPageInfo({
-                                ...pageInfo,
-                                pageNumber: newPage.toString()
-                            });
                         }}
                         rowsPerPage={parseInt(pageInfo.pageSize)}
                         onRowsPerPageChange={(event) => {
-                            const selectedValue = parseInt(event.target.value);
-                            setPageInfo({
-                                ...pageInfo,
-                                pageSize: selectedValue.toString()
-                            });
                         }}
                         labelRowsPerPage=''
                         rowsPerPageOptions={[5, 10, 20]}
@@ -393,6 +393,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                     />
                     {/* Save button */}
                     <Button
+                        disabled={!validateName(submitData.roleName) || !validateCode(roleData.roleCode)}
                         variant="contained"
                         sx={{
                             position: 'absolute',

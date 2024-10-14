@@ -135,6 +135,13 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
     }, [filterData]);
 
     // Handle logic ---------------------------------------------------
+    const validateName = (name: string) => {
+        return name.length <= 30 && name !== '';
+    }
+    const validateCode = (code: string) => {
+        return code.length <= 30 && code !== '';
+    }
+
     const handleGroupItemCheck = (groupId: string) => {
         // Update permissionList
         setPermissionList(permissionList.map((item) => {
@@ -243,6 +250,8 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                         sx={{ my: 2 }}
                     >
                         <TextField
+                            error={submitData.roleCode === '' || submitData.roleCode.length > 30}
+                            helperText={submitData.roleCode === '' ? 'Mã vai trò không được để trống' : submitData.roleCode.length > 30 ? 'Mã vai trò không được quá 30 ký tự' : ''}
                             id="role-code"
                             label="Mã vai trò"
                             variant="outlined"
@@ -258,6 +267,8 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                             }}
                         />
                         <TextField
+                            error={submitData.roleName === '' || submitData.roleName.length > 30}
+                            helperText={submitData.roleName === '' ? 'Tên vai trò không được để trống' : submitData.roleName.length > 30 ? 'Tên vai trò không được quá 30 ký tự' : ''}
                             id="role-name"
                             label="Tên vai trò"
                             variant="outlined"
@@ -337,20 +348,11 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                     <TablePagination
                         component="div"
                         count={parseInt(pageInfo.total)}
-                        page={parseInt(pageInfo.pageNumber)}
+                        page={parseInt(pageInfo.pageNumber) - 1}
                         onPageChange={(event, newPage) => {
-                            setPageInfo({
-                                ...pageInfo,
-                                pageNumber: newPage.toString()
-                            });
                         }}
                         rowsPerPage={parseInt(pageInfo.pageSize)}
                         onRowsPerPageChange={(event) => {
-                            const selectedValue = parseInt(event.target.value);
-                            setPageInfo({
-                                ...pageInfo,
-                                pageSize: selectedValue.toString()
-                            });
                         }}
                         labelRowsPerPage=''
                         rowsPerPageOptions={[5, 10, 20]}
@@ -362,6 +364,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                     />
                     {/* Save button */}
                     <Button
+                        disabled={!validateName(submitData.roleName) || !validateCode(submitData.roleCode)}
                         variant="contained"
                         sx={{
                             position: 'absolute',
