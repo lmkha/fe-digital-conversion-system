@@ -73,7 +73,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
             </div>
             <div className="flex-1 flex items-center gap-2 h-auto">
                 <div className="flex-col w-1/4">
-                    <h1 className="font-semibold">Code</h1>
+                    <h1 className="font-semibold">Mã vai trò</h1>
                     <TextInput
                         textLabel=""
                         value={data.code}
@@ -82,7 +82,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
                     />
                 </div>
                 <div className="flex-col flex-1">
-                    <h1 className="font-semibold">Name</h1>
+                    <h1 className="font-semibold">Tên vai trò</h1>
                     <TextInput
                         textLabel=""
                         value={data.name}

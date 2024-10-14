@@ -162,8 +162,26 @@ export default function Page() {
         ]);
     }, [setHeaderButtons, setHeaderTitle, selectorData]);
 
+    // Get data when selectorData change
+    useEffect(() => {
+        if (selectorData.deptId) {
+            console.log('selectorData change');
+            updateRoleAndPageInfo();
+        } else {
+            setRoleList([]);
+            setPaginationInfoToRender({
+                pageNumber: '0',
+                total: '0',
+                start: '0',
+                end: '0',
+                pageSize: '1',
+            });
+        }
+    }, [selectorData])
+
     // Set footer
     useEffect(() => {
+        console.log('CheckVar');
         setFooterInfo({
             hasExportDataFooter: true,
             exportDataFooter: () => {
@@ -209,14 +227,6 @@ export default function Page() {
         });
     }, [roleList]);
 
-    // Get data when selectorData change
-    useEffect(() => {
-        if (selectorData.deptId) {
-            console.log('selectorData change');
-            updateRoleAndPageInfo();
-        }
-    }, [selectorData])
-
     // Refresh data when refreshData change
     useEffect(() => {
         if (refreshData) {
@@ -242,16 +252,16 @@ export default function Page() {
             } else {
                 setRoleList([]);
                 setPaginationInfoToRender({
-                    pageNumber: '',
-                    total: '',
-                    start: '',
-                    end: '',
-                    pageSize: '',
+                    pageNumber: '0',
+                    total: '0',
+                    start: '0',
+                    end: '0',
+                    pageSize: '1',
                 });
             }
             setRefreshData(false);
         }
-    }, [refreshData])
+    }, [refreshData]);
 
     // Show or hide selected data toolbar
     useEffect(() => {
