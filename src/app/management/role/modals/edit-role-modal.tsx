@@ -62,6 +62,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
         name: '',
     });
     const [expandedGroupItemIds, setExpandedGroupItemIds] = React.useState<string[]>([]);
+    const [hadTyped, setHadTyped] = React.useState(false);
 
     // Handle logic ---------------------------------------------------
     const handleGroupItemCheck = (groupId: string) => {
@@ -284,8 +285,6 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                         sx={{ my: 2 }}
                     >
                         <TextField
-                            error={roleData.roleCode === '' || roleData.roleCode.length > 30}
-                            helperText={roleData.roleCode === '' ? 'Mã vai trò không được để trống' : roleData.roleCode.length > 30 ? 'Mã vai trò không được quá 30 ký tự' : ''}
                             id="role-code"
                             label="Mã vai trò"
                             variant="outlined"
@@ -297,7 +296,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                             value={roleData.roleCode}
                         />
                         <TextField
-                            error={submitData.roleName === '' || submitData.roleName.length > 30}
+                            error={hadTyped && !validateName(submitData.roleName)}
                             helperText={submitData.roleName === '' ? 'Tên vai trò không được để trống' : submitData.roleName.length > 30 ? 'Tên vai trò không được quá 30 ký tự' : ''}
                             id="role-name"
                             label="Tên vai trò"
@@ -308,6 +307,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                             }}
                             value={submitData.roleName}
                             onChange={(e) => {
+                                setHadTyped(true);
                                 setSubmitData({
                                     ...submitData,
                                     roleName: e.target.value

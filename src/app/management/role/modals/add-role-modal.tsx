@@ -56,6 +56,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
         name: '',
     });
     const [expandedGroupItemIds, setExpandedGroupItemIds] = React.useState<string[]>([]);
+    const [hadTyped, setHadTyped] = React.useState(false);
 
     // useEffect ---------------------------------------------------    
     // Init data when open modal
@@ -250,7 +251,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                         sx={{ my: 2 }}
                     >
                         <TextField
-                            error={submitData.roleCode === '' || submitData.roleCode.length > 30}
+                            error={hadTyped && !validateCode(submitData.roleCode)}
                             helperText={submitData.roleCode === '' ? 'Mã vai trò không được để trống' : submitData.roleCode.length > 30 ? 'Mã vai trò không được quá 30 ký tự' : ''}
                             id="role-code"
                             label="Mã vai trò"
@@ -260,6 +261,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                                 width: '50%'
                             }}
                             onChange={(e) => {
+                                setHadTyped(true);
                                 setSubmitData({
                                     ...submitData,
                                     roleCode: e.target.value
@@ -267,7 +269,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                             }}
                         />
                         <TextField
-                            error={submitData.roleName === '' || submitData.roleName.length > 30}
+                            error={hadTyped && !validateName(submitData.roleName)}
                             helperText={submitData.roleName === '' ? 'Tên vai trò không được để trống' : submitData.roleName.length > 30 ? 'Tên vai trò không được quá 30 ký tự' : ''}
                             id="role-name"
                             label="Tên vai trò"
@@ -277,6 +279,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                                 width: '50%'
                             }}
                             onChange={(e) => {
+                                setHadTyped(true);
                                 setSubmitData({
                                     ...submitData,
                                     roleName: e.target.value
