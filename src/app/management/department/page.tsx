@@ -29,7 +29,7 @@ export default function Page() {
         parentId: ''
     });
     const [filterData, setFilterData] = useState({
-        name: '',
+        code: '',
         level: '',
         district: '',
         ward: ''
@@ -348,6 +348,7 @@ export default function Page() {
                 deptId={editingDepartment?.deptId ? editingDepartment.deptId : ''}
             />
             <SelectedDataToolbar
+                label="phòng ban"
                 isShow={showSelectedDataToolbar}
                 totalSelected={checkedItems.length}
                 onDelete={() => {

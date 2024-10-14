@@ -43,7 +43,7 @@ const MiddleSideNav = () => {
     const list = [
         { route: 'department', name: 'Phòng ban' },
         { route: 'permission', name: 'Phân quyền' },
-        { route: 'role', name: 'Chức vụ' },
+        { route: 'role', name: 'Vai trò' },
         { route: 'user', name: 'Người dùng' },
         { route: 'report-configuration', name: 'Cấu hình báo cáo' },
     ]

@@ -29,7 +29,7 @@ class Base {
         return this.execute({ method: 'put', url, data });
     }
 
-    async delete(url: string) {
+    async delete(url: string, data: any) {
         return this.execute({ method: 'delete', url });
     }
 }

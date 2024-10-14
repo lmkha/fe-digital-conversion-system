@@ -41,6 +41,7 @@ export default function Footer() {
                     page={footerInfo.pageNumber - 1}
                     onPageChange={(event, newPage) => {
                         footerInfo.onChangePageNumber(newPage + 1);
+                        console.log('Hihi');
                     }}
                     rowsPerPage={rowsPerPage}
                     onRowsPerPageChange={(event) => {

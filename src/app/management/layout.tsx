@@ -17,11 +17,11 @@ export default function Layout({ children }: LayoutProps) {
     const router = useRouter();
     const { isLoggedIn } = useAuth();
 
-    // useEffect(() => {
-    //     if (!isLoggedIn) {
-    //         router.replace('/login');
-    //     }
-    // }, [isLoggedIn]);
+    useEffect(() => {
+        if (!isLoggedIn) {
+            router.replace('/login');
+        }
+    }, [isLoggedIn]);
 
     return (
         <ManagementProvider>

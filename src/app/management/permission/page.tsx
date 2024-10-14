@@ -107,10 +107,10 @@ export default function Page() {
             if (result.success) {
                 setPermissionList(result.parentList);
                 setPaginationInfo({
-                    pageNumber: result.pageInto.pageNumber,
-                    total: result.pageInto.total,
-                    start: result.pageInto.start,
-                    end: result.pageInto.end,
+                    pageNumber: result.pageInfo.pageNumber,
+                    total: result.pageInfo.total,
+                    start: result.pageInfo.start,
+                    end: result.pageInfo.end,
                     pageSize: ''
                 });
             } else {
@@ -155,10 +155,10 @@ export default function Page() {
             if (result.success) {
                 setPermissionList(result.parentList);
                 setPaginationInfo({
-                    pageNumber: result.pageInto.pageNumber,
-                    total: result.pageInto.total,
-                    start: result.pageInto.start,
-                    end: result.pageInto.end,
+                    pageNumber: result.pageInfo.pageNumber,
+                    total: result.pageInfo.total,
+                    start: result.pageInfo.start,
+                    end: result.pageInfo.end,
                     pageSize: ''
                 });
             } else {

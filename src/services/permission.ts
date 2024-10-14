@@ -10,7 +10,7 @@ export const getPermissionByFilter = async (
     if (result.success) {
         return {
             success: true,
-            pageInto: {
+            pageInfo: {
                 pageNumber: result.data.pageNumber,
                 total: result.data.total,
                 start: result.data.start,
@@ -38,7 +38,7 @@ export const getPermissionByFilter = async (
         return {
             success: false,
             message: result.message,
-            pageInto: {
+            pageInfo: {
                 pageNumber: '0',
                 total: '0',
                 start: '0',

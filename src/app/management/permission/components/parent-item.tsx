@@ -81,9 +81,11 @@ export function ParentItem({ no, type, permissionCode, permissionName, childrenL
                 </AccordionSummary>
 
                 <AccordionDetails>
-                    {childrenList.map((item, index) => (
-                        <ChildItem key={index} {...item} />
-                    ))}
+                    {
+                        childrenList?.map((item, index) => (
+                            <ChildItem key={index} {...item} />
+                        ))
+                    }
                 </AccordionDetails>
             </Accordion>
         </div>
