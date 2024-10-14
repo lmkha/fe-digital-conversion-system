@@ -2,8 +2,6 @@
 'use client';
 
 import { Fragment, useEffect, useRef, useState } from "react";
-import { MdCancelPresentation } from "react-icons/md";
-import TextInput from "@/core/components/text-input";
 import {
     District,
     Ward,
@@ -19,7 +17,8 @@ import {
 import Toast from "@/core/components/toast";
 import Combobox from "@/core/components/combobox";
 import TextField from '@mui/material/TextField';
-
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
 export interface AddNewDepartmentModalProps {
     isVisible: boolean;
     label: string;
@@ -229,11 +228,12 @@ export default function AddNewDepartmentModal({
                     >
                         <div className="flex justify-between items-start">
                             <h1 className="text-black text-xl font-bold mb-4">{label}</h1>
-                            <button
+                            <IconButton
+                                aria-label="delete"
                                 onClick={onClose}
                             >
-                                {<MdCancelPresentation className="text-black text-3xl hover:text-red-500" />}
-                            </button>
+                                <CloseIcon fontSize='large' />
+                            </IconButton>
                         </div>
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">

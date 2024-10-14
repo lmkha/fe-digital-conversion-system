@@ -123,6 +123,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
     // useEffect --------------------------------------------------------------------------------------
     // Init data when open modal
     React.useEffect(() => {
+        if (!roleId) return;
         async function fetchData() {
             setExpandedGroupItemIds([]);
             if (roleId) {
@@ -186,6 +187,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
 
     // Update permissionList when filterData changed, base on submitData to check isCheck for each item and each children
     React.useEffect(() => {
+        if (!roleId) return;
         async function fetchData() {
             const permissionResult = await getPermissionByFilter(filterData.code, filterData.name, pageInfo.pageNumber, pageInfo.total);
             if (permissionResult.success) {

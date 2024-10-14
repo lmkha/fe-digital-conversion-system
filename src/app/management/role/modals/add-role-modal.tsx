@@ -94,6 +94,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
 
     // Update permissionList when filterData changed, base on submitData to check isCheck for each item and each children
     React.useEffect(() => {
+        if (!deptId) return;
         async function fetchData() {
             const permissionResult = await getPermissionByFilter(filterData.code, filterData.name, pageInfo.pageNumber, pageInfo.total);
             if (permissionResult.success) {

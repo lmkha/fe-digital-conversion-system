@@ -2,7 +2,6 @@
 'use client';
 
 import { Fragment, useEffect, useRef, useState } from "react";
-import { MdCancelPresentation } from "react-icons/md";
 import {
     District,
     Ward,
@@ -17,6 +16,8 @@ import {
 import Toast from "@/core/components/toast";
 import Combobox from "@/core/components/combobox";
 import TextField from '@mui/material/TextField';
+import CloseIcon from '@mui/icons-material/Close';
+import { IconButton } from '@mui/material';
 
 export interface EditDepartmentModalProps {
     isVisible: boolean;
@@ -205,11 +206,12 @@ export default function EditDepartmentModal({
                     >
                         <div className="flex justify-between items-start">
                             <h1 className="text-black text-xl font-bold mb-4">{label}</h1>
-                            <button
+                            <IconButton
+                                aria-label="delete"
                                 onClick={onClose}
                             >
-                                {<MdCancelPresentation className="text-black text-3xl hover:text-red-500" />}
-                            </button>
+                                <CloseIcon fontSize='large' />
+                            </IconButton>
                         </div>
 
                         {/* First line, contain Department name TextFiled and province combobox */}

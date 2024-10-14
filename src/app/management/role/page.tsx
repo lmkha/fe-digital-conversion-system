@@ -28,11 +28,11 @@ export default function Page() {
         end: string;
         pageSize: string;
     }>({
-        pageNumber: '',
-        total: '',
-        start: '',
-        end: '',
-        pageSize: '',
+        pageNumber: '0',
+        total: '0',
+        start: '0',
+        end: '0',
+        pageSize: '1',
     });
     const [paginationInfoToGetData, setPaginationInfoToGetData] = useState<{
         pageNumber: string;
@@ -93,6 +93,14 @@ export default function Page() {
                         showToast: true,
                         severity: 'error',
                         message: result.message
+                    });
+                    setRoleList([]);
+                    setPaginationInfoToRender({
+                        pageNumber: '',
+                        total: '',
+                        start: '',
+                        end: '',
+                        pageSize: '',
                     });
                 }
             });
@@ -204,6 +212,7 @@ export default function Page() {
     // Get data when selectorData change
     useEffect(() => {
         if (selectorData.deptId) {
+            console.log('selectorData change');
             updateRoleAndPageInfo();
         }
     }, [selectorData])
@@ -255,27 +264,29 @@ export default function Page() {
 
     // Update when filterData change
     useEffect(() => {
-        if (filterData.permissionCode || filterData.permissionName) {
-            getRolesByFilter(selectorData.deptId, filterData.permissionCode, filterData.permissionName).then((result) => {
-                if (result.success) {
-                    setRoleList(result.roles);
-                    setPaginationInfoToRender({
-                        ...paginationInfoToRender,
-                        pageNumber: result.pageInfo.pageNumber,
-                        total: result.pageInfo.total,
-                        start: result.pageInfo.start,
-                        end: result.pageInfo.end,
-                    });
-                } else {
-                    setToastInfo({
-                        showToast: true,
-                        severity: 'error',
-                        message: result.message
-                    });
-                }
-            });
-        } else {
-            updateRoleAndPageInfo();
+        if (selectorData.deptId) {
+            if (filterData.permissionCode || filterData.permissionName) {
+                getRolesByFilter(selectorData.deptId, filterData.permissionCode, filterData.permissionName).then((result) => {
+                    if (result.success) {
+                        setRoleList(result.roles);
+                        setPaginationInfoToRender({
+                            ...paginationInfoToRender,
+                            pageNumber: result.pageInfo.pageNumber,
+                            total: result.pageInfo.total,
+                            start: result.pageInfo.start,
+                            end: result.pageInfo.end,
+                        });
+                    } else {
+                        setToastInfo({
+                            showToast: true,
+                            severity: 'error',
+                            message: result.message
+                        });
+                    }
+                });
+            } else {
+                updateRoleAndPageInfo();
+            }
         }
     }, [filterData]);
 
@@ -343,7 +354,7 @@ export default function Page() {
                             setToastInfo({
                                 showToast: true,
                                 severity: 'error',
-                                message: 'Vui lòng chọn tỉnh đơn vị trước khi lọc!'
+                                message: 'Vui lòng chọn tỉnh, đơn vị trước khi lọc!'
                             });
                             return;
                         }
@@ -356,45 +367,51 @@ export default function Page() {
 
                 {/* TableList */}
                 <div className="flex-1 w-full max-h-[480px] overflow-y-auto">
-                    {roleList.map((item, index) => (
-                        <RoleItem
-                            id={item.roleId}
-                            key={index}
-                            code={item.roleCode}
-                            name={item.roleName}
-                            isCheck={item.isCheck}
-                            onIsCheckChange={(id, isCheck) => {
-                                if (isCheck) {
-                                    setCheckedItems([...checkedItems, id]);
-                                    setRoleList(roleList.map(item => {
-                                        if (item.roleId === id) {
-                                            return {
-                                                ...item,
-                                                isCheck: true
+                    {roleList.length === 0 && (
+                        <div className="flex justify-center items-center h-full mt-4">
+                            <span>Không có dữ liệu</span>
+                        </div>
+                    )}
+                    {roleList.length > 0 &&
+                        roleList.map((item, index) => (
+                            <RoleItem
+                                id={item.roleId}
+                                key={index}
+                                code={item.roleCode}
+                                name={item.roleName}
+                                isCheck={item.isCheck}
+                                onIsCheckChange={(id, isCheck) => {
+                                    if (isCheck) {
+                                        setCheckedItems([...checkedItems, id]);
+                                        setRoleList(roleList.map(item => {
+                                            if (item.roleId === id) {
+                                                return {
+                                                    ...item,
+                                                    isCheck: true
+                                                }
                                             }
-                                        }
-                                        return item;
-                                    }));
-                                } else {
-                                    setCheckedItems(checkedItems.filter(item => item !== id));
-                                    setRoleList(roleList.map(item => {
-                                        if (item.roleId === id) {
-                                            return {
-                                                ...item,
-                                                isCheck: false
+                                            return item;
+                                        }));
+                                    } else {
+                                        setCheckedItems(checkedItems.filter(item => item !== id));
+                                        setRoleList(roleList.map(item => {
+                                            if (item.roleId === id) {
+                                                return {
+                                                    ...item,
+                                                    isCheck: false
+                                                }
                                             }
-                                        }
-                                        return item;
-                                    }));
-                                }
-                            }}
-                            onEdit={() => {
-                                console.log(`Edit: ${item.roleId}`);
-                                setSelectedItemIdToEdit(item.roleId);
-                                setShowEditRoleModal(true);
-                            }}
-                        />
-                    ))}
+                                            return item;
+                                        }));
+                                    }
+                                }}
+                                onEdit={() => {
+                                    console.log(`Edit: ${item.roleId}`);
+                                    setSelectedItemIdToEdit(item.roleId);
+                                    setShowEditRoleModal(true);
+                                }}
+                            />
+                        ))}
                 </div>
             </div>
 
@@ -459,6 +476,7 @@ export default function Page() {
                             });
                             setCheckedItems([]);
                             updateRoleAndPageInfo();
+                            console.log('Delete success');
                         } else {
                             setToastInfo({
                                 showToast: true,
