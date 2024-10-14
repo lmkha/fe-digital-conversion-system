@@ -21,7 +21,7 @@ interface DepartmentItemProps {
 export default function DepartmentItem({ id, name, level, district, ward, isCheck, onIsCheckChange, onEdit }: DepartmentItemProps) {
     const checkIcon = isCheck ?
         <MdCheckBox className="text-3xl text-blue-500" /> :
-        <MdCheckBoxOutlineBlank className="text-3xl" />;
+        <MdCheckBoxOutlineBlank className="text-3xl text-gray-300 hover:text-gray-600" />;
 
     return (
         <div className="flex bg-white p-2 rounded-t-md border-b-2 text-black">
@@ -36,7 +36,7 @@ export default function DepartmentItem({ id, name, level, district, ward, isChec
                 <button
                     onClick={onEdit}
                 >
-                    {<MdModeEditOutline className="text-2xl" />}
+                    {<MdModeEditOutline className="text-2xl text-gray-400 hover:text-gray-600" />}
                 </button>
             </div>
             <div className="flex-1 flex items-center gap-2 h-auto">

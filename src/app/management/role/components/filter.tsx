@@ -21,7 +21,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
         name: '',
     });
 
-    const [checkAllIcon, setCheckAllIcon] = useState(<RiCheckboxIndeterminateLine className="text-2xl" />);
+    const [checkAllIcon, setCheckAllIcon] = useState(<RiCheckboxIndeterminateLine className="text-2xl text-gray-500 hover:text-black" />);
     const timeoutRef = useRef<NodeJS.Timeout | null>(null); // To store the timeout reference
 
     const changeData = (key: 'code' | 'name', value: string) => {
@@ -54,7 +54,7 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
         if (data.isCheck) {
             setCheckAllIcon(<RiCheckboxIndeterminateFill className="text-2xl text-blue-700" />);
         } else {
-            setCheckAllIcon(<RiCheckboxIndeterminateLine className="text-2xl" />);
+            setCheckAllIcon(<RiCheckboxIndeterminateLine className="text-2xl text-gray-500 hover:text-black" />);
         }
     }, [data]);
 

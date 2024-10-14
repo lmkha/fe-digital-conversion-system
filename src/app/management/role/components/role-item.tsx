@@ -17,7 +17,7 @@ interface RoleItemProps {
 export default function RoleItem({ id, code, name, isCheck, onIsCheckChange, onEdit }: RoleItemProps) {
     const checkIcon = isCheck ?
         <MdCheckBox className="text-3xl text-blue-500" /> :
-        <MdCheckBoxOutlineBlank className="text-3xl" />;
+        <MdCheckBoxOutlineBlank className="text-3xl text-gray-300 hover:text-gray-500" />;
 
     return (
         <div className="flex bg-white p-2 rounded-t-md border-b-2 text-black">
@@ -32,7 +32,7 @@ export default function RoleItem({ id, code, name, isCheck, onIsCheckChange, onE
                 <button
                     onClick={onEdit}
                 >
-                    {<MdModeEditOutline className="text-2xl" />}
+                    {<MdModeEditOutline className="text-2xl text-gray-400 hover:text-gray-600" />}
                 </button>
             </div>
             <div className="flex-1 flex items-center gap-2 h-auto">
