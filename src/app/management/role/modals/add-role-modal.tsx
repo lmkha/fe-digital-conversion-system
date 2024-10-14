@@ -43,6 +43,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
         total: '0',
         start: '0',
         end: '0',
+        pageSize: '10'
     });
     const [submitData, setSubmitData] = React.useState({
         roleCode: '',
@@ -54,10 +55,12 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
         code: '',
         name: '',
     });
-    const [expandedGroupItemId, setExpandedGroupItemId] = React.useState<string | false>('');
+    const [expandedGroupItemIds, setExpandedGroupItemIds] = React.useState<string[]>([]);
+
     // useEffect ---------------------------------------------------    
     // Init data when open modal
     React.useEffect(() => {
+        setExpandedGroupItemIds([]);
         if (deptId) {
             setSubmitData({
                 ...submitData,
@@ -70,6 +73,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                         total: result.pageInfo.total,
                         start: result.pageInfo.start,
                         end: result.pageInfo.end,
+                        pageSize: '10'
                     });
                     setPermissionList(result.parentList.map((item: any) => ({
                         id: item.permissionId,
@@ -98,6 +102,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                     total: permissionResult.pageInfo.total,
                     start: permissionResult.pageInfo.start,
                     end: permissionResult.pageInfo.end,
+                    pageSize: '10'
                 });
 
                 setPermissionList(permissionResult.parentList.map((item: {
@@ -199,7 +204,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
                     width: '45%',
-                    height: '81%',
+                    height: '85%',
                     bgcolor: 'background.paper',
                     boxShadow: 10,
                     p: 2,
@@ -279,7 +284,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
 
                     {/* List of permission */}
                     <Box
-                        maxHeight={500}
+                        maxHeight={300}
                         overflow={'auto'}
                         sx={{
                             mt: 2,
@@ -289,12 +294,16 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                         {permissionList.map((item) => (
                             <PermissionGroupItem
                                 key={item.id}
-                                expanded={item.id === expandedGroupItemId}
+                                expanded={expandedGroupItemIds.includes(item.id)}
                                 checked={item.isCheck}
                                 permissionCode={item.code}
                                 permissionName={item.name}
                                 handleExpand={() => {
-                                    setExpandedGroupItemId(expandedGroupItemId === item.id ? false : item.id);
+                                    if (expandedGroupItemIds.includes(item.id)) {
+                                        setExpandedGroupItemIds(expandedGroupItemIds.filter((id) => id !== item.id));
+                                    } else {
+                                        setExpandedGroupItemIds([...expandedGroupItemIds, item.id]);
+                                    }
                                 }}
                                 onCheck={() => {
                                     handleGroupItemCheck(item.id);
@@ -326,11 +335,22 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                     {/* Pagination */}
                     <TablePagination
                         component="div"
-                        count={100}
-                        page={0}
-                        onPageChange={() => { }}
-                        rowsPerPage={10}
-                        onRowsPerPageChange={() => { }}
+                        count={parseInt(pageInfo.total)}
+                        page={parseInt(pageInfo.pageNumber)}
+                        onPageChange={(event, newPage) => {
+                            setPageInfo({
+                                ...pageInfo,
+                                pageNumber: newPage.toString()
+                            });
+                        }}
+                        rowsPerPage={parseInt(pageInfo.pageSize)}
+                        onRowsPerPageChange={(event) => {
+                            const selectedValue = parseInt(event.target.value);
+                            setPageInfo({
+                                ...pageInfo,
+                                pageSize: selectedValue.toString()
+                            });
+                        }}
                         labelRowsPerPage=''
                         rowsPerPageOptions={[5, 10, 20]}
                         sx={{

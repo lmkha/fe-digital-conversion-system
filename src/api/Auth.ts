@@ -12,9 +12,14 @@ class Auth extends Base {
             set("accessToken", response.data.access_token);
             return { success: true, message: response.message, code: response.code };
         } catch (err: any) {
-            return { success: false, message: err.response.data.message, code: err.response.data.code };
+            if (err.response && err.response.data) {
+                return { success: false, message: err.response.data.message, code: err.response.data.code };
+            } else {
+                return { success: false, message: "Tài khoản hoặc mật khẩu không đúng. Xin vui lòng thử lại", code: null };
+            }
         }
     }
+
 
     async checkEmailExists(email: string) {
         try {

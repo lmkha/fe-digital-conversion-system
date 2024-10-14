@@ -140,15 +140,22 @@ export default function Page() {
                 type: 'add',
                 label: 'Thêm vai trò',
                 onClick: () => {
-                    setShowAddRoleModal(true);
+                    if (!selectorData.deptId) {
+                        setToastInfo({
+                            showToast: true,
+                            severity: 'error',
+                            message: 'Vui lòng chọn đơn vị trước khi thêm vai trò!'
+                        });
+                    } else {
+                        setShowAddRoleModal(true);
+                    }
                 }
             }
         ]);
-    }, [setHeaderButtons, setHeaderTitle]);
+    }, [setHeaderButtons, setHeaderTitle, selectorData]);
 
     // Set footer
     useEffect(() => {
-        console.log(`Data to download: ${selectorData.deptId} - ${paginationInfoToRender.pageNumber} - ${paginationInfoToRender.pageSize}`);
         setFooterInfo({
             hasExportDataFooter: true,
             exportDataFooter: () => {
@@ -196,30 +203,43 @@ export default function Page() {
 
     // Get data when selectorData change
     useEffect(() => {
-        updateRoleAndPageInfo();
+        if (selectorData.deptId) {
+            updateRoleAndPageInfo();
+        }
     }, [selectorData])
 
     // Refresh data when refreshData change
     useEffect(() => {
         if (refreshData) {
-            getRoles(selectorData.deptId).then((result) => {
-                if (result.success) {
-                    setRoleList(result.roles);
-                    setPaginationInfoToRender({
-                        ...paginationInfoToRender,
-                        pageNumber: result.pageInfo.pageNumber,
-                        total: result.pageInfo.total,
-                        start: result.pageInfo.start,
-                        end: result.pageInfo.end,
-                    });
-                } else {
-                    setToastInfo({
-                        showToast: true,
-                        severity: 'error',
-                        message: result.message
-                    });
-                }
-            });
+            if (selectorData.deptId) {
+                getRoles(selectorData.deptId).then((result) => {
+                    if (result.success) {
+                        setRoleList(result.roles);
+                        setPaginationInfoToRender({
+                            ...paginationInfoToRender,
+                            pageNumber: result.pageInfo.pageNumber,
+                            total: result.pageInfo.total,
+                            start: result.pageInfo.start,
+                            end: result.pageInfo.end,
+                        });
+                    } else {
+                        setToastInfo({
+                            showToast: true,
+                            severity: 'error',
+                            message: result.message
+                        });
+                    }
+                });
+            } else {
+                setRoleList([]);
+                setPaginationInfoToRender({
+                    pageNumber: '',
+                    total: '',
+                    start: '',
+                    end: '',
+                    pageSize: '',
+                });
+            }
             setRefreshData(false);
         }
     }, [refreshData])
@@ -261,31 +281,32 @@ export default function Page() {
 
     // Use 2 pageInfo to avoid infinite loop
     useEffect(() => {
-        console.log(`Submit data: ${JSON.stringify(paginationInfoToGetData)} - ${JSON.stringify(filterData)}`);
-        getRolesByFilter(
-            selectorData.deptId,
-            filterData.permissionCode,
-            filterData.permissionName,
-            paginationInfoToGetData.pageNumber,
-            paginationInfoToGetData.pageSize
-        ).then((result) => {
-            if (result.success) {
-                setRoleList(result.roles);
-                setPaginationInfoToRender({
-                    ...paginationInfoToRender,
-                    pageNumber: result.pageInfo.pageNumber,
-                    total: result.pageInfo.total,
-                    start: result.pageInfo.start,
-                    end: result.pageInfo.end,
-                });
-            } else {
-                setToastInfo({
-                    showToast: true,
-                    severity: 'error',
-                    message: result.message
-                });
-            }
-        });
+        if (selectorData.deptId) {
+            getRolesByFilter(
+                selectorData.deptId,
+                filterData.permissionCode,
+                filterData.permissionName,
+                paginationInfoToGetData.pageNumber,
+                paginationInfoToGetData.pageSize
+            ).then((result) => {
+                if (result.success) {
+                    setRoleList(result.roles);
+                    setPaginationInfoToRender({
+                        ...paginationInfoToRender,
+                        pageNumber: result.pageInfo.pageNumber,
+                        total: result.pageInfo.total,
+                        start: result.pageInfo.start,
+                        end: result.pageInfo.end,
+                    });
+                } else {
+                    setToastInfo({
+                        showToast: true,
+                        severity: 'error',
+                        message: result.message
+                    });
+                }
+            });
+        }
     }, [paginationInfoToGetData]);
 
     // Render ------------------------------------------------------------------------------------------------    
@@ -318,11 +339,11 @@ export default function Page() {
                         setFilterData({ ...filterData, [key]: value });
                     }}
                     onSubmitted={(data) => {
-                        if (!selectorData.provinceId) {
+                        if (!selectorData.deptId) {
                             setToastInfo({
                                 showToast: true,
                                 severity: 'error',
-                                message: 'Vui lòng chọn tỉnh/thành phố trước khi tìm kiếm!'
+                                message: 'Vui lòng chọn tỉnh đơn vị trước khi lọc!'
                             });
                             return;
                         }

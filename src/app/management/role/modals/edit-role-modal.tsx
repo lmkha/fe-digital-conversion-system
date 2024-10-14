@@ -61,7 +61,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
         code: '',
         name: '',
     });
-    const [expandedGroupItemId, setExpandedGroupItemId] = React.useState<string | false>('');
+    const [expandedGroupItemIds, setExpandedGroupItemIds] = React.useState<string[]>([]);
 
     // Handle logic ---------------------------------------------------
     const handleGroupItemCheck = (groupId: string) => {
@@ -124,6 +124,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
     // Init data when open modal
     React.useEffect(() => {
         async function fetchData() {
+            setExpandedGroupItemIds([]);
             if (roleId) {
                 // Wait for findRoleById to complete
                 const roleResult = await findRoleById(roleId);
@@ -315,7 +316,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
 
                     {/* List of permission */}
                     <Box
-                        maxHeight={500}
+                        maxHeight={300}
                         overflow={'auto'}
                         sx={{
                             mt: 2,
@@ -325,12 +326,16 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                         {permissionList.map((item) => (
                             <PermissionGroupItem
                                 key={item.id}
-                                expanded={item.id === expandedGroupItemId}
+                                expanded={expandedGroupItemIds.includes(item.id)}
                                 checked={item.isCheck}
                                 permissionCode={item.code}
                                 permissionName={item.name}
                                 handleExpand={() => {
-                                    setExpandedGroupItemId(expandedGroupItemId === item.id ? false : item.id);
+                                    if (expandedGroupItemIds.includes(item.id)) {
+                                        setExpandedGroupItemIds(expandedGroupItemIds.filter((id) => id !== item.id));
+                                    } else {
+                                        setExpandedGroupItemIds([...expandedGroupItemIds, item.id]);
+                                    }
                                 }}
                                 onCheck={() => {
                                     handleGroupItemCheck(item.id);

@@ -86,11 +86,17 @@ export default function Page() {
         severity: 'success',
         message: ''
     });
-    const [expanded, setExpanded] = useState<string>('');
+    const [expanded, setExpanded] = useState<string[]>([]);
 
     // Logic function ---------------------------------------------------------------------------------
     const handleChange = (panel: string) => {
-        setExpanded((prev) => (prev === panel ? '' : panel));
+        setExpanded((prev) => {
+            if (prev.includes(panel)) {
+                return prev.filter((item) => item !== panel);
+            } else {
+                return [...prev, panel];
+            }
+        });
     };
 
 
@@ -211,7 +217,7 @@ export default function Page() {
                         permissionCode: child.permissionCode,
                         permissionName: child.permissionName,
                     }))}
-                    isExpanded={expanded === item.permissionId}
+                    isExpanded={expanded && expanded.includes(item.permissionId)}
                     onChangeItem={() => {
                         handleChange(item.permissionId);
                     }}
