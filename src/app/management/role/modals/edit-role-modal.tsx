@@ -44,6 +44,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
         total: '0',
         start: '0',
         end: '0',
+        pageSize: '0',
     });
     const [roleData, setRoleData] = React.useState({
         roleId: '',
@@ -148,6 +149,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                         total: permissionResult.pageInfo.total,
                         start: permissionResult.pageInfo.start,
                         end: permissionResult.pageInfo.end,
+                        pageSize: '10'
                     });
 
                     setPermissionList(permissionResult.parentList.map((item: {
@@ -191,6 +193,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                     total: permissionResult.pageInfo.total,
                     start: permissionResult.pageInfo.start,
                     end: permissionResult.pageInfo.end,
+                    pageSize: '10'
                 });
 
                 setPermissionList(permissionResult.parentList.map((item: {
@@ -357,11 +360,22 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                     {/* Pagination */}
                     <TablePagination
                         component="div"
-                        count={100}
-                        page={0}
-                        onPageChange={() => { }}
-                        rowsPerPage={10}
-                        onRowsPerPageChange={() => { }}
+                        count={parseInt(pageInfo.total)}
+                        page={parseInt(pageInfo.pageNumber)}
+                        onPageChange={(event, newPage) => {
+                            setPageInfo({
+                                ...pageInfo,
+                                pageNumber: newPage.toString()
+                            });
+                        }}
+                        rowsPerPage={parseInt(pageInfo.pageSize)}
+                        onRowsPerPageChange={(event) => {
+                            const selectedValue = parseInt(event.target.value);
+                            setPageInfo({
+                                ...pageInfo,
+                                pageSize: selectedValue.toString()
+                            });
+                        }}
                         labelRowsPerPage=''
                         rowsPerPageOptions={[5, 10, 20]}
                         sx={{

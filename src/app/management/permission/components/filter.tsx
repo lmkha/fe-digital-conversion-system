@@ -48,13 +48,13 @@ export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
     };
 
     return (
-        <div className="flex bg-gray-200 p-2 mt-3 rounded-t-md text-black">
+        <div className="flex bg-gray-200 p-2 mt-3 rounded-t-md text-black w-full">
             <div className="flex justify-center gap-1 mr-5 w-1/6 ">
-                <h1 className="font-semibold text-center">No</h1>
+                <h1 className="font-semibold text-center">STT</h1>
             </div>
             <div className="flex flex-1 items-center justify-start gap-2 h-auto">
                 <div className="flex-col w-auto mr-4">
-                    <h1 className="font-semibold mb-3">Type</h1>
+                    <h1 className="font-semibold mb-3">Loại</h1>
                     <TextField
                         id="outlined-basic"
                         label=""
@@ -71,11 +71,12 @@ export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
                             onTextChange('type', e.target.value);
                         }}
                         onKeyDown={handleKeyDown}
+                        disabled={true}
                     />
                 </div>
                 <div className='flex-1 flex gap-4'>
                     <div className="flex-col w-3/5">
-                        <h1 className="font-semibold mb-3">Permission Code</h1>
+                        <h1 className="font-semibold mb-3">Mã quyền</h1>
                         <TextField
                             id="outlined-basic"
                             label=""
@@ -96,7 +97,7 @@ export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
                         />
                     </div>
                     <div className="flex-col w-2/5">
-                        <h1 className="font-semibold mb-3">Permission Name</h1>
+                        <h1 className="font-semibold mb-3">Tên quyền</h1>
                         <TextField
                             id="outlined-basic"
                             label=""

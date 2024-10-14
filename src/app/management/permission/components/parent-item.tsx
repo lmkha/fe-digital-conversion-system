@@ -64,17 +64,17 @@ export function ParentItem({ no, type, permissionCode, permissionName, childrenL
                 }}
             >
                 <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <div className='flex pl-3 w-full justify-between items-center'>
-                        <div className='ml-5 mr-16 w-1/12 flex justify-center'>
+                    <div className='flex pl-3 w-full justify-start items-center'>
+                        <div className='w-10 ml-10 flex justify-center'>
                             <h1>{no}</h1>
                         </div>
-                        <div className='w-1/12 mr-20 flex justify-start'>
+                        <div className='w-60 ml-24 flex justify-start'>
                             <h1>{type}</h1>
                         </div>
-                        <div className='w-1/3 flex justify-start'>
+                        <div className='w-80 ml-10 flex justify-start'>
                             <h1>{permissionCode}</h1>
                         </div>
-                        <div className='pl-28 w-1/3 flex justify-start'>
+                        <div className='w-80 ml-52 flex justify-start'>
                             <h1>{permissionName}</h1>
                         </div>
                     </div>
