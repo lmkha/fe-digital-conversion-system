@@ -6,6 +6,8 @@ import isValidPassword from "@/core/logic/password-validator";
 import department from "@/api/department";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import Combobox from "@/core/components/combobox";
+import Password from "./password";
+import { TextField } from "@mui/material";
 
 interface Department {
     deptId: string;
@@ -94,18 +96,23 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
                     onChange={(department) => handleChange('unit', { deptId: department.id, deptName: department.name })}
                 />
 
-                <TextInput
-                    textLabel="Tên tài khoản *"
+                <TextField
+                    fullWidth
+                    label="Tên tài khoản *"
                     value={formData.username}
-                    onChange={(value) => handleChange('username', value)}
+                    onChange={(e) => handleChange('username', e.target.value)} // MUI uses event.target.value to get input value
+                    variant="outlined"
+                    error={formData.submitted && !formData.username} // Example: show error if form is submitted and username is empty
+                    helperText={formData.submitted && !formData.username ? "Tên tài khoản là bắt buộc" : ""} // Custom error message
                 />
 
-                <PasswordInput
-                    value={formData.password}
-                    onChange={(value) => handleChange('password', value)}
+                <Password
                     showPassword={formData.showPassword}
-                    toggleShowPassword={() => handleChange('showPassword', !formData.showPassword)}
-                    highlightWhenEmpty={formData.submitted}
+                    isError={formData.submitted && !isValidPassword(formData.password)}
+                    helperText="Mật khẩu không đủ yêu cầu"
+                    onChange={(value) => handleChange('password', value)}
+                    validatePassword={(password) => isValidPassword(password)}
+                    onChangeShowPassword={() => handleChange('showPassword', !formData.showPassword)}
                 />
 
                 <div className="flex items-center justify-between w-full">

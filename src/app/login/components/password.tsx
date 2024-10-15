@@ -5,14 +5,22 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import InputAdornment from '@mui/material/InputAdornment';
 import FormControl from '@mui/material/FormControl';
+import FormHelperText from '@mui/material/FormHelperText';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-export default function Password() {
-    const [showPassword, setShowPassword] = React.useState(false);
+interface PasswordProps {
+    showPassword: boolean;
+    isError?: boolean;
+    helperText?: string;
+    onChange: (value: string) => void;
+    validatePassword: (password: string) => void;
+    onChangeShowPassword: () => void;
+}
 
-    const handleClickShowPassword = () => setShowPassword((show) => !show);
-
+export default function Password(
+    { showPassword, isError = false, helperText = '', onChange, validatePassword, onChangeShowPassword }: PasswordProps
+) {
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };
@@ -22,31 +30,34 @@ export default function Password() {
     };
 
     return (
-        <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
-            <div>
-                <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
-                    <InputLabel htmlFor="outlined-adornment-password">Mật khẩu</InputLabel>
-                    <OutlinedInput
-                        error
-                        id="outlined-adornment-password"
-                        type={showPassword ? 'text' : 'password'}
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    aria-label="toggle password visibility"
-                                    onClick={handleClickShowPassword}
-                                    onMouseDown={handleMouseDownPassword}
-                                    onMouseUp={handleMouseUpPassword}
-                                    edge="end"
-                                >
-                                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                        label="Password"
-                    />
-                </FormControl>
-            </div>
+        <Box sx={{ display: 'flex', width: '100%' }}>
+            <FormControl sx={{ m: 1, width: '100%' }} variant="outlined" error={isError}>
+                <InputLabel htmlFor="outlined-adornment-password">Mật khẩu *</InputLabel>
+                <OutlinedInput
+                    id="outlined-adornment-password"
+                    fullWidth // This ensures the input takes the full width
+                    type={showPassword ? 'text' : 'password'}
+                    onChange={(e) => {
+                        validatePassword(e.target.value);
+                        onChange(e.target.value);
+                    }}
+                    endAdornment={
+                        <InputAdornment position="end">
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={onChangeShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                onMouseUp={handleMouseUpPassword}
+                                edge="end"
+                            >
+                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                        </InputAdornment>
+                    }
+                    label="Mật khẩu"
+                />
+                {isError && <FormHelperText error>{helperText}</FormHelperText>}
+            </FormControl>
         </Box>
     );
 }
