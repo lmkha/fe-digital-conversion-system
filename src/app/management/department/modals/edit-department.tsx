@@ -68,10 +68,13 @@ export default function EditDepartmentModal({
                 await getDepartmentById(deptId).then(result => {
                     setDepartment(result);
                 });
+            } else if (!isVisible) {
+                setFirstCheck(true);
             }
             getProvinces().then(result => {
                 setProvinceList(result);
             });
+
         }
         fetchDepartment();
     }, [isVisible, deptId]);
@@ -84,6 +87,8 @@ export default function EditDepartmentModal({
                     await getDistricts(department.provinceId).then(result => {
                         setDistrictList(result);
                     });
+                } else {
+                    setDistrictList([]);
                 }
                 if (!firstCheck) {
                     setDepartment({
@@ -119,6 +124,8 @@ export default function EditDepartmentModal({
                     else {
                         setFirstCheck(false);
                     }
+                } else {
+                    setWardList([]);
                 }
             } catch (error) {
                 console.error("Error fetching wards:");

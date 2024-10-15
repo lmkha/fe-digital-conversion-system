@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import { Password } from '../login/components/password';
+import Password from '../login/components/password';
 
 export default function Page() {
     return (
