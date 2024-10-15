@@ -64,6 +64,7 @@ export default function EditDepartmentModal({
     useEffect(() => {
         const fetchDepartment = async () => {
             if (isVisible && deptId && firstCheck) {
+                console.log(`Check var: isVisible: ${isVisible}, deptId: ${deptId}, firstCheck: ${firstCheck}`);
                 await getDepartmentById(deptId).then(result => {
                     setDepartment(result);
                 });
@@ -89,6 +90,8 @@ export default function EditDepartmentModal({
                         ...department,
                         districtName: '',
                         districtId: '',
+                        wardName: '',
+                        wardId: ''
                     });
                 }
             } catch (error) {
@@ -106,16 +109,16 @@ export default function EditDepartmentModal({
                     await getWards(department.districtId).then(result => {
                         setWardList(result);
                     });
-                }
-                if (!firstCheck) {
-                    setDepartment({
-                        ...department,
-                        wardName: '',
-                        wardId: '',
-                    });
-                }
-                else {
-                    setFirstCheck(false);
+                    if (!firstCheck) {
+                        setDepartment({
+                            ...department,
+                            wardName: '',
+                            wardId: '',
+                        });
+                    }
+                    else {
+                        setFirstCheck(false);
+                    }
                 }
             } catch (error) {
                 console.error("Error fetching wards:");
