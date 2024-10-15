@@ -35,6 +35,7 @@ export default function EditDepartmentModal({
     deptId,
 }: EditDepartmentModalProps) {
     const ref = useRef<HTMLDivElement | null>(null);
+    const [firstCheck, setFirstCheck] = useState(true);
     const [provinceList, setProvinceList] = useState<Province[]>([]);
     const [districtList, setDistrictList] = useState<District[]>([]);
     const [wardList, setWardList] = useState<Ward[]>([]);
@@ -62,7 +63,7 @@ export default function EditDepartmentModal({
     // Fetch department data when modal is visible
     useEffect(() => {
         const fetchDepartment = async () => {
-            if (isVisible && deptId) {
+            if (isVisible && deptId && firstCheck) {
                 await getDepartmentById(deptId).then(result => {
                     setDepartment(result);
                 });
@@ -82,16 +83,13 @@ export default function EditDepartmentModal({
                     await getDistricts(department.provinceId).then(result => {
                         setDistrictList(result);
                     });
-                } else {
+                }
+                if (!firstCheck) {
                     setDepartment({
                         ...department,
                         districtName: '',
                         districtId: '',
-                        wardName: '',
-                        wardId: '',
                     });
-                    setDistrictList([]);
-                    setWardList([]);
                 }
             } catch (error) {
                 console.error("Error fetching districts:");
@@ -108,13 +106,16 @@ export default function EditDepartmentModal({
                     await getWards(department.districtId).then(result => {
                         setWardList(result);
                     });
-                } else {
+                }
+                if (!firstCheck) {
                     setDepartment({
                         ...department,
                         wardName: '',
                         wardId: '',
                     });
-                    setWardList([]);
+                }
+                else {
+                    setFirstCheck(false);
                 }
             } catch (error) {
                 console.error("Error fetching wards:");

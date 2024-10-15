@@ -124,6 +124,13 @@ export default function AddNewDepartmentModal({
                         setDistrictList(result);
                     });
                 }
+                setDepartment({
+                    ...department,
+                    districtId: '',
+                    wardId: '',
+                    districtName: '',
+                    wardName: ''
+                });
             } catch (error) {
                 console.error("Error fetching districts:");
             }
@@ -139,7 +146,11 @@ export default function AddNewDepartmentModal({
                     await getWards(department.districtId).then(result => {
                         setWardList(result);
                     });
-                }
+                } setDepartment({
+                    ...department,
+                    wardId: '',
+                    wardName: ''
+                });
             } catch (error) {
                 console.error("Error fetching wards:");
             }

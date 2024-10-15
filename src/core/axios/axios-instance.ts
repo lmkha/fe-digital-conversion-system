@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Router from 'next/router';
-import { get, set } from '@/hooks/use-local-storage';
+import { get } from '@/hooks/use-local-storage';
 
 const axiosInstance = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL,

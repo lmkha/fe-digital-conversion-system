@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useManagement } from "@/contexts/management-context";
 import { useEffect } from "react";

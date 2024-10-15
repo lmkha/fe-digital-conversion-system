@@ -63,7 +63,6 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
             validateInput({ status: 'error', message: 'Vui lòng nhập đầy đủ thông tin' });
         } else if (!isValidPassword(formData.password)) {
             validateInput({ status: 'error', message: 'Mật khẩu không đủ yêu cầu' });
-            console.log(`Password ${formData.password} is invalid`);
         } else {
             validateInput({ status: 'success', message: 'Input đúng yêu cầu' });
             // Validate passed, call onLogin
@@ -72,7 +71,6 @@ export default function LoginForm({ validateInput = () => { }, onLogin, onShowFo
                 password: formData.password,
                 deptId: formData.unit.deptId
             };
-            console.log('Submitting form with data:', dataToSubmit);
             onLogin(dataToSubmit);
         }
         setFormData({ ...formData, isLoading: false });

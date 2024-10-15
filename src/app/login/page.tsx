@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { Fragment, useEffect, useState } from 'react';
 import LoginForm from './components/login-form';
-// import LoginForm from './components/login-form-update';
 import LoginImage from './components/login-image';
 import RecoveryOptionChooser from '@/app/forgot-password/choose-method-modal';
 import Toast from '@/core/components/toast';
@@ -17,7 +17,6 @@ export default function Page() {
     const router = useRouter();
     const [showRecoveryOptionChooser, setShowRecoveryOptionChooser] = useState(false);
     const [showRecoveryByEmailForm, setShowRecoveryByEmailForm] = useState(false);
-    const [showRecoveryByZaloForm, setShowRecoveryByZaloForm] = useState(false);
     const [showRecoveryBySMSForm, setShowRecoveryBySMSForm] = useState(false);
 
     const [toastInfo, setToastInfo] = useState
@@ -45,7 +44,7 @@ export default function Page() {
 
     useEffect(() => {
         if (isLoggedIn) {
-            router.push('/management');
+            router.replace('/management');
         }
     }, [isLoggedIn]);
 
@@ -91,7 +90,6 @@ export default function Page() {
                 }}
                 onSelectZaloRecovery={() => {
                     setShowRecoveryOptionChooser(false)
-                    setShowRecoveryByZaloForm(true)
                 }}
                 onSelectSMSRecovery={() => {
                     setShowRecoveryOptionChooser(false)

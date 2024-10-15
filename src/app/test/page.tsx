@@ -1,16 +1,12 @@
 'use client';
 
 import * as React from 'react';
-import { TextField } from '@mui/material';
+import { Password } from '../login/components/password';
 
 export default function Page() {
     return (
         <div className='flex flex-col justify-center items-center'>
-            <TextField
-                id="outlined-basic"
-                label=""
-                variant="outlined"
-            />
+            <Password />
         </div>
     );
 }
