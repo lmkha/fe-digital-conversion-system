@@ -15,6 +15,7 @@ export const login = async (
         login()
         updateUserInfo(result.data.user)
         set("accessToken", result.data.access_token)
+        set("userInfo", result.data.user)
         return {
             success: true,
             message: result.message,
@@ -26,4 +27,10 @@ export const login = async (
             message: result.message,
         }
     }
+}
+
+export const logout = (logout: () => void) => {
+    logout()
+    set("accessToken", "")
+    set("userInfo", "")
 }

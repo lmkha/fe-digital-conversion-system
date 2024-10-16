@@ -1,7 +1,6 @@
 'use client';
-import { TextField } from '@mui/material';
+import { Box, Stack, TextField, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
-
 
 interface FilerProps {
     onTextChange: (key: 'type' | 'permissionCode' | 'permissionName', value: string) => void;
@@ -48,23 +47,25 @@ export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
     };
 
     return (
-        <div className="flex bg-gray-200 p-2 mt-3 rounded-t-md text-black w-full">
-            <div className="flex justify-center gap-1 mr-5 w-1/6 ">
-                <h1 className="font-semibold text-center">STT</h1>
-            </div>
-            <div className="flex flex-1 items-center justify-start gap-2 h-auto">
-                <div className="flex-col w-auto mr-4">
-                    <h1 className="font-semibold mb-3">Loại</h1>
-                    <TextField
-                        id="outlined-basic"
-                        label=""
-                        variant="outlined"
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                borderRadius: '5px',  // Bo góc cho TextField
-                            }
-
-                        }}
+        <Box
+            display="flex"
+            justifyContent="flex-end"
+            alignItems="flex-end"
+            height={100}
+            sx={{ backgroundColor: '#F4F6F8E5' }}
+        >
+            <Stack
+                direction={"row"}
+                spacing={2}
+                sx={{
+                    width: '100%',
+                    mb: 1,
+                }}
+            >
+                <Typography fontWeight='bold' width={'20%'} textAlign={'center'}>STT</Typography>
+                <Stack width={'15%'}>
+                    <Typography fontWeight='bold'>Loại</Typography>
+                    <TextField size='small' sx={{ width: '100%', backgroundColor: 'white' }}
                         value={data.type}
                         onChange={(e) => {
                             changeData('type', e.target.value);
@@ -73,52 +74,32 @@ export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
                         onKeyDown={handleKeyDown}
                         disabled={true}
                     />
-                </div>
-                <div className='flex-1 flex gap-4'>
-                    <div className="flex-col w-3/5">
-                        <h1 className="font-semibold mb-3">Mã quyền</h1>
-                        <TextField
-                            id="outlined-basic"
-                            label=""
-                            variant="outlined"
-                            sx={{
-                                width: '100%',
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '5px',  // Bo góc cho TextField
-                                },
-                                backgroundColor: 'white',
-                            }}
-                            value={data.permissionCode}
-                            onChange={(e) => {
-                                changeData('permissionCode', e.target.value);
-                                onTextChange('permissionCode', e.target.value);
-                            }}
-                            onKeyDown={handleKeyDown}
-                        />
-                    </div>
-                    <div className="flex-col w-2/5">
-                        <h1 className="font-semibold mb-3">Tên quyền</h1>
-                        <TextField
-                            id="outlined-basic"
-                            label=""
-                            variant="outlined"
-                            sx={{
-                                width: '100%',
-                                '& .MuiOutlinedInput-root': {
-                                    borderRadius: '5px',  // Bo góc cho TextField
-                                },
-                                backgroundColor: 'white'
-                            }}
-                            value={data.permissionName}
-                            onChange={(e) => {
-                                changeData('permissionName', e.target.value);
-                                onTextChange('permissionName', e.target.value);
-                            }}
-                            onKeyDown={handleKeyDown}
-                        />
-                    </div>
-                </div>
-            </div>
-        </div>
+                </Stack>
+
+                <Stack width={'35%'}>
+                    <Typography fontWeight='bold'>Mã quyền</Typography>
+                    <TextField size='small' sx={{ width: '100%', backgroundColor: 'white' }}
+                        value={data.permissionCode}
+                        onChange={(e) => {
+                            changeData('permissionCode', e.target.value);
+                            onTextChange('permissionCode', e.target.value);
+                        }}
+                        onKeyDown={handleKeyDown}
+                    />
+                </Stack>
+
+                <Stack width={'30%'}>
+                    <Typography fontWeight='bold'>Tên quyền</Typography>
+                    <TextField size='small' sx={{ width: '100%', backgroundColor: 'white' }}
+                        value={data.permissionName}
+                        onChange={(e) => {
+                            changeData('permissionName', e.target.value);
+                            onTextChange('permissionName', e.target.value);
+                        }}
+                        onKeyDown={handleKeyDown}
+                    />
+                </Stack>
+            </Stack>
+        </Box>
     );
 }

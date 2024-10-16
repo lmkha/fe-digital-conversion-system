@@ -28,9 +28,9 @@ axiosInstance.interceptors.response.use(
     (error) => {
         console.log('Axios error!');
         const { response } = error;
-        // if (response?.status === 401 || response?.status === 403) {
-        //     Router.push('/login');
-        // }
+        if (response?.status === 401 || response?.status === 403) {
+            Router.push('/login');
+        }
 
         return Promise.reject(error);
     }

@@ -12,14 +12,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const initialState = {
-    isLoggedIn: get('isLoggedIn') || false,
+    isLoggedIn: get('accessToken') ? true : false,
+    // isLoggedIn: false,
     login: () => { },
     logout: () => { },
 };
 
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(initialState.isLoggedIn);
-    console.log('isLoggedIn', isLoggedIn);
     const login = () => {
         setIsLoggedIn(true);
     };

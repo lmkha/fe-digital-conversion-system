@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import TextInput from "@/core/components/text-input";
-import PasswordInput from "./password-input";
 import Image from "next/image";
 import isValidPassword from "@/core/logic/password-validator";
 import department from "@/api/department";

@@ -1,25 +1,25 @@
 'use client';
 
-import { Divider } from "@mui/material";
+import { Divider, Grid2, Stack, Typography } from "@mui/material";
 
 export function ChildItem({ no, type, permissionCode, permissionName }: PermissionItemProps) {
     return (
-        <div>
-            <div className='ml-10 flex h-12 pl-3 w-full justify-start items-center'>
-                <div className='w-16 ml-10 flex justify-center'>
-                    <h1>{no}</h1>
-                </div>
-                <div className='w-60 ml-24 flex justify-start'>
-                    <h1>{type}</h1>
-                </div>
-                <div className='w-80 ml-12 flex justify-start'>
-                    <h1>{permissionCode}</h1>
-                </div>
-                <div className='w-80 ml-40 flex justify-start'>
-                    <h1>{permissionName}</h1>
-                </div>
-            </div>
+        <Stack>
+            <Grid2 container spacing={2} pl={12} height={'48px'} alignItems={'center'} justifyContent={'end'}>
+                <Grid2 size={2}>
+                    <Typography>{no}</Typography>
+                </Grid2>
+                <Grid2 size={3}>
+                    <Typography>{type}</Typography>
+                </Grid2>
+                <Grid2 size={4}>
+                    <Typography>{permissionCode}</Typography>
+                </Grid2>
+                <Grid2 size={3}>
+                    <Typography>{permissionName}</Typography>
+                </Grid2>
+            </Grid2>
             <Divider />
-        </div>
+        </Stack>
     );
 }

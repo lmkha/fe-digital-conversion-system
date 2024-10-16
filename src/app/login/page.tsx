@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import RecoveryBySMSForm from '../forgot-password/via-sms/sms-recovery-modal';
 import { useAuth } from '@/contexts/auth-context';
 import { useUserInfo } from '@/contexts/user-info-context';
-import { login as loginService } from '@/services/login';
+import { login as loginService } from '@/services/auth';
 
 export default function Page() {
     const { isLoggedIn, login, logout } = useAuth();

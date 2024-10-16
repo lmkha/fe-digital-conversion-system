@@ -10,6 +10,7 @@ import MuiAccordionSummary, {
 } from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import { ChildItem } from './child-item';
+import { Divider, Stack, Typography } from '@mui/material';
 
 const Accordion = styled((props: AccordionProps) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -38,6 +39,7 @@ const AccordionSummary = styled((props: AccordionSummaryProps) => (
 ))(({ theme }) => ({
     backgroundColor: 'white',
     flexDirection: 'row-reverse',
+    padding: 0,
     '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
         transform: 'rotate(180deg)',
     },
@@ -64,20 +66,12 @@ export function ParentItem({ no, type, permissionCode, permissionName, childrenL
                 }}
             >
                 <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <div className='flex pl-3 w-full justify-start items-center'>
-                        <div className='w-10 ml-10 flex justify-center'>
-                            <h1>{no}</h1>
-                        </div>
-                        <div className='w-60 ml-24 flex justify-start'>
-                            <h1>{type}</h1>
-                        </div>
-                        <div className='w-80 ml-10 flex justify-start'>
-                            <h1>{permissionCode}</h1>
-                        </div>
-                        <div className='w-80 ml-52 flex justify-start'>
-                            <h1>{permissionName}</h1>
-                        </div>
-                    </div>
+                    <Stack direction={'row'} width={'100%'} spacing={5} sx={{ marginLeft: -4 }}>
+                        <Typography width={'20%'} textAlign={'center'}>{no}</Typography>
+                        <Typography width={'15%'}>{type}</Typography>
+                        <Typography width={'35%'}>{permissionCode}</Typography>
+                        <Typography width={'30%'}>{permissionName}</Typography>
+                    </Stack>
                 </AccordionSummary>
 
                 <AccordionDetails>
