@@ -1,4 +1,3 @@
-import { set, get } from "@/hooks/use-local-storage";
 import Base from "./base";
 
 class Auth extends Base {
@@ -9,17 +8,20 @@ class Auth extends Base {
                 password: password,
                 deptId: deptId
             });
-            set("accessToken", response.data.access_token);
-            return { success: true, message: response.message, code: response.code };
+            return {
+                success: response.success,
+                data: response.data,
+                message: response.message,
+                code: response.code
+            }
         } catch (err: any) {
-            if (err.response && err.response.data) {
-                return { success: false, message: err.response.data.message, code: err.response.data.code };
-            } else {
-                return { success: false, message: "Tài khoản hoặc mật khẩu không đúng. Xin vui lòng thử lại", code: null };
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
             }
         }
     }
-
 
     async checkEmailExists(email: string) {
         try {

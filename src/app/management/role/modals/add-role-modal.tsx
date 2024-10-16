@@ -8,7 +8,7 @@ import Modal from '@mui/material/Modal';
 import { Button, Checkbox, Divider, IconButton, Stack, TablePagination, TextField } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion';
 import MuiAccordionSummary, {
     AccordionSummaryProps,
@@ -415,7 +415,7 @@ const Accordion = styled((props: AccordionProps) => (
 
 const AccordionSummary = styled((props: AccordionSummaryProps) => (
     <MuiAccordionSummary
-        expandIcon={<KeyboardArrowUpIcon sx={{ fontSize: '20', fontWeight: 'bold' }} />}
+        expandIcon={<KeyboardArrowDownIcon sx={{ fontSize: '20', fontWeight: 'bold' }} />}
         {...props}
     />
 ))(({ theme }) => ({

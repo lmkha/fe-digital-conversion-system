@@ -9,6 +9,7 @@ import { IoMdArrowDropdown, IoMdArrowDropright } from "react-icons/io";
 import { GrNext } from "react-icons/gr";
 import { LuDot } from "react-icons/lu";
 import { useAuth } from '@/contexts/auth-context';
+import { useUserInfo } from "@/contexts/user-info-context";
 
 export default function SideNav() {
     return (
@@ -23,14 +24,14 @@ export default function SideNav() {
 }
 
 const TopSideNav = () => {
+    const { userInfo } = useUserInfo();
     return (
         <div className="flex justify-between items-center h-20 px-1 gap-1 text-white text-sm border-b-2 border-white">
             {/* gov_logo */}
             <Image src="/img/gov_logo.png" alt="gov_logo" width={40} height={40} />
             {/* Department name */}
             <ul>
-                <li className="text-center">Ủy ban nhân dân thành phố</li>
-                <li className="text-center">Hồ Chí Minh</li>
+                <li className="text-center">{userInfo.dept.deptName}</li>
             </ul>
             {/* Action button */}
             <BiMenu className="text-3xl" />

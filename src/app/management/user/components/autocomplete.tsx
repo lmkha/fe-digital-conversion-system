@@ -1,6 +1,6 @@
 import * as React from 'react';
 import TextField from '@mui/material/TextField';
-import Autocomplete from '@mui/material/Autocomplete';
+import { Autocomplete as MUIAutoComplete } from '@mui/material';
 import { useState } from 'react';
 
 interface OptionType {
@@ -8,20 +8,20 @@ interface OptionType {
     id: string;
 }
 
-interface ComboboxProps {
+interface AutoCompleteProps {
     label: string;
     value: OptionType;
     options: OptionType[];
     onChange?: (value: OptionType) => void;
-    className?: string;
+    width?: string;
 }
 
-export default function Combobox({ label, value, options, onChange, className }: ComboboxProps) {
+export default function AutoComplete({ label, value, options, onChange, width = '100%' }: AutoCompleteProps) {
     const [inputValue, setInputValue] = useState('');
 
     return (
-        <Autocomplete
-            className={className}
+        <MUIAutoComplete
+            size='small'
             value={value}
             onChange={(event: any, newValue: OptionType | null) => {
                 onChange && onChange(newValue || { name: '', id: '' });
@@ -33,7 +33,7 @@ export default function Combobox({ label, value, options, onChange, className }:
             id="controllable-states-demo"
             options={options}
             getOptionLabel={(option) => option.name}
-            sx={{ width: '100%' }}
+            sx={{ width: width }}
             renderInput={(params) =>
                 <TextField
                     {...params}

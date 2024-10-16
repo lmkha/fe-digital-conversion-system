@@ -8,12 +8,14 @@ import RecoveryOptionChooser from '@/app/forgot-password/choose-method-modal';
 import Toast from '@/core/components/toast';
 import RecoveryByEmailForm from '@/app/forgot-password/via-email/email-recovery-modal';
 import { useRouter } from 'next/navigation';
-import auth from '@/api/auth';
 import RecoveryBySMSForm from '../forgot-password/via-sms/sms-recovery-modal';
 import { useAuth } from '@/contexts/auth-context';
+import { useUserInfo } from '@/contexts/user-info-context';
+import { login as loginService } from '@/services/login';
 
 export default function Page() {
-    const { isLoggedIn, login } = useAuth();
+    const { isLoggedIn, login, logout } = useAuth();
+    const { setUserInfo } = useUserInfo();
     const router = useRouter();
     const [showRecoveryOptionChooser, setShowRecoveryOptionChooser] = useState(false);
     const [showRecoveryByEmailForm, setShowRecoveryByEmailForm] = useState(false);
@@ -31,15 +33,25 @@ export default function Page() {
         });
 
     const handleLogin = async (data: { username: string, password: string, deptId: string }) => {
-        const result = await auth.login(data.username, data.password, data.deptId);
+        const result = await loginService(
+            data.username,
+            data.password,
+            data.deptId,
+            () => {
+                login();
+            },
+            () => {
+                logout();
+            },
+            (userInfo) => {
+                setUserInfo(userInfo);
+            }
+        );
         setToastInfo({
             showToast: true,
             severity: result.success ? 'success' : 'error',
             message: result.message
         });
-        if (result.success) {
-            login();
-        }
     };
 
     useEffect(() => {
