@@ -31,7 +31,7 @@ interface AddUserModalProps {
 }
 
 export default function AddUserModal({ open, deptId, onClose, onSubmitted }: AddUserModalProps) {
-    const [value, setValue] = useState<Dayjs | null>(dayjs('2022-04-17'));
+    const [value, setValue] = useState<Dayjs | null>(dayjs());
     // Address ------------------------------------------------------------------
     const [provinceList, setProvinceList] = useState<Province[]>([]);
     const [districtList, setDistrictList] = useState<District[]>([]);
@@ -44,6 +44,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
         districtId: '',
         wardId: ''
     });
+    // --------------------------------------------------------------------------
     const [gender, setGender] = useState({
         name: '',
         id: ''
@@ -52,7 +53,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
         { name: 'Nam', id: '1' },
         { name: 'Nữ', id: '2' }
     ];
-
+    const [active, setActive] = useState(true);
     // UseEffect ----------------------------------------------------------------
 
     // Address ------------------------------------------------------------------
@@ -157,7 +158,11 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             pt: 2,
                         }}>
                             <Typography fontWeight={'bold'}>Kích hoạt</Typography>
-                            <Switch />
+                            <Switch
+                                checked={active}
+                                onChange={() => setActive(!active)}
+                                color="primary"
+                            />
                         </Stack>
                     </Stack>
 
@@ -200,6 +205,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                         <MUIDatePicker
                                             sx={{ width: '100%' }}
                                             label="Ngày sinh *"
+                                            format="DD/MM/YYYY"
                                             value={value}
                                             onChange={(newValue) => setValue(newValue)}
                                         />
