@@ -1,7 +1,8 @@
 'use client';
 
+import { Box, Grid, IconButton, Typography, Button } from '@mui/material';
 import { useEffect, useRef } from 'react';
-import { MdCancelPresentation } from "react-icons/md";
+import CloseIcon from '@mui/icons-material/Close';
 
 interface IRecoveryOptionChooserProps {
     isVisible: boolean;
@@ -42,47 +43,91 @@ export default function RecoveryOptionChooser({
     if (!isVisible) return null;
 
     return (
-        <div className='text-black'>
+        <div>
             {/* Backdrop */}
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 z-40"></div>
+            <Box sx={{ position: 'fixed', inset: 0, bgcolor: 'rgba(96,96,96,0.5)', zIndex: 40 }}></Box>
 
             {/* Modal */}
-            <div className="fixed inset-0 z-50 flex items-center justify-center">
-                <div
+            <Box
+                sx={{
+                    position: 'fixed',
+                    inset: 0,
+                    zIndex: 50,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+            >
+                <Box
                     ref={ref}
-                    className="bg-white p-6 rounded-lg shadow-lg w-[531px] h-[250px]" // Tailwind classes for width and height
+                    sx={{
+                        bgcolor: 'white',
+                        p: 3,
+                        borderRadius: 2,
+                        boxShadow: 3,
+                        width: 531,
+                        height: 250,
+                        position: 'relative',
+                    }}
                 >
-                    {/* Modal content */}
-                    <div className="flex flex-col items-center justify-center w-full h-full">
-                        <div className="flex w-full items-start justify-end">
-                            <button onClick={onclose}>
-                                {<MdCancelPresentation className="text-black text-3xl hover:text-red-500" />}
-                            </button>
-                        </div>
+                    {/* Close Button at top-right */}
+                    <IconButton
+                        aria-label="delete"
+                        onClick={onclose}
+                        sx={{ position: 'absolute', top: 8, right: 8 }}
+                    >
+                        <CloseIcon fontSize="large" />
+                    </IconButton>
 
-                        <h2 className="text-2xl font-bold mb-4 mx-auto text-center">Vui lòng chọn phương thức</h2>
-                        <button
-                            className="bg-blue-600 hover:bg-white text-white font-bold py-1 px-1 rounded w-full border-2 
-                            hover:text-blue-500 hover:border-2 border-blue-500 mb-2"
-                            onClick={onSelectEmailRecovery}
-                        >
-                            Gửi mã xác thực qua Email
-                        </button>
-                        <button
-                            className="bg-white hover:bg-blue-600 font-bold text-blue-500 my-2 px-1 py-1 rounded w-full mb-2 border-2 border-blue-500 
-                            hover:border-transparent hover:text-white"
-                            onClick={onSelectSMSRecovery}
-                        >
-                            Gửi mã xác thực qua SMS
-                        </button>
+                    {/* Title centered */}
+                    <Typography variant="h5" fontWeight="bold" align="center" mb={4}>
+                        Vui lòng chọn phương thức
+                    </Typography>
 
-                        <p className="mt-4 text-gray-500">
-                            Bạn đã có tài khoản ?&nbsp;
-                            <a onClick={onclose} className="text-blue-500 hover:underline">Đăng nhập</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
+                    {/* Action buttons */}
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        color="primary"
+                        sx={{
+                            mb: 2,
+                            textTransform: 'none',
+                            bgcolor: '#2962FF',
+                            fontWeight: 'bold',
+                            fontSize: 18,
+                        }}
+                        onClick={onSelectEmailRecovery}
+                    >
+                        Gửi mã xác thực qua Email
+                    </Button>
+
+                    <Button
+                        fullWidth
+                        variant="outlined"
+                        sx={{
+                            mb: 2,
+                            textTransform: 'none',
+                            fontWeight: 'bold',
+                            fontSize: 18,
+                        }}
+                        onClick={onSelectSMSRecovery}
+                    >
+                        Gửi mã xác thực qua SMS
+                    </Button>
+
+                    {/* Footer text */}
+                    <Typography variant="body2" align="center" color="textSecondary">
+                        Bạn đã có tài khoản ?&nbsp;
+                        <Box
+                            component="span"
+                            sx={{ color: 'primary.main', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }}
+                            onClick={onclose}
+                        >
+                            Đăng nhập
+                        </Box>
+                    </Typography>
+                </Box>
+            </Box>
         </div>
     );
 }

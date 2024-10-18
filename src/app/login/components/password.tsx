@@ -31,7 +31,7 @@ export default function Password(
 
     return (
         <Box sx={{ display: 'flex', width: '100%' }}>
-            <FormControl sx={{ m: 1, width: '100%' }} variant="outlined" error={isError}>
+            <FormControl sx={{ width: '100%' }} variant="outlined" error={isError}>
                 <InputLabel htmlFor="outlined-adornment-password">Mật khẩu *</InputLabel>
                 <OutlinedInput
                     id="outlined-adornment-password"

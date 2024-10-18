@@ -29,7 +29,10 @@ const TopSideNav = () => {
     const [departmentName, setDepartmentName] = useState<string | null>(null);
     useEffect(() => {
         if (isLoggedIn) {
-            setDepartmentName(get('userInfo').dept.deptName);
+            const userInfo = get("userInfo");
+            if (userInfo && userInfo.dept) {
+                setDepartmentName(userInfo.dept.deptName);
+            }
         }
     }, [isLoggedIn]);
 

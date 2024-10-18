@@ -11,6 +11,8 @@ export default function Page() {
   useEffect(() => {
     if (!isLoggedIn) {
       router.push('/login');
+    } else {
+      router.push('/management');
     }
   }, [isLoggedIn, router]);
 

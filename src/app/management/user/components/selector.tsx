@@ -4,7 +4,6 @@
 import Combobox from "@/core/components/combobox";
 import { BasicDepartment, DetailedDepartment, findDepartmentsByFilter, getProvinces, Province } from '@/services/department';
 import { useEffect, useState } from "react";
-import { useUserInfo } from "@/contexts/user-info-context";
 
 interface SelectorProps {
     onChange: (provinceId: string, provinceName: string, parentId: string) => void;
@@ -23,7 +22,6 @@ interface SelectorProps {
 }
 
 export default function Selector({ onChange, refreshData, onRefreshDataFinished, onCallBackInfoChange }: SelectorProps) {
-    const { userInfo } = useUserInfo();
     const [provinceList, setProvinceList] = useState<Province[]>([]);
     const [deptLevel1List, setDeptLevel1List] = useState<DetailedDepartment[]>([]);
     const [deptLevel2List, setDeptLevel2List] = useState<DetailedDepartment[]>([]);
@@ -54,9 +52,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
         pageNumber: ''
     });
 
-    // UseEffect -----------------------------------------------------
     useEffect(() => {
-        console.log('Selector init')
         getProvinces().then(result => {
             setProvinceList(result);
         });
@@ -90,7 +86,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
         }
     }, [refreshData])
 
-    // Province change
+    //====================================================
     useEffect(() => {
         if (province.provinceId) {
             findDepartmentsByFilter(province.provinceId, '', '', '1', '', '', '', '').then(result => {
@@ -110,7 +106,6 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
         });
     }, [province.provinceId])
 
-    // Dept level 1 change
     useEffect(() => {
         if (deptLevel1.deptId) {
             findDepartmentsByFilter(province.provinceId, deptLevel1.deptId, '', '2', '', '', '', '').then(result => {
@@ -125,7 +120,6 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
         });
     }, [deptLevel1.deptId])
 
-    // Dept level 2 change
     useEffect(() => {
         if (deptLevel2.deptId) {
             findDepartmentsByFilter(province.provinceId, deptLevel2.deptId, '', '3', '', '', '', '').then(result => {
@@ -140,7 +134,6 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
         });
     }, [deptLevel2.deptId])
 
-    // Dept level 3 change
     useEffect(() => {
         if (deptLevel3.deptId) {
             findDepartmentsByFilter(province.provinceId, deptLevel3.deptId, '', '4', '', '', '', '').then(result => {
@@ -154,48 +147,42 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             deptName: ''
         });
     }, [deptLevel3.deptId])
-
-    // Find the suitable parent id for the callback info
+    //====================================================
     useEffect(() => {
         if (deptLevel4.deptId) {
             setCallBackInfo({
                 ...callBackInfo,
-                level: '4',
                 provinceId: province.provinceId,
-                parentId: deptLevel4.deptId,
+                parentId: deptLevel3.deptId,
             });
         } else if (deptLevel3.deptId) {
             setCallBackInfo({
                 ...callBackInfo,
-                level: '3',
                 provinceId: province.provinceId,
                 parentId: deptLevel3.deptId,
             });
         } else if (deptLevel2.deptId) {
             setCallBackInfo({
                 ...callBackInfo,
-                level: '2',
                 provinceId: province.provinceId,
                 parentId: deptLevel2.deptId
             });
         } else if (deptLevel1.deptId) {
             setCallBackInfo({
                 ...callBackInfo,
-                level: '1',
                 provinceId: province.provinceId,
                 parentId: deptLevel1.deptId,
             });
         } else if (province.provinceId) {
             setCallBackInfo({
                 ...callBackInfo,
-                level: '0',
                 provinceId: province.provinceId,
                 parentId: '',
             });
         }
     }, [province.provinceId, deptLevel1.deptId, deptLevel2.deptId, deptLevel3.deptId, deptLevel4.deptId])
 
-    // Call back info change
+    // Callback to parent component
     useEffect(() => {
         onCallBackInfoChange(callBackInfo);
     }, [callBackInfo])

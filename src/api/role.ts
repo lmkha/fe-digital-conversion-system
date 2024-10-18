@@ -162,7 +162,23 @@ class RoleAPI extends Base {
         }
     }
 
-
+    async getRolesByDeptId(deptId: string) {
+        try {
+            const response = await this.get(`/role/find-by-dept?deptId=${deptId}`);
+            return {
+                success: response.success,
+                data: response.data,
+                message: response.message,
+                code: response.code
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            }
+        }
+    }
 }
 
 const role = new RoleAPI();

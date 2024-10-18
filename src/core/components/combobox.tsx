@@ -14,13 +14,15 @@ interface ComboboxProps {
     options: OptionType[];
     onChange?: (value: OptionType) => void;
     className?: string;
+    size?: 'small' | 'medium';
 }
 
-export default function Combobox({ label, value, options, onChange, className }: ComboboxProps) {
+export default function Combobox({ label, value, options, onChange, className, size = 'medium' }: ComboboxProps) {
     const [inputValue, setInputValue] = useState('');
 
     return (
         <Autocomplete
+            size={size}
             className={className}
             value={value}
             onChange={(event: any, newValue: OptionType | null) => {

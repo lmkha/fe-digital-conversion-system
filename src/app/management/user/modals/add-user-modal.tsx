@@ -15,13 +15,10 @@ import {
     getProvinces,
     getDistricts,
     getWards,
-    createDepartment,
-    createDepartmentLevel1,
-    DetailedDepartment,
-    getDepartmentById
 } from '@/services/department';
 import AutoComplete from "../components/autocomplete";
 import ImagePicker from "../components/image-picker";
+import { getRolesByDeptId } from "@/services/role";
 
 interface AddUserModalProps {
     open: boolean;
@@ -54,16 +51,27 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
         { name: 'Nữ', id: '2' }
     ];
     const [active, setActive] = useState(true);
+    const [role, setRole] = useState({
+        roleId: '',
+        roleName: ''
+    });
+    const [roles, setRoles] = useState<{
+        roleId: string;
+        roleName: string;
+    }[]>([]);
     // UseEffect ----------------------------------------------------------------
 
     // Address ------------------------------------------------------------------
     useEffect(() => {
-        if (open) {
+        if (open && deptId) {
             getProvinces().then((res) => {
                 setProvinceList(res);
             });
+            getRolesByDeptId(deptId).then((res) => {
+                setRoles(res.roles);
+            });
         }
-    }, [open]);
+    }, [open, deptId]);
 
     useEffect(() => {
         if (address.provinceId) {
@@ -214,7 +222,21 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             </Stack>
 
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
-                                <TextField size="small" sx={{ width: '55%' }} label={'Vai trò *'} />
+                                <AutoComplete
+                                    label="Vai trò *"
+                                    value={{ id: role.roleId, name: role.roleName }}
+                                    options={roles.map((role) => ({
+                                        name: role.roleName,
+                                        id: role.roleId
+                                    }))}
+                                    onChange={(value) => {
+                                        setRole({
+                                            roleId: value.id,
+                                            roleName: value.name
+                                        });
+                                    }}
+                                    width="55%"
+                                />
                                 <TextField size="small" sx={{ width: '45%' }} label={'Email *'} />
                             </Stack>
 

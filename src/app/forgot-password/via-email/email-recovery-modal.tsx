@@ -5,7 +5,8 @@ import isValidEmail from "@/core/logic/email-validator";
 import Toast from "@/core/components/toast";
 import TextInput from "@/core/components/text-input";
 import auth from "@/api/auth";
-import { MdCancelPresentation } from "react-icons/md";
+import { Modal, Box, Button, Typography, Backdrop, IconButton, Stack } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function RecoveryByEmailForm({ isVisible, onclose }: { isVisible: boolean, onclose: () => void }) {
     const ref = useRef<HTMLDivElement | null>(null);
@@ -107,7 +108,7 @@ export default function RecoveryByEmailForm({ isVisible, onclose }: { isVisible:
     if (!isVisible) return null;
 
     return (
-        <div>
+        <Box>
             {/* Toast */}
             <Toast
                 open={toastInfo.showToast}
@@ -117,20 +118,52 @@ export default function RecoveryByEmailForm({ isVisible, onclose }: { isVisible:
                 onClose={() => { setToastInfo({ showToast: false, severity: 'success', message: '' }) }}
             />
 
-            {/* Backdrop */}
-            <div className="fixed inset-0 bg-gray-600 bg-opacity-50 z-40"></div>
+            {/* MUI Modal */}
+            <Modal
+                open={isVisible}
+                onClose={onclose}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{
+                    timeout: 500,
+                }}
+            >
+                <Box
+                    ref={ref}
+                    sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '40%',
+                        height: '45%',
+                        bgcolor: 'background.paper',
+                        boxShadow: 24,
+                        p: 4,
+                        borderRadius: 2,
+                    }}
+                >
+                    {/* Close Button at top-right */}
+                    <IconButton onClick={onclose} sx={{ position: 'absolute', top: 8, right: 8 }}>
+                        <CloseIcon fontSize="large" />
+                    </IconButton>
 
-            {/* Modal */}
-            <div className="fixed inset-0 z-50 flex items-center justify-center">
-                <div ref={ref} className="bg-white p-6 rounded-lg shadow-lg w-[624px] h-[300px] z-50"> {/* Tailwind classes for width and height */}
-                    <div className="flex w-full items-start justify-end">
-                        <button onClick={onclose}>
-                            {<MdCancelPresentation className="text-black text-3xl hover:text-red-500" />}
-                        </button>
-                    </div>
-                    <h2 className="text-2xl font-bold text-center text-black">Quên mật khẩu</h2>
-                    <p className="mt-1 text-gray-500 text-center">Vui lòng nhập email để đăng ký tài khoản</p>
-                    <div className="mt-3 flex flex-col items-center justify-center w-full h-auto">
+                    {/* Title centered */}
+                    <Typography variant="h6" component="h2" align="center" sx={{ fontWeight: 'bold', mb: 4 }}>
+                        Quên mật khẩu
+                    </Typography>
+
+                    {/* Content */}
+                    <Typography variant="body2" color="text.secondary" align="center">
+                        Vui lòng nhập email để đăng ký tài khoản
+                    </Typography>
+
+                    <Stack
+                        spacing={2}
+                        alignItems="center"
+                        justifyContent="center"
+                        sx={{ marginTop: 3 }}
+                    >
                         <TextInput
                             textLabel="Email (*)"
                             value={email}
@@ -138,25 +171,43 @@ export default function RecoveryByEmailForm({ isVisible, onclose }: { isVisible:
                             onKeyDown={handleKeyDown}
                         />
 
-                        <button
-                            type='submit'
-                            className={`bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-1 rounded w-full mt-4 ${isButtonDisabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            fullWidth
+                            sx={{
+                                textTransform: 'none',
+                                bgcolor: '#2962FF',
+                                fontWeight: 'bold',
+                                fontSize: 18,
+                            }}
                             onClick={handleSendRequest}
                             disabled={isButtonDisabled}
                         >
                             Gửi yêu cầu
-                        </button>
+                        </Button>
 
-                        <p className="mt-4 text-black">Gửi yêu cầu tiếp theo:&nbsp;
-                            <span className="text-blue-500">{isButtonDisabled ? `${timer}s` : `${numberOfSeconds}s`}</span>
-                        </p>
+                        <Typography variant="body2">
+                            Gửi yêu cầu tiếp theo:&nbsp;
+                            <Typography variant="body2" component="span" color="primary">
+                                {isButtonDisabled ? `${timer}s` : `${numberOfSeconds}s`}
+                            </Typography>
+                        </Typography>
 
-                        <p className="mt-4 text-gray-500">Bạn đã có tài khoản ?&nbsp;
-                            <a onClick={() => onclose()} className="text-blue-500 hover:underline">Đăng nhập</a>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
+                        <Typography variant="body2" color="text.secondary">
+                            Bạn đã có tài khoản?&nbsp;
+                            <Typography
+                                component="span"
+                                variant="body2"
+                                sx={{ cursor: 'pointer', color: 'primary.main', '&:hover': { textDecoration: 'underline' } }}
+                                onClick={onclose}
+                            >
+                                Đăng nhập
+                            </Typography>
+                        </Typography>
+                    </Stack>
+                </Box>
+            </Modal>
+        </Box>
     );
 }

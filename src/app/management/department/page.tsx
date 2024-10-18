@@ -89,7 +89,7 @@ export default function Page() {
                 departmentListInfo.provinceId,
                 departmentListInfo.parentId,
                 departmentListInfo.deptName,
-                departmentListInfo.level,
+                '',
                 departmentListInfo.wardName,
                 departmentListInfo.districtName,
                 departmentListInfo.pageSize,
@@ -183,8 +183,11 @@ export default function Page() {
 
     // Set header buttons
     useEffect(() => {
-        console.log('departmentListInfo.provinceId:', departmentListInfo.provinceId);
         setHeaderTitle('Phòng ban');
+        if (departmentListInfo.level === '4') {
+            setHeaderButtons([]);
+            return;
+        }
         setHeaderButtons([
             {
                 type: 'add',
@@ -202,7 +205,7 @@ export default function Page() {
                 }
             }
         ]);
-    }, [setHeaderTitle, setHeaderButtons, departmentListInfo.provinceId]);
+    }, [setHeaderTitle, setHeaderButtons, departmentListInfo.provinceId, departmentListInfo.level]);
 
     // Show or hide selected data toolbar
     useEffect(() => {
@@ -227,6 +230,7 @@ export default function Page() {
                     refreshData={refreshData}
                     onRefreshDataFinished={() => setRefreshData(false)}
                     onCallBackInfoChange={(callBackInfo) => {
+                        console.log(`Level: ${callBackInfo.level}`);
                         setDepartmentListInfo({
                             ...departmentListInfo,
                             provinceId: callBackInfo.provinceId,
@@ -364,6 +368,7 @@ export default function Page() {
                             });
                             setCheckedItems([]);
                             updateDepartmentListAndPageInfo()
+                            setRefreshData(true);
                         } else {
                             setToastInfo({
                                 showToast: true,

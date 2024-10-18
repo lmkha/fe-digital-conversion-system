@@ -132,3 +132,22 @@ export const downloadExcelFile = async (
     const result = await role.downloadExcelFile(roleCode, roleName, deptId, pageNumber, pageSize);
     return result;
 }
+
+export const getRolesByDeptId = async (deptId: string) => {
+    const result = await role.getRolesByDeptId(deptId);
+    if (result.success) {
+        return {
+            success: true,
+            roles: result.data.map((role: any) => ({
+                roleId: role.roleId,
+                roleName: role.roleName,
+            }))
+        }
+    } else {
+        return {
+            success: false,
+            message: result.message,
+            roles: []
+        }
+    }
+}

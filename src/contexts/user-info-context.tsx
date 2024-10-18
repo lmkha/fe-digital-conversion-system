@@ -13,7 +13,6 @@ export interface UserInfo {
     dateOfBirth: string | null;
     avatar: string | null;
     status: string | null;
-    realRole: string | null;
     dept: {
         deptId: string | null;
         deptName: string | null;
@@ -24,8 +23,7 @@ export interface UserInfo {
         provinceId: string | null;
         districtId: string | null;
         wardId: string | null;
-    },
-    role: string | null;
+    }
 }
 
 interface UserInfoContextType {
