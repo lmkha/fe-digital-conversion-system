@@ -105,16 +105,6 @@ export default function Page() {
             />
             <Filter />
 
-            {/* <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem />
-            <UserItem /> */}
             <UserItem
                 name="Nguyễn Văn A"
                 username="nguyenvana"
@@ -127,7 +117,7 @@ export default function Page() {
 
             <AddUserModal
                 open={openAddUserModal}
-                deptId={''}
+                deptId={'91f31539-1817-4f4e-a7b5-15a7786a4a10'}
                 onClose={() => setOpenAddUserModal(false)}
                 onSubmitted={(success, message) => {
                     console.log(success, message);
