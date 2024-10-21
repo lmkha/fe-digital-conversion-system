@@ -17,7 +17,7 @@ import {
 } from '@/services/department';
 import AutoComplete from "../components/autocomplete";
 import { getRolesByDeptId } from "@/services/role";
-import { findUserById, updateUser } from "@/services/user";
+import { findUserById, updateUser, uploadAvatarAndUpdateUser } from "@/services/user";
 import ImagePickerForEditModal from "../components/image-picker-edit";
 
 interface EditUserModalProps {
@@ -198,7 +198,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                         name: result.data.ward.wardName,
                         id: result.data.ward.wardId
                     },
-                    addressDetail: result.data.address ? result.data.address : '',
+                    addressDetail: result.data.address,
                     status: result.data.status.toString(),
                     avatar: result.data.avatar
                 });
@@ -213,6 +213,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                 });
                 setIsLoading(false);
             });
+            console.log(`Check var address: ${submitData.addressDetail}`)
         }
     }, [open, userId]);
 
@@ -324,7 +325,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                         avatarUrl={submitData.avatar}
                                         clearImage={!open}
                                         onSelectedImage={(file, imageUrl, success, errorMessage) => {
-                                            console.log(`Check image: ${imageUrl}`)
+                                            console.log(`Check image: file ${file}, imageUrl ${imageUrl}, success ${success}, errorMessage ${errorMessage}`)
                                             setImageUploadInfo({
                                                 file: file,
                                                 imageUrl: imageUrl,
@@ -556,28 +557,61 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                     fontSize: 18,
                                 }}
                                 onClick={async () => {
-                                    updateUser(
-                                        userId,
-                                        submitData.email,
-                                        submitData.name,
-                                        submitData.phone,
-                                        submitData.ward.id,
-                                        submitData.district.id,
-                                        submitData.province.id,
-                                        submitData.gender.id,
-                                        submitData.dob.format('MM/DD/YYYY'),
-                                        submitData.status,
-                                        submitData.role.id,
-                                        submitData.jobTitle,
-                                        deptId
-                                    ).then((result) => {
-                                        if (result.success) {
-                                            onSubmitted(true, "Cập nhật người dùng thành công!");
-                                            onClose();
-                                        } else {
-                                            onSubmitted(false, result.message);
-                                        }
-                                    });
+                                    // Avatar not change
+                                    if (imageUploadInfo.file === null) {
+                                        updateUser(
+                                            userId,
+                                            submitData.email,
+                                            submitData.name,
+                                            submitData.phone,
+                                            submitData.ward.id,
+                                            submitData.district.id,
+                                            submitData.province.id,
+                                            submitData.gender.id,
+                                            submitData.dob.format('MM/DD/YYYY'),
+                                            submitData.status,
+                                            submitData.role.id,
+                                            submitData.jobTitle,
+                                            deptId,
+                                            submitData.addressDetail,
+                                            submitData.avatar
+                                        ).then((result) => {
+                                            if (result.success) {
+                                                onSubmitted(true, "Cập nhật người dùng thành công!");
+                                                onClose();
+                                            } else {
+                                                onSubmitted(false, result.message);
+                                            }
+                                        });
+                                    } else {
+                                        // Avatar change
+                                        uploadAvatarAndUpdateUser(
+                                            userId,
+                                            submitData.email,
+                                            submitData.name,
+                                            submitData.phone,
+                                            submitData.ward.id,
+                                            submitData.district.id,
+                                            submitData.province.id,
+                                            submitData.gender.id,
+                                            submitData.dob.format('MM/DD/YYYY'),
+                                            submitData.status,
+                                            submitData.role.id,
+                                            submitData.jobTitle,
+                                            deptId,
+                                            submitData.addressDetail,
+                                            imageUploadInfo.file
+                                        ).then((result) => {
+                                            if (result.success) {
+                                                onSubmitted(true, "Cập nhật người dùng thành công!");
+                                                onClose();
+                                            } else {
+                                                onSubmitted(false, result.message);
+                                            }
+                                        });
+
+                                    }
+
                                 }}
                             >
                                 Lưu

@@ -519,7 +519,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                         console.log('Submit data: ', submitData);
                         console.log('Image upload info: ', imageUploadInfo);
                         const result = await uploadAvatarAndCreateUser(
-                            imageUploadInfo.file!!,
+                            imageUploadInfo.file,
                             submitData.username,
                             submitData.password,
                             submitData.name,

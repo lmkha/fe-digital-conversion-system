@@ -143,7 +143,9 @@ class UserAPI extends Base {
         status: string,
         roleId: string,
         jobTitle: string,
-        deptId: string
+        deptId: string,
+        address: string,
+        avatar: string,
     ) {
         try {
             const response = await this.put('/user/update', {
@@ -159,7 +161,9 @@ class UserAPI extends Base {
                 status: status,
                 roleId: roleId,
                 jobTitle: jobTitle,
-                deptId: deptId
+                deptId: deptId,
+                address: address,
+                avatar: avatar
             });
             return {
                 success: true,
@@ -172,6 +176,45 @@ class UserAPI extends Base {
                 message: err.response.data.message,
                 code: err.response.data.code
             };
+        }
+    }
+
+    async changeUserStatus(userId: string, status: string) {
+        try {
+            const response = await this.patch('/user/change-status', {
+                userId: userId,
+                status: status
+            });
+            return {
+                success: true,
+                message: response.message,
+                code: response.code
+            };
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            };
+        }
+    }
+
+    async deleteUsers(userIds: string[]) {
+        try {
+            const response = await this.post('/user/delete', {
+                userIds: userIds
+            });
+            return {
+                success: true,
+                message: response.message,
+                code: response.code
+            };
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            }
         }
     }
 }

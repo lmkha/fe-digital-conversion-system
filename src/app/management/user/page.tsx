@@ -6,7 +6,7 @@ import Filter from "./components/filter";
 import UserItem from "./components/user-item";
 import AddUserModal from "./modals/add-user-modal";
 import Selector from "./components/selector";
-import { findUserByDeptId, findUserByFilter } from "@/services/user";
+import { deleteUsers, findUserByDeptId, findUserByFilter } from "@/services/user";
 import EditUserModal from "./modals/edit-user-modal";
 import Toast from "@/core/components/toast";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
@@ -429,28 +429,28 @@ export default function Page() {
                 isShow={showSelectedDataToolbar}
                 totalSelected={checkedItems.length}
                 onDelete={() => {
-                    // const dl = async () => {
-                    //     const result = await deleteRole(
-                    //         checkedItems
-                    //     );
-                    //     if (result.success) {
-                    //         setToastInfo({
-                    //             showToast: true,
-                    //             severity: 'success',
-                    //             message: 'Xóa vai trò thành công!'
-                    //         });
-                    //         setCheckedItems([]);
-                    //         updateRoleAndPageInfo();
-                    //         console.log('Delete success');
-                    //     } else {
-                    //         setToastInfo({
-                    //             showToast: true,
-                    //             severity: 'error',
-                    //             message: result.message
-                    //         });
-                    //     }
-                    // }
-                    // dl();
+                    const dl = async () => {
+                        const result = await deleteUsers(
+                            checkedItems
+                        );
+                        if (result.success) {
+                            setToastInfo({
+                                showToast: true,
+                                severity: 'success',
+                                message: 'Xóa vai trò thành công!'
+                            });
+                            setCheckedItems([]);
+                            updateUsersAndPageInfo();
+                            console.log('Delete success');
+                        } else {
+                            setToastInfo({
+                                showToast: true,
+                                severity: 'error',
+                                message: result.message
+                            });
+                        }
+                    }
+                    dl();
                 }}
                 onClose={() => {
                     handleUnselectAll();

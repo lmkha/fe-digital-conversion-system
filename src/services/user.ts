@@ -1,7 +1,12 @@
 import user from "@/api/user";
 
-const uploadAvatar = async (file: File) => {
-    console.log(`Check file in uploadAvatar: `, file);
+const uploadAvatar = async (file: File | null) => {
+    if (!file) {
+        return {
+            success: true,
+            url: ''
+        }
+    }
     const result = await user.uploadAvatar(file);
     if (result.success) {
         return {
@@ -66,7 +71,7 @@ const createUser = async (
 }
 
 export const uploadAvatarAndCreateUser = async (
-    file: File,
+    file: File | null,
     username: string,
     password: string,
     fullName: string,
@@ -82,10 +87,7 @@ export const uploadAvatarAndCreateUser = async (
     status: string,
     jobTitle: string,
 ) => {
-    console.log(`Check file in uploadAvatarAndCreateUser: `, file);
     const uploadResult = await uploadAvatar(file);
-    console.log(`Check uploadResult in uploadAvatarAndCreateUser: `, uploadResult);
-    console.log(`Check upload avatar url in uploadAvatarAndCreateUser: `, uploadResult.url);
     if (uploadResult.success) {
         const createUserResult = await createUser(
             username,
@@ -118,7 +120,7 @@ export const uploadAvatarAndCreateUser = async (
     } else {
         return {
             success: false,
-            message: ''
+            message: 'Upload avatar không thành công!'
         }
     }
 
@@ -214,7 +216,9 @@ export const updateUser = async (
     status: string,
     roleId: string,
     jobTitle: string,
-    deptId: string
+    deptId: string,
+    address: string,
+    avatar: string
 
 ) => {
     return await user.updateUser(
@@ -230,6 +234,71 @@ export const updateUser = async (
         status = status,
         roleId = roleId,
         jobTitle = jobTitle,
-        deptId = deptId
+        deptId = deptId,
+        address = address,
+        avatar = avatar
     );
+}
+
+export const uploadAvatarAndUpdateUser = async (
+    userId: string,
+    email: string,
+    fullName: string,
+    phone: string,
+    wardId: string,
+    districtId: string,
+    provinceId: string,
+    gender: string,
+    dateOfBirth: string,
+    status: string,
+    roleId: string,
+    jobTitle: string,
+    deptId: string,
+    address: string,
+    avatar: File
+) => {
+    const uploadResult = await uploadAvatar(avatar);
+    if (uploadResult.success) {
+        const createUserResult = await updateUser(
+            userId = userId,
+            email = email,
+            fullName = fullName,
+            phone = phone,
+            wardId = wardId,
+            districtId = districtId,
+            provinceId = provinceId,
+            gender = gender,
+            dateOfBirth = dateOfBirth,
+            status = status,
+            roleId = roleId,
+            jobTitle = jobTitle,
+            deptId = deptId,
+            address = address,
+            avatar = uploadResult.url
+        )
+        if (createUserResult.success) {
+            return {
+                success: true,
+            }
+        } else {
+            return {
+                success: false,
+                message: createUserResult.message,
+                code: createUserResult.code
+            }
+        }
+    } else {
+        return {
+            success: false,
+            message: 'Upload avatar thất bại!'
+        }
+    }
+}
+
+export const changeUserStatus = async (userId: string, status: string) => {
+
+}
+
+export const deleteUsers = async (userIds: string[]) => {
+    return await user.deleteUsers(userIds);
 }
