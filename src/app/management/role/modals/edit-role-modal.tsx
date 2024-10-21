@@ -327,7 +327,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
 
                     {/* List of permission */}
                     <Box
-                        maxHeight={230}
+                        maxHeight={200}
                         overflow={'auto'}
                         sx={{
                             mt: 2,

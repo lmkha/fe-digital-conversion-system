@@ -299,7 +299,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
 
                     {/* List of permission */}
                     <Box
-                        maxHeight={230}
+                        maxHeight={200}
                         overflow={'auto'}
                         sx={{
                             mt: 2,

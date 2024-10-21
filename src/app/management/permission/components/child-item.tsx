@@ -5,7 +5,7 @@ import { Divider, Grid2, Stack, Typography } from "@mui/material";
 export function ChildItem({ no, type, permissionCode, permissionName }: PermissionItemProps) {
     return (
         <Stack>
-            <Grid2 container spacing={2} pl={12} height={'48px'} alignItems={'center'} justifyContent={'end'}>
+            <Grid2 container spacing={2} pl={15} height={'48px'} alignItems={'center'} justifyContent={'end'}>
                 <Grid2 size={2}>
                     <Typography>{no}</Typography>
                 </Grid2>
