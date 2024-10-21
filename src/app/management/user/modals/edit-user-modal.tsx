@@ -609,7 +609,6 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                                 onSubmitted(false, result.message);
                                             }
                                         });
-
                                     }
 
                                 }}
