@@ -118,66 +118,68 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
     });
     const [isFirstTime, setIsFirstTime] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
-    const [isSubmitting, setLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     // handle submit data
     const handleSubmit = async () => {
-        setLoading(true);
-        // Avatar not change
-        if (imageUploadInfo.file === null) {
-            updateUser(
-                userId,
-                submitData.email,
-                submitData.name,
-                submitData.phone,
-                submitData.ward.id,
-                submitData.district.id,
-                submitData.province.id,
-                submitData.gender.id,
-                submitData.dob.format('MM/DD/YYYY'),
-                submitData.status,
-                submitData.role.id,
-                submitData.jobTitle,
-                deptId,
-                submitData.addressDetail,
-                submitData.avatar
-            ).then((result) => {
-                if (result.success) {
-                    onSubmitted(true, "Cập nhật người dùng thành công!");
-                    onClose();
-                } else {
-                    onSubmitted(false, result.message);
-                }
-            });
-        } else {
-            // Avatar change
-            uploadAvatarAndUpdateUser(
-                userId,
-                submitData.email,
-                submitData.name,
-                submitData.phone,
-                submitData.ward.id,
-                submitData.district.id,
-                submitData.province.id,
-                submitData.gender.id,
-                submitData.dob.format('MM/DD/YYYY'),
-                submitData.status,
-                submitData.role.id,
-                submitData.jobTitle,
-                deptId,
-                submitData.addressDetail,
-                imageUploadInfo.file
-            ).then((result) => {
-                if (result.success) {
-                    onSubmitted(true, "Cập nhật người dùng thành công!");
-                    onClose();
-                } else {
-                    onSubmitted(false, result.message);
-                }
-            });
-        }
+        setIsSubmitting(true); // Bắt đầu trạng thái loading
 
-        setLoading(false);
+        try {
+            let result;
+
+            // Avatar không thay đổi
+            if (imageUploadInfo.file === null) {
+                result = await updateUser(
+                    userId,
+                    submitData.email,
+                    submitData.name,
+                    submitData.phone,
+                    submitData.ward.id,
+                    submitData.district.id,
+                    submitData.province.id,
+                    submitData.gender.id,
+                    submitData.dob.format('MM/DD/YYYY'),
+                    submitData.status,
+                    submitData.role.id,
+                    submitData.jobTitle,
+                    deptId,
+                    submitData.addressDetail,
+                    submitData.avatar
+                );
+            } else {
+                // Avatar thay đổi
+                result = await uploadAvatarAndUpdateUser(
+                    userId,
+                    submitData.email,
+                    submitData.name,
+                    submitData.phone,
+                    submitData.ward.id,
+                    submitData.district.id,
+                    submitData.province.id,
+                    submitData.gender.id,
+                    submitData.dob.format('MM/DD/YYYY'),
+                    submitData.status,
+                    submitData.role.id,
+                    submitData.jobTitle,
+                    deptId,
+                    submitData.addressDetail,
+                    imageUploadInfo.file
+                );
+            }
+
+            if (result.success) {
+                onSubmitted(true, "Cập nhật người dùng thành công!");
+                onClose();
+            } else {
+                onSubmitted(false, result.message);
+            }
+        } catch (error) {
+            console.error("Error updating user:", error);
+            onSubmitted(false, "Đã xảy ra lỗi khi cập nhật người dùng.");
+        } finally {
+            setIsSubmitting(false); // Dừng trạng thái loading khi API hoàn thành
+        }
     };
+
 
     // UseEffect ----------------------------------------------------------------
     // Fetch user info base on userId
@@ -604,26 +606,6 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                             </Stack>
 
                             {/* Button */}
-                            {/* <Button
-                                variant="contained"
-                                sx={{
-                                    position: 'absolute',
-                                    width: 100,
-                                    height: 50,
-                                    bottom: 0,
-                                    right: 0,
-                                    m: 2,
-                                    bgcolor: '#2962FF',
-                                    textTransform: 'none',
-                                    fontWeight: 'bold',
-                                    fontSize: 18,
-                                }}
-                                onClick={async () => {
-                                    await handleSubmit();
-                                }}
-                            >
-                                Lưu
-                            </Button> */}
                             <Button
                                 variant="contained"
                                 sx={{
