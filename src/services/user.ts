@@ -296,7 +296,7 @@ export const uploadAvatarAndUpdateUser = async (
 }
 
 export const changeUserStatus = async (userId: string, status: string) => {
-
+    return await user.changeUserStatus(userId, status);
 }
 
 export const deleteUsers = async (userIds: string[]) => {

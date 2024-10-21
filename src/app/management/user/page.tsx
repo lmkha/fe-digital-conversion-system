@@ -6,7 +6,7 @@ import Filter from "./components/filter";
 import UserItem from "./components/user-item";
 import AddUserModal from "./modals/add-user-modal";
 import Selector from "./components/selector";
-import { deleteUsers, findUserByDeptId, findUserByFilter } from "@/services/user";
+import { changeUserStatus, deleteUsers, findUserByDeptId, findUserByFilter } from "@/services/user";
 import EditUserModal from "./modals/edit-user-modal";
 import Toast from "@/core/components/toast";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
@@ -361,6 +361,24 @@ export default function Page() {
                             role={user.realRole}
                             jobTitle={user.jobTitle}
                             status={user.status.toString()}
+                            onStatusChange={(id, status) => {
+                                changeUserStatus(id, status).then((result) => {
+                                    if (result.success) {
+                                        setToastInfo({
+                                            showToast: true,
+                                            severity: 'success',
+                                            message: 'Thay đổi trạng thái thành công!'
+                                        });
+                                        updateUsersAndPageInfo();
+                                    } else {
+                                        setToastInfo({
+                                            showToast: true,
+                                            severity: 'error',
+                                            message: result.message
+                                        });
+                                    }
+                                });
+                            }}
                             checked={checkedItems.includes(user.userId)}
                             onChangePassword={() => { }}
                             onEdit={() => {

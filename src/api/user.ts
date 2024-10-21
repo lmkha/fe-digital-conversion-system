@@ -181,7 +181,7 @@ class UserAPI extends Base {
 
     async changeUserStatus(userId: string, status: string) {
         try {
-            const response = await this.patch('/user/change-status', {
+            const response = await this.patch('/user/update-status', {
                 userId: userId,
                 status: status
             });
