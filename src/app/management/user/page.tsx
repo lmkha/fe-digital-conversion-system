@@ -350,7 +350,6 @@ export default function Page() {
             }
             {userList.length > 0 &&
                 userList.map((user) => {
-                    console.log(user);
                     return (
                         <UserItem
                             key={user.userId}

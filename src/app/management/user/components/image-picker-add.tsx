@@ -1,18 +1,27 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, IconButton, Stack, Typography, Avatar, Tooltip } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
 interface ImagePickerForAddModalProps {
     onSelectedImage: (file: File | null, imageUrl: string, success: boolean, errorMessage: string) => void;
+    clearImage: boolean;
 }
 
-export default function ImagePickerForAddModal({ onSelectedImage }: ImagePickerForAddModalProps) {
+export default function ImagePickerForAddModal({ onSelectedImage, clearImage }: ImagePickerForAddModalProps) {
     const [isSuccess, setIsSuccess] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);  // State for selected image URL
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        if (clearImage) {
+            setSelectedImage(null);
+            onSelectedImage(null, '', true, '');
+        }
+    }, [clearImage]);
 
     const handleButtonClick = () => {
         if (fileInputRef.current) {

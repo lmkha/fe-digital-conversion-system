@@ -1,20 +1,29 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, IconButton, Stack, Typography, Avatar, Tooltip } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { CldImage } from 'next-cloudinary';  // Giả định bạn đang sử dụng next-cloudinary cho ảnh từ Cloudinary
 
 interface ImagePickerForEditModalProps {
     onSelectedImage: (file: File | null, imageUrl: string, success: boolean, errorMessage: string) => void;
+    clearImage: boolean;
     avatarUrl?: string;
 }
 
-export default function ImagePickerForEditModal({ onSelectedImage, avatarUrl }: ImagePickerForEditModalProps) {
+export default function ImagePickerForEditModal({ onSelectedImage, clearImage, avatarUrl }: ImagePickerForEditModalProps) {
     const [isSuccess, setIsSuccess] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);  // State for selected image URL
     const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+    useEffect(() => {
+        if (clearImage) {
+            setSelectedImage(null);
+            onSelectedImage(null, '', true, '');
+        }
+    }, [clearImage]);
 
     const handleButtonClick = () => {
         if (fileInputRef.current) {

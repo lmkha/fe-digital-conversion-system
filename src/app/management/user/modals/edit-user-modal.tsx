@@ -16,7 +16,6 @@ import {
     getWards,
 } from '@/services/department';
 import AutoComplete from "../components/autocomplete";
-import ImagePickerForAddModal from "../components/image-picker-add";
 import { getRolesByDeptId } from "@/services/role";
 import { findUserById, updateUser } from "@/services/user";
 import ImagePickerForEditModal from "../components/image-picker-edit";
@@ -128,8 +127,46 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
     useEffect(() => {
         // When close modal, reset all data
         if (!open) {
+            setSubmitData({
+                userId: '',
+                name: '',
+                jobTitle: '',
+                gender: {
+                    id: '',
+                    name: ''
+                },
+                dob: dayjs(),
+                role: {
+                    name: '',
+                    id: ''
+                },
+                email: '',
+                phone: '',
+                province: {
+                    name: '',
+                    id: ''
+                },
+                district: {
+                    name: '',
+                    id: ''
+                },
+                ward: {
+                    name: '',
+                    id: ''
+                },
+                addressDetail: '',
+                status: '1',
+                avatar: ''
+            });
+            setImageUploadInfo({
+                file: null,
+                imageUrl: '',
+                success: true,
+                errorMessage: ''
+            });
             setIsLoading(true);
             setIsFirstTime(true);
+
         }
         if (open && userId) {
             findUserById(userId).then((result) => {
@@ -177,7 +214,6 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                 setIsLoading(false);
             });
         }
-        console.log(`Avatar: ${submitData.avatar}`)
     }, [open, userId]);
 
 
@@ -286,7 +322,9 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                     }}>
                                     <ImagePickerForEditModal
                                         avatarUrl={submitData.avatar}
+                                        clearImage={!open}
                                         onSelectedImage={(file, imageUrl, success, errorMessage) => {
+                                            console.log(`Check image: ${imageUrl}`)
                                             setImageUploadInfo({
                                                 file: file,
                                                 imageUrl: imageUrl,

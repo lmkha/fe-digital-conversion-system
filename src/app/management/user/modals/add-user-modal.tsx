@@ -122,6 +122,47 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
 
     // Address ------------------------------------------------------------------
     useEffect(() => {
+        if (!open) {
+            setSubmitData({
+                username: '',
+                password: '',
+                name: '',
+                jobTitle: '',
+                gender: {
+                    id: '',
+                    name: ''
+                },
+                dob: dayjs(),
+                role: {
+                    name: '',
+                    id: ''
+                },
+                email: '',
+                phone: '',
+                province: {
+                    name: '',
+                    id: ''
+                },
+                district: {
+                    name: '',
+                    id: ''
+                },
+                ward: {
+                    name: '',
+                    id: ''
+                },
+                addressDetail: '',
+                status: '1',
+                avatar: ''
+            });
+            setImageUploadInfo({
+                file: null,
+                imageUrl: '',
+                success: true,
+                errorMessage: ''
+            });
+            return;
+        }
         if (open && deptId) {
             getProvinces().then((res) => {
                 setProvinceList(res);
@@ -222,7 +263,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             px: 2,
                             py: 4,
                         }}>
-                        <ImagePickerForAddModal onSelectedImage={(file, imageUrl, success, errorMessage) => {
+                        <ImagePickerForAddModal clearImage={!open} onSelectedImage={(file, imageUrl, success, errorMessage) => {
                             setImageUploadInfo({
                                 file: file,
                                 imageUrl: imageUrl,
