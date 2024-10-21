@@ -7,6 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker as MUIDatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useEffect, useState } from "react";
+import { CircularProgress } from '@mui/material';
 import {
     District,
     Ward,
@@ -117,6 +118,67 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
     });
     const [isFirstTime, setIsFirstTime] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
+    const [isSubmitting, setLoading] = useState(false);
+    // handle submit data
+    const handleSubmit = async () => {
+        setLoading(true);
+        // Avatar not change
+        if (imageUploadInfo.file === null) {
+            updateUser(
+                userId,
+                submitData.email,
+                submitData.name,
+                submitData.phone,
+                submitData.ward.id,
+                submitData.district.id,
+                submitData.province.id,
+                submitData.gender.id,
+                submitData.dob.format('MM/DD/YYYY'),
+                submitData.status,
+                submitData.role.id,
+                submitData.jobTitle,
+                deptId,
+                submitData.addressDetail,
+                submitData.avatar
+            ).then((result) => {
+                if (result.success) {
+                    onSubmitted(true, "Cập nhật người dùng thành công!");
+                    onClose();
+                } else {
+                    onSubmitted(false, result.message);
+                }
+            });
+        } else {
+            // Avatar change
+            uploadAvatarAndUpdateUser(
+                userId,
+                submitData.email,
+                submitData.name,
+                submitData.phone,
+                submitData.ward.id,
+                submitData.district.id,
+                submitData.province.id,
+                submitData.gender.id,
+                submitData.dob.format('MM/DD/YYYY'),
+                submitData.status,
+                submitData.role.id,
+                submitData.jobTitle,
+                deptId,
+                submitData.addressDetail,
+                imageUploadInfo.file
+            ).then((result) => {
+                if (result.success) {
+                    onSubmitted(true, "Cập nhật người dùng thành công!");
+                    onClose();
+                } else {
+                    onSubmitted(false, result.message);
+                }
+            });
+        }
+
+        setLoading(false);
+    };
+
     // UseEffect ----------------------------------------------------------------
     // Fetch user info base on userId
     useEffect(() => {
@@ -542,7 +604,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                             </Stack>
 
                             {/* Button */}
-                            <Button
+                            {/* <Button
                                 variant="contained"
                                 sx={{
                                     position: 'absolute',
@@ -557,63 +619,33 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                     fontSize: 18,
                                 }}
                                 onClick={async () => {
-                                    // Avatar not change
-                                    if (imageUploadInfo.file === null) {
-                                        updateUser(
-                                            userId,
-                                            submitData.email,
-                                            submitData.name,
-                                            submitData.phone,
-                                            submitData.ward.id,
-                                            submitData.district.id,
-                                            submitData.province.id,
-                                            submitData.gender.id,
-                                            submitData.dob.format('MM/DD/YYYY'),
-                                            submitData.status,
-                                            submitData.role.id,
-                                            submitData.jobTitle,
-                                            deptId,
-                                            submitData.addressDetail,
-                                            submitData.avatar
-                                        ).then((result) => {
-                                            if (result.success) {
-                                                onSubmitted(true, "Cập nhật người dùng thành công!");
-                                                onClose();
-                                            } else {
-                                                onSubmitted(false, result.message);
-                                            }
-                                        });
-                                    } else {
-                                        // Avatar change
-                                        uploadAvatarAndUpdateUser(
-                                            userId,
-                                            submitData.email,
-                                            submitData.name,
-                                            submitData.phone,
-                                            submitData.ward.id,
-                                            submitData.district.id,
-                                            submitData.province.id,
-                                            submitData.gender.id,
-                                            submitData.dob.format('MM/DD/YYYY'),
-                                            submitData.status,
-                                            submitData.role.id,
-                                            submitData.jobTitle,
-                                            deptId,
-                                            submitData.addressDetail,
-                                            imageUploadInfo.file
-                                        ).then((result) => {
-                                            if (result.success) {
-                                                onSubmitted(true, "Cập nhật người dùng thành công!");
-                                                onClose();
-                                            } else {
-                                                onSubmitted(false, result.message);
-                                            }
-                                        });
-                                    }
-
+                                    await handleSubmit();
                                 }}
                             >
                                 Lưu
+                            </Button> */}
+                            <Button
+                                variant="contained"
+                                sx={{
+                                    position: 'absolute',
+                                    width: 100,
+                                    height: 50,
+                                    bottom: 0,
+                                    right: 0,
+                                    m: 2,
+                                    bgcolor: '#2962FF',
+                                    textTransform: 'none',
+                                    fontWeight: 'bold',
+                                    fontSize: 18,
+                                }}
+                                onClick={handleSubmit}
+                                disabled={isSubmitting}  // Vô hiệu hóa button khi đang loading
+                            >
+                                {isSubmitting ? (
+                                    <CircularProgress size={24} sx={{ color: 'white' }} /> // Hiển thị vòng tròn xoay
+                                ) : (
+                                    'Lưu'
+                                )}
                             </Button>
                         </>
                     )

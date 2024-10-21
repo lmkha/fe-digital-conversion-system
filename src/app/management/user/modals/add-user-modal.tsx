@@ -20,7 +20,7 @@ import AutoComplete from "../components/autocomplete";
 import ImagePickerForAddModal from "../components/image-picker-add";
 import { getRolesByDeptId } from "@/services/role";
 import { uploadAvatarAndCreateUser } from "@/services/user";
-import { stringify } from "querystring";
+import { CircularProgress } from '@mui/material';
 
 interface AddUserModalProps {
     open: boolean;
@@ -118,6 +118,39 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
         status: '1',
         avatar: ''
     });
+    const [loading, setLoading] = useState(false);
+
+    const handleSubmit = async () => {
+        setLoading(true);
+        const result = await uploadAvatarAndCreateUser(
+            imageUploadInfo.file,
+            submitData.username,
+            submitData.password,
+            submitData.name,
+            submitData.email,
+            submitData.phone,
+            submitData.role.id,
+            deptId,
+            submitData.province.id,
+            submitData.district.id,
+            submitData.ward.id,
+            submitData.gender.id,
+            submitData.dob.format('MM-DD-YYYY'),
+            submitData.status,
+            submitData.jobTitle,
+            submitData.addressDetail,
+        );
+
+        if (result.success) {
+            onSubmitted(true, 'Thêm người dùng thành công');
+            onClose();
+        } else {
+            onSubmitted(false, result.message);
+        }
+
+        setLoading(false);
+    };
+
     // UseEffect ----------------------------------------------------------------
 
     // Address ------------------------------------------------------------------
@@ -515,35 +548,14 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                         fontWeight: 'bold',
                         fontSize: 18,
                     }}
-                    onClick={async () => {
-                        console.log('Submit data: ', submitData);
-                        console.log('Image upload info: ', imageUploadInfo);
-                        const result = await uploadAvatarAndCreateUser(
-                            imageUploadInfo.file,
-                            submitData.username,
-                            submitData.password,
-                            submitData.name,
-                            submitData.email,
-                            submitData.phone,
-                            submitData.role.id,
-                            deptId,
-                            submitData.province.id,
-                            submitData.district.id,
-                            submitData.ward.id,
-                            submitData.gender.id,
-                            submitData.dob.format('MM-DD-YYYY'),
-                            submitData.status,
-                            submitData.jobTitle,
-                        )
-                        if (result.success) {
-                            onSubmitted(true, 'Thêm người dùng thành công');
-                            onClose();
-                        } else {
-                            onSubmitted(false, result.message);
-                        }
-                    }}
+                    onClick={handleSubmit}
+                    disabled={loading}  // Vô hiệu hóa button khi đang loading
                 >
-                    Thêm
+                    {loading ? (
+                        <CircularProgress size={24} sx={{ color: 'white' }} /> // Hiển thị vòng tròn xoay
+                    ) : (
+                        'Thêm'
+                    )}
                 </Button>
 
             </Box>

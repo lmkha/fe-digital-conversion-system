@@ -36,6 +36,7 @@ const createUser = async (
     dateOfBirth: string,
     status: string,
     jobTitle: string,
+    address: string,
     avatar: string
 ) => {
     const result = await user.createUser(
@@ -53,6 +54,7 @@ const createUser = async (
         dateOfBirth = dateOfBirth,
         status = status,
         jobTitle = jobTitle,
+        address = address,
         avatar = avatar
     )
 
@@ -86,6 +88,7 @@ export const uploadAvatarAndCreateUser = async (
     dateOfBirth: string,
     status: string,
     jobTitle: string,
+    address: string
 ) => {
     const uploadResult = await uploadAvatar(file);
     if (uploadResult.success) {
@@ -104,6 +107,7 @@ export const uploadAvatarAndCreateUser = async (
             dateOfBirth,
             status,
             jobTitle,
+            address,
             uploadResult.url
         )
         if (createUserResult.success) {

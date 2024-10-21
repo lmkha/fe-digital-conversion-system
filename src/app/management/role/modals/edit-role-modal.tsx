@@ -339,6 +339,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                                 key={item.id}
                                 expanded={expandedGroupItemIds.includes(item.id)}
                                 checked={item.isCheck}
+                                indeterminate={item.children.some((child) => child.isCheck) && item.children.some((child) => !child.isCheck)}
                                 permissionCode={item.code}
                                 permissionName={item.name}
                                 handleExpand={() => {
@@ -512,6 +513,7 @@ export default function CustomizedAccordions() {
 interface PermissionGroupItemProps {
     expanded: boolean;
     checked: boolean;
+    indeterminate?: boolean;
     permissionCode: string;
     permissionName: string;
     onCheck: () => void;
@@ -522,6 +524,7 @@ interface PermissionGroupItemProps {
 function PermissionGroupItem({
     expanded,
     checked,
+    indeterminate = false,
     permissionCode,
     permissionName,
     onCheck,
@@ -541,7 +544,12 @@ function PermissionGroupItem({
                     alignItems={'center'}
                     sx={{ pl: 4, width: '100%' }}
                 >
-                    <Checkbox size='small' sx={{ mr: 6 }} checked={checked} onChange={onCheck} onClick={(e) => e.stopPropagation()} />
+                    <Checkbox size='small' sx={{ mr: 6 }}
+                        checked={checked}
+                        indeterminate={indeterminate}
+                        onChange={onCheck}
+                        onClick={(e) => e.stopPropagation()}
+                    />
                     <Typography sx={{ width: '40%' }}>{permissionCode}</Typography>
                     <Typography sx={{ width: '40%' }}>{permissionName}</Typography>
                 </Stack>

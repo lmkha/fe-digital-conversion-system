@@ -16,6 +16,7 @@ class UserAPI extends Base {
         dateOfBirth: string,
         status: string,
         jobTitle: string,
+        address: string,
         avatar: string
     ) {
         try {
@@ -35,6 +36,7 @@ class UserAPI extends Base {
                 dateOfBirth: dateOfBirth,
                 status: status,
                 jobTitle: jobTitle,
+                address: address,
                 avatar: avatar
             });
             return {
@@ -90,7 +92,7 @@ class UserAPI extends Base {
                 pageSize: pageSize,
                 pageNumber: pageNumber,
                 fullName: fullName,
-                username: username,
+                userName: username,
                 email: email,
                 phone: phone,
                 realRole: realRole,

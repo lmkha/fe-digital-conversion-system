@@ -331,6 +331,7 @@ export default function Page() {
                 onCallBackInfoChange={(callBackInfo) => { }}
             />
             <Filter
+                deptId={selectorData.deptId}
                 onTextChange={(key, value) => {
                 }}
                 onSubmitted={(data) => {

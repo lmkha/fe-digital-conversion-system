@@ -1,14 +1,17 @@
 'use client';
 
 import { Box, Stack, TextField, Typography } from "@mui/material";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import AutoComplete from "./autocomplete";
+import { getRolesByDeptId } from "@/services/role";
 
 interface FilterProps {
+    deptId: string;
     onTextChange: (key: 'name' | 'username' | 'email' | 'phone' | 'role' | 'jobTitle' | 'status', value: string) => void;
     onSubmitted: ({ name, username, email, phone, role, jobTitle, status }: { name: string, username: string, email: string, phone: string, role: string, jobTitle: string, status: string }) => void;
 }
 
-export default function Filter({ onTextChange, onSubmitted }: FilterProps) {
+export default function Filter({ deptId, onTextChange, onSubmitted }: FilterProps) {
     const [data, setData] = useState<{
         name: string;
         username: string;
@@ -26,7 +29,11 @@ export default function Filter({ onTextChange, onSubmitted }: FilterProps) {
         jobTitle: '',
         status: ''
     });
-
+    const [roles, setRoles] = useState<{
+        roleId: string;
+        roleName: string;
+    }[]>([]);
+    const [statusName, setStatusName] = useState<string>('');
     const timeoutRef = useRef<NodeJS.Timeout | null>(null); // To store the timeout reference
 
     const changeData = (key: 'name' | 'username' | 'email' | 'phone' | 'role' | 'jobTitle' | 'status', value: string) => {
@@ -54,6 +61,14 @@ export default function Filter({ onTextChange, onSubmitted }: FilterProps) {
             onSubmitted({ name: data.name, username: data.username, email: data.email, phone: data.phone, role: data.role, jobTitle: data.jobTitle, status: data.status });
         }
     };
+
+    useEffect(() => {
+        if (deptId) {
+            getRolesByDeptId(deptId).then((res) => {
+                setRoles(res.roles);
+            });
+        }
+    }, [deptId]);
 
     return (
         <Box
@@ -101,11 +116,16 @@ export default function Filter({ onTextChange, onSubmitted }: FilterProps) {
                         onKeyDown={handleKeyDown}
                     />
                 </Stack>
-                <Stack width='15%' spacing={2}>
+                <Stack width='15%' spacing={2} sx={{ color: 'black' }}>
                     <Typography fontWeight='bold'>Quyền</Typography>
-                    <TextField size="small" sx={{ width: '100%', backgroundColor: 'white' }}
-                        onChange={(e) => changeData('role', e.target.value)}
-                        onKeyDown={handleKeyDown}
+                    <AutoComplete
+                        label=""
+                        value={{ name: data.role, id: data.role }}
+                        options={roles.map(role => ({ id: role.roleId, name: role.roleName })) || []}
+                        onChange={(value) => {
+                            changeData('role', value.name);
+                        }}
+                        width="100%"
                     />
                 </Stack>
                 <Stack width='15%' spacing={2}>
@@ -117,9 +137,15 @@ export default function Filter({ onTextChange, onSubmitted }: FilterProps) {
                 </Stack>
                 <Stack width='10%' spacing={2}>
                     <Typography fontWeight='bold'>Kích hoạt</Typography>
-                    <TextField size="small" sx={{ width: '100%', backgroundColor: 'white' }}
-                        onChange={(e) => changeData('status', e.target.value)}
-                        onKeyDown={handleKeyDown}
+                    <AutoComplete
+                        label=""
+                        value={{ name: statusName, id: data.status }}
+                        options={[{ id: '1', name: 'Bật' }, { id: '0', name: 'Tắt' }]}
+                        onChange={(value) => {
+                            changeData('status', value.id);
+                            setStatusName(value.name);
+                        }}
+                        width="100%"
                     />
                 </Stack>
 
