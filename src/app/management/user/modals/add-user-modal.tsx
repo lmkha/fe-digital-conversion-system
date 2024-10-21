@@ -17,8 +17,10 @@ import {
     getWards,
 } from '@/services/department';
 import AutoComplete from "../components/autocomplete";
-import ImagePicker from "../components/image-picker";
+import ImagePickerForAddModal from "../components/image-picker-add";
 import { getRolesByDeptId } from "@/services/role";
+import { uploadAvatarAndCreateUser } from "@/services/user";
+import { stringify } from "querystring";
 
 interface AddUserModalProps {
     open: boolean;
@@ -33,7 +35,13 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
     const [districtList, setDistrictList] = useState<District[]>([]);
     const [wardList, setWardList] = useState<Ward[]>([]);
     // --------------------------------------------------------------------------
-    const [imageUploadInfo, setImageUploadInfo] = useState({
+    const [imageUploadInfo, setImageUploadInfo] = useState<{
+        file: File | null;
+        imageUrl: string;
+        success: boolean;
+        errorMessage: string;
+    }>({
+        file: null,
         imageUrl: '',
         success: true,
         errorMessage: ''
@@ -47,7 +55,38 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
         roleId: string;
         roleName: string;
     }[]>([]);
-    const [submitData, setSubmitData] = useState({
+    const [submitData, setSubmitData] = useState<{
+        username: string;
+        password: string;
+        name: string;
+        jobTitle: string;
+        gender: {
+            id: string;
+            name: string;
+        };
+        dob: any;  // dayjs() type, you can define this more precisely
+        role: {
+            name: string;
+            id: string;
+        };
+        email: string;
+        phone: string;
+        province: {
+            name: string;
+            id: string;
+        };
+        district: {
+            name: string;
+            id: string;
+        };
+        ward: {
+            name: string;
+            id: string;
+        };
+        addressDetail: string;
+        status: '0' | '1' | '2';
+        avatar: string;
+    }>({
         username: '',
         password: '',
         name: '',
@@ -76,7 +115,8 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
             id: ''
         },
         addressDetail: '',
-        active: true,
+        status: '1',
+        avatar: ''
     });
     // UseEffect ----------------------------------------------------------------
 
@@ -182,8 +222,9 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             px: 2,
                             py: 4,
                         }}>
-                        <ImagePicker onSelectedImage={(imageUrl, success, errorMessage) => {
+                        <ImagePickerForAddModal onSelectedImage={(file, imageUrl, success, errorMessage) => {
                             setImageUploadInfo({
+                                file: file,
                                 imageUrl: imageUrl,
                                 success: success,
                                 errorMessage: errorMessage
@@ -214,11 +255,11 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
 
                             <Typography fontWeight={'bold'}>Kích hoạt</Typography>
                             <Switch
-                                checked={submitData.active}
+                                checked={submitData.status === '1'}
                                 onChange={() => {
                                     setSubmitData({
                                         ...submitData,
-                                        active: !submitData.active
+                                        status: submitData.status === '1' ? '0' : '1'
                                     });
                                 }}
                                 color="primary"
@@ -239,6 +280,12 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                 <TextField size="small" sx={{ width: '55%' }} label={'Tên tài khoản *'}
                                     value={submitData.username}
+                                    onChange={(e) => {
+                                        setSubmitData({
+                                            ...submitData,
+                                            username: e.target.value
+                                        });
+                                    }}
                                 />
                                 <Password
                                     isError={false}
@@ -256,9 +303,21 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                 <TextField size="small" sx={{ width: '55%' }} label={'Họ tên *'}
                                     value={submitData.name}
+                                    onChange={(e) => {
+                                        setSubmitData({
+                                            ...submitData,
+                                            name: e.target.value
+                                        });
+                                    }}
                                 />
                                 <TextField size="small" sx={{ width: '45%' }} label={'Công việc *'}
                                     value={submitData.jobTitle}
+                                    onChange={(e) => {
+                                        setSubmitData({
+                                            ...submitData,
+                                            jobTitle: e.target.value
+                                        });
+                                    }}
                                 />
                             </Stack>
 
@@ -298,9 +357,21 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                 <TextField size="small" sx={{ width: '55%' }} label={'Email *'}
                                     value={submitData.email}
+                                    onChange={(e) => {
+                                        setSubmitData({
+                                            ...submitData,
+                                            email: e.target.value
+                                        });
+                                    }}
                                 />
                                 <TextField size="small" sx={{ width: '45%' }} label={'Số điện thoại *'}
                                     value={submitData.phone}
+                                    onChange={(e) => {
+                                        setSubmitData({
+                                            ...submitData,
+                                            phone: e.target.value
+                                        });
+                                    }}
                                 />
                             </Stack>
 
@@ -376,6 +447,12 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                 <TextField size="small" sx={{ width: '100%' }} label={'Địa chỉ *'}
                                     value={submitData.addressDetail}
+                                    onChange={(e) => {
+                                        setSubmitData({
+                                            ...submitData,
+                                            addressDetail: e.target.value
+                                        });
+                                    }}
                                 />
                             </Stack>
                         </Stack>
@@ -396,6 +473,33 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                         textTransform: 'none',
                         fontWeight: 'bold',
                         fontSize: 18,
+                    }}
+                    onClick={async () => {
+                        console.log('Submit data: ', submitData);
+                        console.log('Image upload info: ', imageUploadInfo);
+                        const result = await uploadAvatarAndCreateUser(
+                            imageUploadInfo.file!!,
+                            submitData.username,
+                            submitData.password,
+                            submitData.name,
+                            submitData.email,
+                            submitData.phone,
+                            submitData.role.id,
+                            deptId,
+                            submitData.province.id,
+                            submitData.district.id,
+                            submitData.ward.id,
+                            submitData.gender.id,
+                            submitData.dob.format('MM-DD-YYYY'),
+                            submitData.status,
+                            submitData.jobTitle,
+                        )
+                        if (result.success) {
+                            onSubmitted(true, 'Thêm người dùng thành công');
+                            onClose();
+                        } else {
+                            onSubmitted(false, result.message);
+                        }
                     }}
                 >
                     Thêm

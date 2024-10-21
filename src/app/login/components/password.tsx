@@ -54,7 +54,7 @@ export default function Password(
                             </IconButton>
                         </InputAdornment>
                     }
-                    label="Mật khẩu"
+                    label="Mật khẩu ||"
                 />
                 {isError && <FormHelperText error>{helperText}</FormHelperText>}
             </FormControl>

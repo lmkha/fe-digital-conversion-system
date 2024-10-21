@@ -1,20 +1,25 @@
-import { Box, Checkbox, Divider, IconButton, Stack, Switch, Typography } from "@mui/material";
+import { Box, Checkbox, Divider, IconButton, Stack, Switch, Tooltip, Typography } from "@mui/material";
 import { FaKey } from "react-icons/fa";
 import CreateIcon from '@mui/icons-material/Create';
 
 interface UserItemProps {
+    userId: string;
     name: string;
     username: string;
     email: string;
     phone: string;
     role: string;
     jobTitle: string;
-    onselect?: () => void;
+    status: '0' | '1' | '2';
+    checked: boolean;
+    onselect?: (id: string) => void;
+    onUnselect?: (id: string) => void;
     onEdit?: () => void;
     onChangePassword?: () => void;
+    onStatusChange?: (id: string, status: '0' | '1' | '2') => void;
 }
 
-export default function UserItem({ name, username, email, phone, role, jobTitle, onselect, onEdit, onChangePassword }: UserItemProps) {
+export default function UserItem({ userId, name, username, email, phone, role, jobTitle, status, checked, onselect, onUnselect, onEdit, onChangePassword, onStatusChange }: UserItemProps) {
     return (
         <Stack>
             <Stack
@@ -25,7 +30,20 @@ export default function UserItem({ name, username, email, phone, role, jobTitle,
                     alignItems={'center'}
                     paddingRight={1}
                 >
-                    <Checkbox />
+                    <Checkbox
+                        checked={checked}
+                        onChange={(event, checked) => {
+                            if (checked) {
+                                if (onselect) {
+                                    onselect(userId);
+                                }
+                            } else {
+                                if (onUnselect) {
+                                    onUnselect(userId);
+                                }
+                            }
+                        }}
+                    />
                     <Stack direction={'row'}>
                         <IconButton onClick={() => {
                             // Edit
@@ -47,14 +65,32 @@ export default function UserItem({ name, username, email, phone, role, jobTitle,
                 </Stack>
 
                 <Stack direction={'row'} width={'90%'} height={'100%'} spacing={2} justifyContent={'center'} alignItems={'center'}>
-                    <Typography width={'20%'}>{name}</Typography>
-                    <Typography width={'15%'}>{username}</Typography>
-                    <Typography width={'20%'}>{email}</Typography>
-                    <Typography width={'15%'}>{phone}</Typography>
-                    <Typography width={'15%'}>{role}</Typography>
-                    <Typography width={'15%'}>{jobTitle}</Typography>
+                    <Tooltip title={name} arrow>
+                        <Typography width={'20%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</Typography>
+                    </Tooltip>
+                    <Tooltip title={username} arrow>
+                        <Typography width={'15%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{username}</Typography>
+                    </Tooltip>
+                    <Tooltip title={email} arrow>
+                        <Typography width={'20%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{email}</Typography>
+                    </Tooltip>
+                    <Tooltip title={phone} arrow>
+                        <Typography width={'15%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{phone}</Typography>
+                    </Tooltip>
+                    <Tooltip title={role} arrow>
+                        <Typography width={'15%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{role}</Typography>
+                    </Tooltip>
+                    <Tooltip title={jobTitle} arrow>
+                        <Typography width={'15%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{jobTitle}</Typography>
+                    </Tooltip>
                     <Box width={'10%'} display={'flex'} justifyContent={'center'} alignContent={'center'}>
-                        <Switch defaultChecked={true} />
+                        <Switch
+                            checked={status === '1'}
+                            onChange={() => {
+                                if (onStatusChange) onStatusChange(userId, status === '1' ? '0' : '1');
+                            }}
+                            color="primary"
+                        />
                     </Box>
                 </Stack>
 

@@ -11,6 +11,7 @@ import { LuDot } from "react-icons/lu";
 import { useAuth } from '@/contexts/auth-context';
 import { get } from "@/hooks/use-local-storage";
 import { logout as serviceLogout } from "@/services/auth";
+import { CldImage } from 'next-cloudinary';
 
 export default function SideNav() {
     return (
@@ -112,22 +113,39 @@ const MiddleSideNav = () => {
 }
 
 const BottomSideNav = () => {
-    const { logout } = useAuth();
+    const { logout, isLoggedIn } = useAuth();
+    const [avatar, setAvatar] = useState<string | null>(null);
+    const [fullName, setFullName] = useState<string | null>(null);
+    useEffect(() => {
+        if (isLoggedIn) {
+            const userInfo = get("userInfo");
+            if (userInfo) {
+                setAvatar(userInfo.avatar);
+                setFullName(userInfo.fullName);
+            }
+        }
+    }, [isLoggedIn]);
     return (
         <button className="flex items-center justify-between text-white border-y-2 border-white mb-1 mx-4 hover:bg-blue-950"
             onClick={() => serviceLogout(logout)}
         >
             <div className="flex items-center gap-2 py-2">
                 {/* Avatar */}
-                <Image
-                    className="rounded-full"
-                    src={'/img/avt.png'}
-                    alt="avatar"
-                    width={50}
-                    height={50}
+                <CldImage
+                    width="50"
+                    height="50"
+                    src={avatar ? avatar : ''}
+                    alt="No avt"
+                    style={{
+                        borderRadius: '50%',
+                        objectFit: 'cover',
+                        width: '50px',
+                        height: '50px',
+                        border: '1px solid black',
+                    }}
                 />
                 {/* Username */}
-                <h1>Le Minh Kha</h1>
+                <h1>{fullName}</h1>
                 {/* Action button icon */}
             </div>
             <GrNext />

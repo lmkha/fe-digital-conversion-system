@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useRef, useState } from 'react';
-import { Box, IconButton, Stack, Typography, Avatar, Alert } from '@mui/material';
+import { Box, IconButton, Stack, Typography, Avatar, Tooltip } from '@mui/material';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 
-interface ImagePickerProps {
-    onSelectedImage: (imageUrl: string, success: boolean, errorMessage: string) => void;
+interface ImagePickerForAddModalProps {
+    onSelectedImage: (file: File | null, imageUrl: string, success: boolean, errorMessage: string) => void;
 }
 
-export default function ImagePicker({ onSelectedImage }: ImagePickerProps) {
+export default function ImagePickerForAddModal({ onSelectedImage }: ImagePickerForAddModalProps) {
     const [isSuccess, setIsSuccess] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
     const [selectedImage, setSelectedImage] = useState<string | null>(null);  // State for selected image URL
@@ -29,14 +29,14 @@ export default function ImagePicker({ onSelectedImage }: ImagePickerProps) {
             const maxFileSize = 100 * 1024;  // 100KB in bytes
 
             if (!validFileTypes.includes(file.type)) {
-                onSelectedImage('', false, 'File phải có định dạng .jpeg, .jpg, hoặc .png');
+                onSelectedImage(null, '', false, 'File phải có định dạng .jpeg, .jpg, hoặc .png');
                 setIsSuccess(false);
                 setSelectedImage(null);  // Clear any previously selected image
                 return;
             }
 
             if (file.size > maxFileSize) {
-                onSelectedImage('', false, 'Kích thước tệp phải nhỏ hơn hoặc bằng 100KB'); ``
+                onSelectedImage(null, '', false, 'Kích thước tệp phải nhỏ hơn hoặc bằng 100KB');
                 setIsSuccess(false);
                 setSelectedImage(null);  // Clear any previously selected image
                 return;
@@ -46,7 +46,7 @@ export default function ImagePicker({ onSelectedImage }: ImagePickerProps) {
             const imageUrl = URL.createObjectURL(file);
             setSelectedImage(imageUrl);
             setIsSuccess(true);
-            onSelectedImage(imageUrl, true, '');
+            onSelectedImage(file, imageUrl, true, '');
         }
     };
 
@@ -55,7 +55,6 @@ export default function ImagePicker({ onSelectedImage }: ImagePickerProps) {
             <Box
                 width={'80%'}
                 sx={{
-                    // border: `2px dashed ${isHovered ? '#007BFF' : '#ccc'}`,
                     border: `2px dashed ${isSuccess || isHovered ? '#007BFF' : '#ccc'}`, // Change border color based on isSuccess or isHovered
                     borderRadius: '50%',
                     display: 'flex',
@@ -70,8 +69,8 @@ export default function ImagePicker({ onSelectedImage }: ImagePickerProps) {
             >
                 <Box
                     sx={{
-                        width: '90%',
-                        height: '90%',
+                        width: '100%',
+                        height: '100%',
                         borderRadius: '50%',
                         display: 'flex',
                         justifyContent: 'center',
@@ -82,24 +81,47 @@ export default function ImagePicker({ onSelectedImage }: ImagePickerProps) {
                     }}
                 >
                     <IconButton
-                        sx={{ width: '100%', height: '100%' }}
+                        sx={{ width: '100%', height: '100%', position: 'relative' }}
                         onClick={handleButtonClick}
                         onMouseEnter={() => setIsHovered(true)}
                         onMouseLeave={() => setIsHovered(false)}
                     >
                         {selectedImage ? (
-                            // Show the selected image inside the IconButton
-                            <Avatar
-                                src={selectedImage}
-                                alt="Selected Image"
-                                sx={{ width: '100%', height: '100%' }}  // Ensure the image fits
-                            />
+                            <>
+                                <Avatar
+                                    src={selectedImage}
+                                    alt="Selected Image"
+                                    sx={{ width: '100%', height: '100%' }}  // Ensure the image fits
+                                />
+
+                                {isHovered && (
+                                    <Box
+                                        sx={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            left: 0,
+                                            width: '100%',
+                                            height: '100%',
+                                            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                            display: 'flex',
+                                            justifyContent: 'center',
+                                            alignItems: 'center',
+                                            color: 'white',
+                                            fontSize: '14px',
+                                            borderRadius: '50%',
+                                        }}
+                                    >
+                                        Thay đổi ảnh
+                                    </Box>
+                                )}
+                            </>
                         ) : (
                             <Stack justifyContent={'center'} alignItems={'center'}>
                                 <AddAPhotoIcon fontSize={'large'} />
                                 <Typography>Chọn ảnh đại diện</Typography>
                             </Stack>
                         )}
+
                     </IconButton>
 
                     {/* Hidden file input */}
@@ -108,7 +130,6 @@ export default function ImagePicker({ onSelectedImage }: ImagePickerProps) {
                         title='Chọn ảnh đại diện'
                         type="file"
                         ref={fileInputRef}
-                        // style={{ display: 'none' }}
                         accept=".jpeg, .jpg, .png"  // Only allow specific image types
                         onChange={handleFileChange}
                     />
