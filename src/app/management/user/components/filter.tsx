@@ -123,7 +123,8 @@ export default function Filter({ deptId, onTextChange, onSubmitted }: FilterProp
                         value={{ name: data.role, id: data.role }}
                         options={roles.map(role => ({ id: role.roleId, name: role.roleName })) || []}
                         onChange={(value) => {
-                            changeData('role', value.name);
+                            setData(prevData => ({ ...prevData, role: value.name }));
+                            onSubmitted({ name: data.name, username: data.username, email: data.email, phone: data.phone, role: value.name, jobTitle: data.jobTitle, status: data.status });
                         }}
                         width="100%"
                     />
@@ -142,8 +143,9 @@ export default function Filter({ deptId, onTextChange, onSubmitted }: FilterProp
                         value={{ name: statusName, id: data.status }}
                         options={[{ id: '1', name: 'Bật' }, { id: '0', name: 'Tắt' }]}
                         onChange={(value) => {
-                            changeData('status', value.id);
+                            setData(prevData => ({ ...prevData, status: value.id }));
                             setStatusName(value.name);
+                            onSubmitted({ name: data.name, username: data.username, email: data.email, phone: data.phone, role: data.role, jobTitle: data.jobTitle, status: value.id });
                         }}
                         width="100%"
                     />

@@ -20,6 +20,8 @@ import AutoComplete from "../components/autocomplete";
 import { getRolesByDeptId } from "@/services/role";
 import { findUserById, updateUser, uploadAvatarAndUpdateUser } from "@/services/user";
 import ImagePickerForEditModal from "../components/image-picker-edit";
+import { useUserInfo } from '@/contexts/user-info-context';
+import { userInfo } from "os";
 
 interface EditUserModalProps {
     open: boolean;
@@ -30,6 +32,7 @@ interface EditUserModalProps {
 }
 
 export default function EditUserModal({ open, userId, deptId, onClose, onSubmitted }: EditUserModalProps) {
+    const { setUserInfo, userInfo } = useUserInfo();
     // Address ------------------------------------------------------------------
     const [provinceList, setProvinceList] = useState<Province[]>([]);
     const [districtList, setDistrictList] = useState<District[]>([]);
@@ -167,6 +170,13 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
             }
 
             if (result.success) {
+                // Update user avatar
+                if (userId === userInfo.userId) {
+                    // setUserInfo({
+                    //     ...userInfo,
+                    //     avatar: result.avatar;
+                    // });
+                }
                 onSubmitted(true, "Cập nhật người dùng thành công!");
                 onClose();
             } else {

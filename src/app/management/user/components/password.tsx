@@ -18,7 +18,7 @@ interface PasswordProps {
 export default function Password(
     { isError = false, helperText = '', onChange, validatePassword }: PasswordProps
 ) {
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = React.useState(true);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
     };

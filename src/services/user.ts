@@ -283,6 +283,7 @@ export const uploadAvatarAndUpdateUser = async (
         if (createUserResult.success) {
             return {
                 success: true,
+                avatar: uploadResult.url
             }
         } else {
             return {

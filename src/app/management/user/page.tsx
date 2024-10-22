@@ -125,6 +125,24 @@ export default function Page() {
         }
     }
 
+    const handleChangeUserStatus = (id: string, status: string) => {
+        changeUserStatus(id, status).then((result) => {
+            if (result.success) {
+                setToastInfo({
+                    showToast: true,
+                    severity: 'success',
+                    message: 'Thay đổi trạng thái thành công!'
+                });
+                updateUsersAndPageInfo();
+            } else {
+                setToastInfo({
+                    showToast: true,
+                    severity: 'error',
+                    message: result.message
+                });
+            }
+        });
+    }
     // UseEffect ----------------------------------------------------------------
     // Set header
     useEffect(() => {
@@ -362,24 +380,7 @@ export default function Page() {
                             role={user.realRole}
                             jobTitle={user.jobTitle}
                             status={user.status.toString()}
-                            onStatusChange={(id, status) => {
-                                changeUserStatus(id, status).then((result) => {
-                                    if (result.success) {
-                                        setToastInfo({
-                                            showToast: true,
-                                            severity: 'success',
-                                            message: 'Thay đổi trạng thái thành công!'
-                                        });
-                                        updateUsersAndPageInfo();
-                                    } else {
-                                        setToastInfo({
-                                            showToast: true,
-                                            severity: 'error',
-                                            message: result.message
-                                        });
-                                    }
-                                });
-                            }}
+                            onStatusChange={(id, status) => { handleChangeUserStatus(id, status) }}
                             checked={checkedItems.includes(user.userId)}
                             onChangePassword={() => { }}
                             onEdit={() => {
@@ -422,7 +423,7 @@ export default function Page() {
             <EditUserModal
                 open={openEditUserModal}
                 userId={selectedItemIdToEdit}
-                deptId="91f31539-1817-4f4e-a7b5-15a7786a4a10"
+                deptId={selectorData.deptId}
                 onClose={() => setOpenEditUserModal(false)}
                 onSubmitted={(success, message) => {
                     if (success) {
@@ -456,11 +457,10 @@ export default function Page() {
                             setToastInfo({
                                 showToast: true,
                                 severity: 'success',
-                                message: 'Xóa vai trò thành công!'
+                                message: result.message
                             });
                             setCheckedItems([]);
                             updateUsersAndPageInfo();
-                            console.log('Delete success');
                         } else {
                             setToastInfo({
                                 showToast: true,

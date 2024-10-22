@@ -33,7 +33,7 @@ export default function AutoComplete({ label, value, options, onChange, width = 
             id="controllable-states-demo"
             options={options}
             getOptionLabel={(option) => option.name}
-            sx={{ width: width }}
+            sx={{ width: width, backgroundColor: 'white' }}
             renderInput={(params) =>
                 <TextField
                     {...params}
