@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect } from 'react';
 import SideNav from './components/sidenav';
 import Header from './components/header';
 
@@ -9,6 +9,8 @@ import { ManagementProvider } from '@/contexts/management-context';
 import { useAuth } from '@/contexts/auth-context';
 import { useRouter } from 'next/navigation';
 import Footer from './components/footer';
+import Toast from '@/core/components/toast';
+import { useAppContext } from '@/contexts/app-context';
 
 type LayoutProps = {
     children: ReactNode;
@@ -17,6 +19,7 @@ type LayoutProps = {
 export default function Layout({ children }: LayoutProps) {
     const router = useRouter();
     const { isLoggedIn } = useAuth();
+    const { toastInfo, setToastInfo } = useAppContext();
 
     useEffect(() => {
         if (!isLoggedIn) {
@@ -41,6 +44,16 @@ export default function Layout({ children }: LayoutProps) {
                     <Footer />
                 </div>
             </div>
+            <Toast
+                open={toastInfo?.show || false}
+                message={toastInfo?.message || ""}
+                severity={toastInfo?.severity || "error"}
+                autoClose={toastInfo?.autoClose || true}
+                duration={toastInfo?.duration || 2000}
+                onClose={toastInfo?.onClose || (() => {
+                    if (setToastInfo) setToastInfo({ show: false, message: '', severity: 'success' })
+                })}
+            />
         </ManagementProvider>
     );
 };

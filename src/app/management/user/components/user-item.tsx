@@ -64,7 +64,7 @@ export default function UserItem({ userId, name, username, email, phone, role, j
                     </Stack>
                 </Stack>
 
-                <Stack direction={'row'} width={'90%'} height={'100%'} spacing={2} justifyContent={'center'} alignItems={'center'}>
+                <Stack direction={'row'} width={'90%'} height={'100%'} justifyContent={'start'} alignItems={'center'}>
                     <Tooltip title={name} arrow>
                         <Typography width={'20%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{name}</Typography>
                     </Tooltip>
@@ -72,7 +72,7 @@ export default function UserItem({ userId, name, username, email, phone, role, j
                         <Typography width={'15%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{username}</Typography>
                     </Tooltip>
                     <Tooltip title={email} arrow>
-                        <Typography width={'20%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{email}</Typography>
+                        <Typography width={'18%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{email}</Typography>
                     </Tooltip>
                     <Tooltip title={phone} arrow>
                         <Typography width={'15%'} sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{phone}</Typography>

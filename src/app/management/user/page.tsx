@@ -8,11 +8,13 @@ import AddUserModal from "./modals/add-user-modal";
 import Selector from "./components/selector";
 import { changeUserStatus, deleteUsers, findUserByDeptId, findUserByFilter } from "@/services/user";
 import EditUserModal from "./modals/edit-user-modal";
-import Toast from "@/core/components/toast";
+// import Toast from "@/core/components/toast";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
 import { Typography } from "@mui/material";
+import { useAppContext } from "@/contexts/app-context";
 
 export default function Page() {
+    const { setToastInfo } = useAppContext();
     const { setHeaderButtons, setHeaderTitle, setFooterInfo } = useManagement();
     const [openAddUserModal, setOpenAddUserModal] = useState(false);
     const [openEditUserModal, setOpenEditUserModal] = useState(false);
@@ -67,15 +69,6 @@ export default function Page() {
         provinceId: '',
         deptId: ''
     });
-    const [toastInfo, setToastInfo] = useState<{
-        showToast: boolean
-        severity: 'success' | 'error';
-        message: string
-    }>({
-        showToast: false,
-        severity: 'success',
-        message: ''
-    });
     const [refreshData, setRefreshData] = useState(false);
     const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState(false);
     const [checkedItems, setCheckedItems] = useState<string[]>([]);
@@ -98,8 +91,8 @@ export default function Page() {
                         end: result.data.pageInfo.end,
                     });
                 } else {
-                    setToastInfo({
-                        showToast: true,
+                    if (setToastInfo) setToastInfo({
+                        show: true,
                         severity: 'error',
                         message: result.message
                     });
@@ -128,15 +121,15 @@ export default function Page() {
     const handleChangeUserStatus = (id: string, status: string) => {
         changeUserStatus(id, status).then((result) => {
             if (result.success) {
-                setToastInfo({
-                    showToast: true,
+                if (setToastInfo) setToastInfo({
+                    show: true,
                     severity: 'success',
                     message: 'Thay đổi trạng thái thành công!'
                 });
                 updateUsersAndPageInfo();
             } else {
-                setToastInfo({
-                    showToast: true,
+                if (setToastInfo) setToastInfo({
+                    show: true,
                     severity: 'error',
                     message: result.message
                 });
@@ -151,15 +144,25 @@ export default function Page() {
             {
                 type: 'import',
                 label: 'Thêm từ file',
-                onClick: () => console.log('Import user')
+                onClick: () => {
+                    if (setToastInfo) {
+                        setToastInfo({
+                            show: true,
+                            severity: 'success',
+                            message: 'Chức năng đang được phát triển!',
+                            autoClose: true,
+                            duration: 2000,
+                        });
+                    }
+                }
             },
             {
                 type: 'add',
                 label: 'Thêm người dùng',
                 onClick: () => {
                     if (!selectorData.deptId) {
-                        setToastInfo({
-                            showToast: true,
+                        if (setToastInfo) setToastInfo({
+                            show: true,
                             severity: 'error',
                             message: 'Vui lòng chọn đơn vị trước khi thêm người dùng!'
                         });
@@ -230,8 +233,8 @@ export default function Page() {
                             end: result.data.pageInfo.end,
                         });
                     } else {
-                        setToastInfo({
-                            showToast: true,
+                        if (setToastInfo) setToastInfo({
+                            show: true,
                             severity: 'error',
                             message: result.message
                         });
@@ -286,8 +289,8 @@ export default function Page() {
                             end: result.data.pageInfo.end,
                         });
                     } else {
-                        setToastInfo({
-                            showToast: true,
+                        if (setToastInfo) setToastInfo({
+                            show: true,
                             severity: 'error',
                             message: result.message
                         });
@@ -324,8 +327,8 @@ export default function Page() {
                         end: result.data.pageInfo.end,
                     });
                 } else {
-                    setToastInfo({
-                        showToast: true,
+                    if (setToastInfo) setToastInfo({
+                        show: true,
                         severity: 'error',
                         message: result.message
                     });
@@ -354,8 +357,8 @@ export default function Page() {
                 }}
                 onSubmitted={(data) => {
                     if (!selectorData.deptId) {
-                        setToastInfo({
-                            showToast: true,
+                        if (setToastInfo) setToastInfo({
+                            show: true,
                             severity: 'error',
                             message: 'Vui lòng chọn tỉnh, đơn vị trước khi lọc!'
                         });
@@ -403,16 +406,16 @@ export default function Page() {
                 onClose={() => setOpenAddUserModal(false)}
                 onSubmitted={(success, message) => {
                     if (success) {
-                        setToastInfo({
-                            showToast: true,
+                        if (setToastInfo) setToastInfo({
+                            show: true,
                             severity: 'success',
                             message: message
                         });
                         setRefreshData(true);
 
                     } else {
-                        setToastInfo({
-                            showToast: true,
+                        if (setToastInfo) setToastInfo({
+                            show: true,
                             severity: 'error',
                             message: message
                         });
@@ -427,19 +430,14 @@ export default function Page() {
                 onClose={() => setOpenEditUserModal(false)}
                 onSubmitted={(success, message) => {
                     if (success) {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'success',
+                        if (setToastInfo) setToastInfo({
+                            show: true,
+                            severity: success ? 'success' : 'error',
                             message: message
                         });
+                    }
+                    if (success) {
                         setRefreshData(true);
-
-                    } else {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'error',
-                            message: message
-                        });
                     }
                 }}
             />
@@ -454,16 +452,16 @@ export default function Page() {
                             checkedItems
                         );
                         if (result.success) {
-                            setToastInfo({
-                                showToast: true,
+                            if (setToastInfo) setToastInfo({
+                                show: true,
                                 severity: 'success',
                                 message: result.message
                             });
                             setCheckedItems([]);
                             updateUsersAndPageInfo();
                         } else {
-                            setToastInfo({
-                                showToast: true,
+                            if (setToastInfo) setToastInfo({
+                                show: true,
                                 severity: 'error',
                                 message: result.message
                             });
@@ -475,15 +473,6 @@ export default function Page() {
                     handleUnselectAll();
                     setShowSelectedDataToolbar(false);
                 }}
-            />
-
-            <Toast
-                open={toastInfo.showToast}
-                message={toastInfo.message}
-                severity={toastInfo.severity}
-                autoClose={true}
-                duration={2000}
-                onClose={() => setToastInfo({ ...toastInfo, showToast: false })}
             />
         </div>
     );

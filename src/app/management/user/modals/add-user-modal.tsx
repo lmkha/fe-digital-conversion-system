@@ -64,7 +64,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
             id: string;
             name: string;
         };
-        dob: any;  // dayjs() type, you can define this more precisely
+        dob: any;
         role: {
             name: string;
             id: string;
@@ -149,6 +149,11 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
         }
 
         setLoading(false);
+    };
+
+    const [errorInput, setErrorInput] = useState([]); // username, password, name, jobTitle
+    const validate = () => {
+        // username: 50 characters, no vietnamese
     };
 
     // UseEffect ----------------------------------------------------------------
@@ -396,9 +401,9 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             </Stack>
 
                             {/* Gender and Dob */}
-                            <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
+                            <Stack direction={'row'} justifyContent={'space-between'} spacing={4} alignItems={'end'}>
                                 <AutoComplete
-                                    label="Giới tính *"
+                                    label="Giới tính "
                                     value={submitData.gender}
                                     options={genders}
                                     onChange={(value) => {
@@ -410,10 +415,23 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                     width="55%"
                                 />
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                    <DemoContainer components={['DatePicker', 'DatePicker']} sx={{ width: '45%' }}>
+                                    <DemoContainer
+                                        components={['DatePicker', 'DatePicker']}
+                                        sx={{ width: '45%' }}
+                                    >
                                         <MUIDatePicker
-                                            sx={{ width: '100%' }}
-                                            label="Ngày sinh *"
+                                            sx={{
+                                                width: '100%',
+                                                '.MuiInputBase-root': {
+                                                    height: '40px',
+                                                    fontSize: '14px'
+                                                },
+                                                '.MuiFormLabel-root': {
+                                                    lineHeight: '1.2',
+                                                    padding: 0,
+                                                },
+                                            }}
+                                            label="Ngày sinh "
                                             format="DD/MM/YYYY"
                                             value={submitData.dob}
                                             onChange={(newValue) => {
@@ -429,7 +447,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
 
                             {/* Email, phone */}
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
-                                <TextField size="small" sx={{ width: '55%' }} label={'Email *'}
+                                <TextField size="small" sx={{ width: '55%' }} label={'Email '}
                                     value={submitData.email}
                                     onChange={(e) => {
                                         setSubmitData({
@@ -438,7 +456,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                         });
                                     }}
                                 />
-                                <TextField size="small" sx={{ width: '45%' }} label={'Số điện thoại *'}
+                                <TextField size="small" sx={{ width: '45%' }} label={'Số điện thoại '}
                                     value={submitData.phone}
                                     onChange={(e) => {
                                         setSubmitData({
@@ -467,7 +485,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                     width="55%"
                                 />
                                 <AutoComplete
-                                    label="Tỉnh / Thành phố *"
+                                    label="Tỉnh / Thành phố "
                                     value={submitData.province}
                                     options={provinceList.map((province) => ({
                                         name: province.provinceName,
@@ -486,7 +504,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             {/* District, ward */}
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                 <AutoComplete
-                                    label="Quận / Huyện *"
+                                    label="Quận / Huyện "
                                     value={submitData.district}
                                     options={districtList.map((district) => ({
                                         name: district.districtName,
@@ -501,7 +519,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                     width="55%"
                                 />
                                 <AutoComplete
-                                    label="Phường / Xã *"
+                                    label="Phường / Xã "
                                     value={submitData.ward}
                                     options={wardList.map((ward) => ({
                                         name: ward.wardName,
@@ -519,7 +537,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
 
                             {/* Address detail */}
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
-                                <TextField size="small" sx={{ width: '100%' }} label={'Địa chỉ *'}
+                                <TextField size="small" sx={{ width: '100%' }} label={'Địa chỉ '}
                                     value={submitData.addressDetail}
                                     onChange={(e) => {
                                         setSubmitData({

@@ -28,7 +28,7 @@ axiosInstance.interceptors.response.use(
     (error) => {
         console.log('Axios error!');
         const { response } = error;
-        if (response?.status === 401 || response?.status === 403) {
+        if (response?.status === 401) {
             set('accessToken', '');
             set('userInfo', {});
         }

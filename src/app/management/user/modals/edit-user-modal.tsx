@@ -478,7 +478,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                         {/* Gender and Dob */}
                                         <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                             <AutoComplete
-                                                label="Giới tính *"
+                                                label="Giới tính "
                                                 value={submitData.gender}
                                                 options={genders}
                                                 onChange={(value) => {
@@ -493,7 +493,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                                 <DemoContainer components={['DatePicker', 'DatePicker']} sx={{ width: '45%' }}>
                                                     <MUIDatePicker
                                                         sx={{ width: '100%' }}
-                                                        label="Ngày sinh *"
+                                                        label="Ngày sinh "
                                                         format="DD/MM/YYYY"
                                                         value={submitData.dob}
                                                         onChange={(newValue) => {
@@ -509,7 +509,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
 
                                         {/* Email, phone */}
                                         <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
-                                            <TextField size="small" sx={{ width: '55%' }} label={'Email *'}
+                                            <TextField size="small" sx={{ width: '55%' }} label={'Email '}
                                                 value={submitData.email}
                                                 onChange={(e) => {
                                                     setSubmitData({
@@ -518,7 +518,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                                     });
                                                 }}
                                             />
-                                            <TextField size="small" sx={{ width: '45%' }} label={'Số điện thoại *'}
+                                            <TextField size="small" sx={{ width: '45%' }} label={'Số điện thoại '}
                                                 value={submitData.phone}
                                                 onChange={(e) => {
                                                     setSubmitData({
@@ -547,7 +547,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                                 width="55%"
                                             />
                                             <AutoComplete
-                                                label="Tỉnh / Thành phố *"
+                                                label="Tỉnh / Thành phố "
                                                 value={submitData.province}
                                                 options={provinceList.map((province) => ({
                                                     name: province.provinceName,
@@ -567,7 +567,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                         {/* District, ward */}
                                         <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                             <AutoComplete
-                                                label="Quận / Huyện *"
+                                                label="Quận / Huyện "
                                                 value={submitData.district}
                                                 options={districtList.map((district) => ({
                                                     name: district.districtName,
@@ -583,7 +583,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                                 width="55%"
                                             />
                                             <AutoComplete
-                                                label="Phường / Xã *"
+                                                label="Phường / Xã "
                                                 value={submitData.ward}
                                                 options={wardList.map((ward) => ({
                                                     name: ward.wardName,
@@ -601,7 +601,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
 
                                         {/* Address detail */}
                                         <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
-                                            <TextField size="small" sx={{ width: '100%' }} label={'Địa chỉ *'}
+                                            <TextField size="small" sx={{ width: '100%' }} label={'Địa chỉ '}
                                                 value={submitData.addressDetail}
                                                 onChange={(e) => {
                                                     setSubmitData({
