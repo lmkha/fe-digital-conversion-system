@@ -5,8 +5,18 @@ import { useEffect, useRef, useState } from "react";
 import AutoComplete from "./autocomplete";
 import { getRolesByDeptId } from "@/services/role";
 
+export interface FilterData {
+    name: string;
+    username: string;
+    email: string;
+    phone: string;
+    role: string;
+    jobTitle: string;
+    status: string;
+}
+
 interface FilterProps {
-    deptId: string;
+    deptId?: string;
     onTextChange: (key: 'name' | 'username' | 'email' | 'phone' | 'role' | 'jobTitle' | 'status', value: string) => void;
     onSubmitted: ({ name, username, email, phone, role, jobTitle, status }: { name: string, username: string, email: string, phone: string, role: string, jobTitle: string, status: string }) => void;
 }

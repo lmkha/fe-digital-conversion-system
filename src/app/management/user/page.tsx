@@ -2,93 +2,44 @@
 'use client';
 import { useManagement } from "@/contexts/management-context";
 import { useEffect, useState } from "react";
-import Filter from "./components/filter";
-import UserItem from "./components/user-item";
+import Filter, { FilterData } from "./components/filter";
+import UserItemComponent from "./components/user-item";
 import AddUserModal from "./modals/add-user-modal";
 import Selector from "./components/selector";
+import { SelectorData } from "./components/selector";
 import { changeUserStatus, deleteUsers, findUserByDeptId, findUserByFilter } from "@/services/user";
 import EditUserModal from "./modals/edit-user-modal";
-// import Toast from "@/core/components/toast";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
 import { Typography } from "@mui/material";
 import { useAppContext } from "@/contexts/app-context";
+import { UserItem } from "@/services/models/user-item";
 
 export default function Page() {
     const { setToastInfo } = useAppContext();
-    const { setHeaderButtons, setHeaderTitle, setFooterInfo } = useManagement();
-    const [openAddUserModal, setOpenAddUserModal] = useState(false);
-    const [openEditUserModal, setOpenEditUserModal] = useState(false);
-    const [userList, setUserList] = useState<any[]>([]);
-    const [paginationInfoToRender, setPaginationInfoToRender] = useState<{
-        pageNumber: string;
-        total: string;
-        start: string;
-        end: string;
-        pageSize: string;
-    }>({
-        pageNumber: '0',
-        total: '0',
-        start: '0',
-        end: '0',
-        pageSize: '1',
-    });
-    const [paginationInfoToGetData, setPaginationInfoToGetData] = useState<{
-        pageNumber: string;
-        total: string;
-        start: string;
-        end: string;
-        pageSize: string;
-    }>({
-        pageNumber: '',
-        total: '',
-        start: '',
-        end: '',
-        pageSize: '',
-    });
-    const [filterData, setFilterData] = useState<{
-        name: string;
-        username: string;
-        email: string;
-        phone: string;
-        role: string;
-        jobTitle: string;
-        status: string;
-    }>({
-        name: '',
-        username: '',
-        email: '',
-        phone: '',
-        role: '',
-        jobTitle: '',
-        status: ''
-    });
-    const [selectorData, setSelectorData] = useState<{
-        provinceId: string;
-        deptId: string;
-    }>({
-        provinceId: '',
-        deptId: ''
-    });
-    const [refreshData, setRefreshData] = useState(false);
-    const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState(false);
-    const [checkedItems, setCheckedItems] = useState<string[]>([]);
-    const [selectedItemIdToEdit, setSelectedItemIdToEdit] = useState<string>('');
+    const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
+    const [openAddUserModal, setOpenAddUserModal] = useState<boolean>();
+    const [openEditUserModal, setOpenEditUserModal] = useState<boolean>();
+    const [selectedItemIdToEdit, setSelectedItemIdToEdit] = useState<string>();
+    const [userList, setUserList] = useState<UserItem[]>();
+    const [refreshData, setRefreshData] = useState<boolean>();
+    const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState<boolean>();
+    const [checkedItems, setCheckedItems] = useState<string[]>();
+    const [selectorData, setSelectorData] = useState<SelectorData>();
+    const [filterData, setFilterData] = useState<FilterData>();
+
     // Logic functions ----------------------------------------------------------
     const handleUnselectAll = () => {
         setCheckedItems([]);
     }
 
-    const updateUsersAndPageInfo = () => {
-        if (selectorData.provinceId && selectorData.deptId) {
+    const updateUserList = () => {
+        if (selectorData?.provinceId && selectorData.deptId) {
             findUserByDeptId(selectorData.deptId).then((result) => {
                 if (result.success) {
                     setUserList(result.data.users);
-                    setPaginationInfoToRender({
-                        ...paginationInfoToRender,
-                        pageNumber: result.data.pageInfo.pageNumber,
-                        total: result.data.pageInfo.total,
-                        start: result.data.pageInfo.start,
-                        end: result.data.pageInfo.end,
+                    setFooterInfo({
+                        ...footerInfo,
+                        paginationInfo: result.data.paginationInfo
                     });
                 } else {
                     if (setToastInfo) setToastInfo({
@@ -97,24 +48,11 @@ export default function Page() {
                         message: result.message
                     });
                     setUserList([]);
-                    setPaginationInfoToRender({
-                        pageNumber: '',
-                        total: '',
-                        start: '',
-                        end: '',
-                        pageSize: '',
-                    });
                 }
+                console.log('userList:', result.data);
             });
         } else {
             setUserList([]);
-            setPaginationInfoToRender({
-                pageNumber: '',
-                total: '',
-                start: '',
-                end: '',
-                pageSize: '',
-            });
         }
     }
 
@@ -126,7 +64,7 @@ export default function Page() {
                     severity: 'success',
                     message: 'Thay đổi trạng thái thành công!'
                 });
-                updateUsersAndPageInfo();
+                updateUserList();
             } else {
                 if (setToastInfo) setToastInfo({
                     show: true,
@@ -160,7 +98,7 @@ export default function Page() {
                 type: 'add',
                 label: 'Thêm người dùng',
                 onClick: () => {
-                    if (!selectorData.deptId) {
+                    if (!selectorData?.deptId) {
                         if (setToastInfo) setToastInfo({
                             show: true,
                             severity: 'error',
@@ -172,66 +110,25 @@ export default function Page() {
                 }
             }
         ]);
-    }, [setHeaderButtons, setHeaderTitle, selectorData]);
+    }, [setHeaderButtons, setHeaderTitle, selectorData?.deptId]);
 
     // Get data when selectorData change
     useEffect(() => {
-        if (selectorData.deptId) {
-            updateUsersAndPageInfo();
+        if (selectorData?.deptId) {
+            updateUserList();
         } else {
             setUserList([]);
-            setPaginationInfoToRender({
-                pageNumber: '0',
-                total: '0',
-                start: '0',
-                end: '0',
-                pageSize: '1',
-            });
         }
-    }, [selectorData]);
-
-    // Set footer
-    useEffect(() => {
-        console.log('CheckVar');
-        setFooterInfo({
-            hasExportDataFooter: true,
-            exportDataFooter: () => {
-
-            },
-            pageNumber: parseInt(paginationInfoToRender.pageNumber),
-            total: parseInt(paginationInfoToRender.total),
-            start: parseInt(paginationInfoToRender.start),
-            end: parseInt(paginationInfoToRender.end),
-            onChangePageNumber: (pageNumber) => {
-                setPaginationInfoToGetData({
-                    ...paginationInfoToGetData,
-                    pageNumber: pageNumber.toString()
-                });
-            },
-            onChangePageSize: (pageSize) => {
-                setPaginationInfoToGetData({
-                    ...paginationInfoToGetData,
-                    pageNumber: '1',
-                    pageSize: pageSize.toString()
-                });
-            }
-        });
-    }, [userList]);
+    }, [selectorData?.deptId]);
 
     // Refresh data when refreshData change
     useEffect(() => {
         if (refreshData) {
-            if (selectorData.deptId) {
-                findUserByFilter(selectorData.deptId).then((result) => {
+            if (selectorData?.deptId) {
+                findUserByFilter({ deptId: selectorData.deptId }).then((result) => {
                     if (result.success) {
                         setUserList(result.data.users);
-                        setPaginationInfoToRender({
-                            ...paginationInfoToRender,
-                            pageNumber: result.data.pageInfo.pageNumber,
-                            total: result.data.pageInfo.total,
-                            start: result.data.pageInfo.start,
-                            end: result.data.pageInfo.end,
-                        });
+
                     } else {
                         if (setToastInfo) setToastInfo({
                             show: true,
@@ -242,13 +139,7 @@ export default function Page() {
                 });
             } else {
                 setUserList([]);
-                setPaginationInfoToRender({
-                    pageNumber: '0',
-                    total: '0',
-                    start: '0',
-                    end: '0',
-                    pageSize: '1',
-                });
+
             }
             setRefreshData(false);
         }
@@ -256,7 +147,7 @@ export default function Page() {
 
     // Show or hide selected data toolbar
     useEffect(() => {
-        if (checkedItems.length > 0) {
+        if (checkedItems && checkedItems.length > 0) {
             setShowSelectedDataToolbar(true);
         } else {
             setShowSelectedDataToolbar(false);
@@ -265,29 +156,22 @@ export default function Page() {
 
     // Update when filterData change
     useEffect(() => {
-        if (selectorData.deptId) {
-            if (filterData.name || filterData.username || filterData.email || filterData.phone || filterData.role || filterData.jobTitle || filterData.status) {
-                findUserByFilter(
-                    selectorData.deptId,
-                    '',
-                    '',
-                    filterData.name,
-                    filterData.username,
-                    filterData.email,
-                    filterData.phone,
-                    filterData.role,
-                    filterData.jobTitle,
-                    filterData.status
-                ).then((result) => {
+        if (selectorData && selectorData?.deptId) {
+            if (filterData?.name || filterData?.username || filterData?.email || filterData?.phone ||
+                filterData?.role || filterData?.jobTitle || filterData?.status) {
+                findUserByFilter({
+                    deptId: selectorData?.deptId,
+                    fullName: filterData.name,
+                    username: filterData.username,
+                    email: filterData.email,
+                    phone: filterData.phone,
+                    realRole: filterData.role,
+                    jobTitle: filterData.jobTitle,
+                    status: filterData.status
+                }).then((result) => {
                     if (result.success) {
                         setUserList(result.data.users);
-                        setPaginationInfoToRender({
-                            ...paginationInfoToRender,
-                            pageNumber: result.data.pageInfo.pageNumber,
-                            total: result.data.pageInfo.total,
-                            start: result.data.pageInfo.start,
-                            end: result.data.pageInfo.end,
-                        });
+
                     } else {
                         if (setToastInfo) setToastInfo({
                             show: true,
@@ -297,46 +181,40 @@ export default function Page() {
                     }
                 });
             } else {
-                updateUsersAndPageInfo();
+                updateUserList();
             }
         }
     }, [filterData]);
 
-    // Use 2 pageInfo to avoid infinite loop
+    // Update data when page size or page number change
     useEffect(() => {
-        if (selectorData.deptId) {
-            findUserByFilter(
-                selectorData.deptId,
-                paginationInfoToGetData.pageSize,
-                paginationInfoToGetData.pageNumber,
-                filterData.name,
-                filterData.username,
-                filterData.email,
-                filterData.phone,
-                filterData.role,
-                filterData.jobTitle,
-                filterData.status
-            ).then((result) => {
-                if (result.success) {
-                    setUserList(result.data.users);
-                    setPaginationInfoToRender({
-                        ...paginationInfoToRender,
-                        pageNumber: result.data.pageInfo.pageNumber,
-                        total: result.data.pageInfo.total,
-                        start: result.data.pageInfo.start,
-                        end: result.data.pageInfo.end,
-                    });
-                } else {
-                    if (setToastInfo) setToastInfo({
-                        show: true,
-                        severity: 'error',
-                        message: result.message
-                    });
-                }
-            });
+        if (selectorData && selectorData?.deptId) {
+            if (footerInfo?.paginationInfo?.pageSize && footerInfo?.paginationInfo?.pageNumber) {
+                findUserByFilter({
+                    deptId: selectorData?.deptId,
+                    pageSize: footerInfo?.paginationInfo.pageSize.toString(),
+                    pageNumber: footerInfo?.paginationInfo.pageNumber.toString(),
+                    fullName: filterData?.name,
+                    username: filterData?.username,
+                    email: filterData?.email,
+                    phone: filterData?.phone,
+                    realRole: filterData?.role,
+                    jobTitle: filterData?.jobTitle,
+                    status: filterData?.status
+                }).then((result) => {
+                    if (result.success) {
+                        setUserList(result.data.users);
+                    } else {
+                        if (setToastInfo) setToastInfo({
+                            show: true,
+                            severity: 'error',
+                            message: result.message
+                        });
+                    }
+                });
+            }
         }
-    }, [paginationInfoToGetData]);
-
+    }, [footerInfo?.paginationInfo]);
     // Render -------------------------------------------------------------------
     return (
         <div>
@@ -352,11 +230,11 @@ export default function Page() {
                 onCallBackInfoChange={(callBackInfo) => { }}
             />
             <Filter
-                deptId={selectorData.deptId}
+                deptId={selectorData?.deptId}
                 onTextChange={(key, value) => {
                 }}
                 onSubmitted={(data) => {
-                    if (!selectorData.deptId) {
+                    if (!selectorData?.deptId) {
                         if (setToastInfo) setToastInfo({
                             show: true,
                             severity: 'error',
@@ -368,12 +246,12 @@ export default function Page() {
                 }}
             />
             {
-                userList.length === 0 && <Typography variant="h6" className="text-center mt-4">Không có dữ liệu</Typography>
+                (userList && userList.length === 0) && <Typography variant="h6" className="text-center mt-4">Không có dữ liệu</Typography>
             }
-            {userList.length > 0 &&
+            {userList && userList.length > 0 &&
                 userList.map((user) => {
                     return (
-                        <UserItem
+                        <UserItemComponent
                             key={user.userId}
                             userId={user.userId}
                             name={user.fullName}
@@ -382,27 +260,27 @@ export default function Page() {
                             phone={user.phone}
                             role={user.realRole}
                             jobTitle={user.jobTitle}
-                            status={user.status.toString()}
+                            status={user.status}
                             onStatusChange={(id, status) => { handleChangeUserStatus(id, status) }}
-                            checked={checkedItems.includes(user.userId)}
+                            checked={checkedItems && checkedItems.includes(user.userId) ? true : false}
                             onChangePassword={() => { }}
                             onEdit={() => {
                                 setSelectedItemIdToEdit(user.userId);
                                 setOpenEditUserModal(true);
                             }}
                             onselect={(id) => {
-                                setCheckedItems([...checkedItems, id]);
+                                setCheckedItems(checkedItems ? [...checkedItems, id] : [id]);
                             }}
                             onUnselect={(id) => {
-                                setCheckedItems(checkedItems.filter((item) => item !== id));
+                                setCheckedItems(checkedItems ? checkedItems.filter((item) => item !== id) : []);
                             }}
                         />
                     );
                 })}
 
             <AddUserModal
-                open={openAddUserModal}
-                deptId={selectorData.deptId}
+                open={openAddUserModal ? true : false}
+                deptId={selectorData?.deptId}
                 onClose={() => setOpenAddUserModal(false)}
                 onSubmitted={(success, message) => {
                     if (success) {
@@ -423,10 +301,10 @@ export default function Page() {
                 }}
             />
 
-            <EditUserModal
-                open={openEditUserModal}
+            {/* <EditUserModal
+                open={openEditUserModal ? true : false}
                 userId={selectedItemIdToEdit}
-                deptId={selectorData.deptId}
+                deptId={selectorData?.deptId}
                 onClose={() => setOpenEditUserModal(false)}
                 onSubmitted={(success, message) => {
                     if (success) {
@@ -440,34 +318,26 @@ export default function Page() {
                         setRefreshData(true);
                     }
                 }}
-            />
+            /> */}
 
             <SelectedDataToolbar
                 label="người dùng"
-                isShow={showSelectedDataToolbar}
-                totalSelected={checkedItems.length}
+                isShow={showSelectedDataToolbar ? true : false}
+                totalSelected={checkedItems && checkedItems.length || 0}
                 onDelete={() => {
-                    const dl = async () => {
-                        const result = await deleteUsers(
-                            checkedItems
-                        );
-                        if (result.success) {
+                    if (checkedItems) {
+                        deleteUsers(checkedItems).then((result) => {
                             if (setToastInfo) setToastInfo({
                                 show: true,
-                                severity: 'success',
+                                severity: result.success ? 'success' : 'error',
                                 message: result.message
-                            });
-                            setCheckedItems([]);
-                            updateUsersAndPageInfo();
-                        } else {
-                            if (setToastInfo) setToastInfo({
-                                show: true,
-                                severity: 'error',
-                                message: result.message
-                            });
-                        }
+                            })
+                            if (result.success) {
+                                setCheckedItems([]);
+                                updateUserList();
+                            }
+                        });
                     }
-                    dl();
                 }}
                 onClose={() => {
                     handleUnselectAll();

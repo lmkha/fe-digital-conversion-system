@@ -1,4 +1,6 @@
 import user from "@/api/user";
+import { UserItem } from "./models/user-item";
+import PaginationInfo from "@/core/types/pagination-info";
 
 const uploadAvatar = async (file: File | null) => {
     if (!file) {
@@ -130,75 +132,95 @@ export const uploadAvatarAndCreateUser = async (
 
 }
 
-export const findUserByFilter = async (
-    deptId: string,
-    pageSize: string = '',
-    pageNumber: string = '',
-    fullName: string = '',
-    username: string = '',
-    email: string = '',
-    phone: string = '',
-    realRole: string = '',
-    jobTitle: string = '',
-    status: string = '',
-) => {
-    const result = await user.findUserByFilter(
-        deptId = deptId,
-        pageSize = pageSize,
-        pageNumber = pageNumber,
-        fullName = fullName,
-        username = username,
-        email = email,
-        phone = phone,
-        realRole = realRole,
-        jobTitle = jobTitle,
-        status = status
-    );
+export const findUserByFilter = async ({
+    deptId,
+    pageSize = '',
+    pageNumber = '',
+    fullName = '',
+    username = '',
+    email = '',
+    phone = '',
+    realRole = '',
+    jobTitle = '',
+    status = ''
+}: {
+    deptId: string;
+    pageSize?: string;
+    pageNumber?: string;
+    fullName?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    realRole?: string;
+    jobTitle?: string;
+    status?: string;
+}): Promise<{
+    success: boolean;
+    message: string;
+    data: {
+        paginationInfo: PaginationInfo
+        users: UserItem[];
+    };
+}> => {
+    const result = await user.findUserByFilter({
+        deptId,
+        pageSize,
+        pageNumber,
+        fullName,
+        username,
+        email,
+        phone,
+        realRole,
+        jobTitle,
+        status
+    });
+
     if (result.success) {
+        const { pageNumber, total, start, end, users } = result.data;
         return {
             success: true,
             message: result.message,
             data: {
-                pageInfo: {
-                    pageNumber: result.data.pageNumber,
-                    total: result.data.total,
-                    start: result.data.start,
-                    end: result.data.end,
+                paginationInfo: {
+                    pageSize: 10,
+                    pageNumber: pageNumber,
+                    total: total,
+                    start: start,
+                    end: end,
                 },
-                users: result.data.users.map((user: any) => {
-                    return {
-                        userId: user.userId,
-                        username: user.userName,
-                        fullName: user.fullName,
-                        email: user.email,
-                        phone: user.phone,
-                        realRole: user.realRole,
-                        jobTitle: user.jobTitle,
-                        status: user.status,
-                        selected: false
-                    }
-                })
+                users: users.map((user: any): UserItem => ({
+                    userId: user.userId,
+                    username: user.userName,
+                    fullName: user.fullName,
+                    email: user.email,
+                    phone: user.phone,
+                    realRole: user.realRole,
+                    jobTitle: user.jobTitle,
+                    status: user.status,
+                    selected: false
+                }))
             }
-        }
+        };
     } else {
         return {
             success: false,
             message: result.message,
             data: {
-                pageInfo: {
-                    pageNumber: '',
-                    total: '',
-                    start: '',
-                    end: '',
+                paginationInfo: {
+                    pageSize: 1,
+                    pageNumber: 1,
+                    total: 0,
+                    start: 0,
+                    end: 0
                 },
                 users: []
             }
-        }
+        };
     }
-}
+};
 
 export const findUserByDeptId = async (deptId: string) => {
-    const result = await findUserByFilter(deptId);
+    const result = await findUserByFilter({ deptId: deptId });
     return result;
 }
 

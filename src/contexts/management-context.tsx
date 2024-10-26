@@ -1,7 +1,7 @@
 'use client';
 
 import { ActionButtonProps } from '@/app/management/components/button';
-import { FooterProps } from '@/app/management/components/footer';
+import { FooterProps } from '@/core/types/footer-info';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 
 interface ManagementContextType {
@@ -9,7 +9,7 @@ interface ManagementContextType {
     setHeaderButtons: (buttons: ActionButtonProps[]) => void;
     headerTitle: string;
     setHeaderTitle: (title: string) => void;
-    footerInfo: FooterProps;
+    footerInfo?: FooterProps;
     setFooterInfo: (footer: FooterProps) => void;
 }
 
@@ -18,16 +18,7 @@ const ManagementContext = createContext<ManagementContextType | undefined>(undef
 export const ManagementProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [headerButtons, setHeaderButtons] = useState<ActionButtonProps[]>([]);
     const [headerTitle, setHeaderTitle] = useState<string>('');
-    const [footerInfo, setFooterInfo] = useState<FooterProps>({
-        hasExportDataFooter: true,
-        exportDataFooter: () => { },
-        pageNumber: 0,
-        total: 0,
-        start: 0,
-        end: 0,
-        onChangePageNumber: (pageNumber: number) => { },
-        onChangePageSize: (pageSize: number) => { },
-    });
+    const [footerInfo, setFooterInfo] = useState<FooterProps>();
 
     return (
         <ManagementContext.Provider value={{ headerButtons, headerTitle, setHeaderTitle, setHeaderButtons, footerInfo, setFooterInfo }}>

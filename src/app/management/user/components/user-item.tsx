@@ -85,7 +85,7 @@ export default function UserItem({ userId, name, username, email, phone, role, j
                     </Tooltip>
                     <Box width={'10%'} display={'flex'} justifyContent={'center'} alignContent={'center'}>
                         <Switch
-                            checked={status === '1'}
+                            checked={status == '1'}
                             onChange={() => {
                                 if (onStatusChange) onStatusChange(userId, status === '1' ? '0' : '1');
                             }}

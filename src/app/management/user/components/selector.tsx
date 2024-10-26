@@ -5,6 +5,11 @@ import Combobox from "@/core/components/combobox";
 import { BasicDepartment, DetailedDepartment, findDepartmentsByFilter, getProvinces, Province } from '@/services/department';
 import { useEffect, useState } from "react";
 
+export interface SelectorData {
+    provinceId: string;
+    deptId: string;
+}
+
 interface SelectorProps {
     onChange: (provinceId: string, provinceName: string, parentId: string) => void;
     refreshData: boolean;

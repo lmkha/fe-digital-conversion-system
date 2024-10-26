@@ -74,30 +74,41 @@ class UserAPI extends Base {
         }
     }
 
-    async findUserByFilter(
-        deptId: string,
-        pageSize: string = '',
-        pageNumber: string = '',
-        fullName: string = '',
-        username: string = '',
-        email: string = '',
-        phone: string = '',
-        realRole: string = '',
-        jobTitle: string = '',
-        status: string = '',
-    ) {
+    async findUserByFilter({
+        deptId,
+        pageSize = '',
+        pageNumber = '',
+        fullName = '',
+        username = '',
+        email = '',
+        phone = '',
+        realRole = '',
+        jobTitle = '',
+        status = ''
+    }: {
+        deptId: string;
+        pageSize?: string;
+        pageNumber?: string;
+        fullName?: string;
+        username?: string;
+        email?: string;
+        phone?: string;
+        realRole?: string;
+        jobTitle?: string;
+        status?: string;
+    }) {
         try {
             const response = await this.get('/user/find-filter', {
-                deptId: deptId,
-                pageSize: pageSize,
-                pageNumber: pageNumber,
-                fullName: fullName,
-                userName: username,
-                email: email,
-                phone: phone,
-                realRole: realRole,
-                jobTitle: jobTitle,
-                status: status
+                deptId,
+                pageSize,
+                pageNumber,
+                fullName,
+                userName: username,  // Lưu ý: nếu backend yêu cầu 'userName', vẫn cần giữ key là 'userName'
+                email,
+                phone,
+                realRole,
+                jobTitle,
+                status
             });
             return {
                 success: true,
@@ -107,11 +118,12 @@ class UserAPI extends Base {
         } catch (err: any) {
             return {
                 success: false,
-                message: err.response.data.message,
-                code: err.response.data.code
+                message: err.response?.data?.message || 'Unknown error',
+                code: err.response?.data?.code || 'Unknown code'
             };
         }
     }
+
 
     async findUserById(userId: string) {
         try {

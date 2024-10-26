@@ -24,7 +24,7 @@ import { CircularProgress } from '@mui/material';
 
 interface AddUserModalProps {
     open: boolean;
-    deptId: string;
+    deptId?: string;
     onClose: () => void;
     onSubmitted: (success: boolean, message: string) => void;
 }
@@ -130,7 +130,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
             submitData.email,
             submitData.phone,
             submitData.role.id,
-            deptId,
+            deptId ? deptId : '',
             submitData.province.id,
             submitData.district.id,
             submitData.ward.id,
