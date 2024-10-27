@@ -11,13 +11,13 @@ import {
     getWards,
     getDepartmentById,
     updateDepartment,
-    DetailedDepartment
 } from '@/services/department';
 import Toast from "@/core/components/toast";
 import Combobox from "@/core/components/combobox";
 import TextField from '@mui/material/TextField';
 import CloseIcon from '@mui/icons-material/Close';
 import { IconButton } from '@mui/material';
+import { DepartmentItem } from "@/services/models/department-item";
 
 export interface EditDepartmentModalProps {
     isVisible: boolean;
@@ -39,17 +39,7 @@ export default function EditDepartmentModal({
     const [provinceList, setProvinceList] = useState<Province[]>([]);
     const [districtList, setDistrictList] = useState<District[]>([]);
     const [wardList, setWardList] = useState<Ward[]>([]);
-    const [department, setDepartment] = useState<DetailedDepartment>({
-        deptId: '',
-        deptName: '',
-        level: 0,
-        provinceId: '',
-        districtId: '',
-        wardId: '',
-        provinceName: '',
-        districtName: '',
-        wardName: ''
-    });
+    const [department, setDepartment] = useState<DepartmentItem>();
     const [toastInfo, setToastInfo] = useState<{
         showToast: boolean
         severity: 'success' | 'error';
@@ -83,7 +73,7 @@ export default function EditDepartmentModal({
     useEffect(() => {
         const fetchDistricts = async () => {
             try {
-                if (department.provinceId) {
+                if (department?.provinceId) {
                     await getDistricts(department.provinceId).then(result => {
                         setDistrictList(result);
                     });
@@ -91,7 +81,7 @@ export default function EditDepartmentModal({
                     setDistrictList([]);
                 }
                 if (!firstCheck) {
-                    setDepartment({
+                    department && setDepartment({
                         ...department,
                         districtName: '',
                         districtId: '',
@@ -104,13 +94,13 @@ export default function EditDepartmentModal({
             }
         }
         fetchDistricts();
-    }, [department.provinceId]);
+    }, [department?.provinceId]);
 
     // Fetch wards when district changes
     useEffect(() => {
         const fetchWards = async () => {
             try {
-                if (department.districtId) {
+                if (department?.districtId) {
                     await getWards(department.districtId).then(result => {
                         setWardList(result);
                     });
@@ -132,12 +122,12 @@ export default function EditDepartmentModal({
             }
         }
         fetchWards();
-    }, [department.districtId]);
+    }, [department?.districtId]);
 
     // Validate data before submit
     const validateDataBeforeSubmit = () => {
         // Trim deptName and check if it's empty or over 30 characters
-        if (department.deptName.trim() === '') {
+        if (department?.deptName.trim() === '') {
             setToastInfo({
                 showToast: true,
                 severity: 'error',
@@ -145,7 +135,7 @@ export default function EditDepartmentModal({
             });
             return false;
         }
-        if (department.deptName.length > 30) {
+        if (department && department.deptName.length > 30) {
             setToastInfo({
                 showToast: true,
                 severity: 'error',
@@ -154,7 +144,7 @@ export default function EditDepartmentModal({
             return false;
         }
         // Check if province, district, ward is empty
-        if (!department.provinceId) {
+        if (!department?.provinceId) {
             setToastInfo({
                 showToast: true,
                 severity: 'error',
@@ -231,9 +221,9 @@ export default function EditDepartmentModal({
                                 <TextField
                                     className="w-full"
                                     label="Tên phòng ban (*)"
-                                    value={department.deptName}
+                                    value={department?.deptName}
                                     onChange={(e) => {
-                                        setDepartment({
+                                        department && setDepartment({
                                             ...department,
                                             deptName: e.target.value
                                         });
@@ -242,12 +232,15 @@ export default function EditDepartmentModal({
                             </div>
                             <div className="w-1/2">
                                 <Combobox
-                                    value={{ id: department.provinceId, name: department.provinceName }}
+                                    value={{
+                                        id: department?.provinceId ? department.provinceId : '',
+                                        name: department?.provinceName ? department.provinceName : ''
+                                    }}
                                     className="w-full"
                                     label="Tỉnh / Thành phố"
                                     options={provinceList.map(province => ({ id: province.provinceId, name: province.provinceName }))}
                                     onChange={(province) => {
-                                        setDepartment({
+                                        department && setDepartment({
                                             ...department,
                                             provinceId: province.id,
                                             provinceName: province.name
@@ -261,12 +254,15 @@ export default function EditDepartmentModal({
                         <div className="flex justify-between mb-4 w-full gap-4">
                             <div className="w-1/2">
                                 <Combobox
-                                    value={{ id: department.districtId, name: department.districtName }}
+                                    value={{
+                                        id: department?.districtId ? department.districtId : '',
+                                        name: department?.districtName ? department.districtName : ''
+                                    }}
                                     className="w-full"
                                     label="Quận / Huyện"
                                     options={districtList.map(district => ({ id: district.districtId, name: district.districtName }))}
                                     onChange={(district) => {
-                                        setDepartment({
+                                        department && setDepartment({
                                             ...department,
                                             districtId: district.id,
                                             districtName: district.name
@@ -276,12 +272,15 @@ export default function EditDepartmentModal({
                             </div>
                             <div className="w-1/2">
                                 <Combobox
-                                    value={{ id: department.wardId, name: department.wardName }}
+                                    value={{
+                                        id: department?.wardId ? department.wardId : '',
+                                        name: department?.wardName ? department.wardName : ''
+                                    }}
                                     className="w-full"
                                     label="Phường / Xã"
                                     options={wardList.map(ward => ({ id: ward.wardId, name: ward.wardName }))}
                                     onChange={(ward) => {
-                                        setDepartment({
+                                        department && setDepartment({
                                             ...department,
                                             wardId: ward.id,
                                             wardName: ward.name
@@ -297,6 +296,7 @@ export default function EditDepartmentModal({
                             <button className="w-20 h-full bg-checkVarSecondary rounded-lg text-white hover:bg-white hover:text-blue-600 hover:border-blue-500 border-2"
                                 onClick={async () => {
                                     if (!validateDataBeforeSubmit()) return;
+                                    if (!department) return;
                                     const result = await updateDepartment(department);
                                     onSubmitted(result.success, result.message, result.code);
                                     setDepartment({
@@ -308,7 +308,8 @@ export default function EditDepartmentModal({
                                         wardId: '',
                                         provinceName: '',
                                         districtName: '',
-                                        wardName: ''
+                                        wardName: '',
+                                        selected: false
                                     });
                                     onClose();
                                 }}

@@ -2,8 +2,9 @@
 'use client';
 
 import Combobox from "@/core/components/combobox";
-import { BasicDepartment, DetailedDepartment, findDepartmentsByFilter, getProvinces, Province } from '@/services/department';
+import { BasicDepartment, findDepartmentsByFilter, getProvinces, Province } from '@/services/department';
 import { useEffect, useState } from "react";
+import { DepartmentItem } from "@/services/models/department-item";
 
 interface SelectorProps {
     onChange: (provinceId: string, provinceName: string, parentId: string) => void;
@@ -23,10 +24,10 @@ interface SelectorProps {
 
 export default function Selector({ onChange, refreshData, onRefreshDataFinished, onCallBackInfoChange }: SelectorProps) {
     const [provinceList, setProvinceList] = useState<Province[]>([]);
-    const [deptLevel1List, setDeptLevel1List] = useState<DetailedDepartment[]>([]);
-    const [deptLevel2List, setDeptLevel2List] = useState<DetailedDepartment[]>([]);
-    const [deptLevel3List, setDeptLevel3List] = useState<DetailedDepartment[]>([]);
-    const [deptLevel4List, setDeptLevel4List] = useState<DetailedDepartment[]>([]);
+    const [deptLevel1List, setDeptLevel1List] = useState<DepartmentItem[]>([]);
+    const [deptLevel2List, setDeptLevel2List] = useState<DepartmentItem[]>([]);
+    const [deptLevel3List, setDeptLevel3List] = useState<DepartmentItem[]>([]);
+    const [deptLevel4List, setDeptLevel4List] = useState<DepartmentItem[]>([]);
     const [province, setProvince] = useState<Province>({ provinceId: '', provinceName: '' });
     const [deptLevel1, setDeptLevel1] = useState<BasicDepartment>({ deptId: '', deptName: '' });
     const [deptLevel2, setDeptLevel2] = useState<BasicDepartment>({ deptId: '', deptName: '' });
