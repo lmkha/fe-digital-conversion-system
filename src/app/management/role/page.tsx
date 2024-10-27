@@ -10,9 +10,11 @@ import RoleItem from "./components/role-item";
 import { deleteRole, downloadExcelFile, getRoles, getRolesByFilter } from "@/services/role";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
 import { EditRoleModal } from "./modals/edit-role-modal";
+import { useAppContext } from "@/contexts/app-context";
 
 export default function Page() {
-    const { setHeaderButtons, setHeaderTitle, setFooterInfo } = useManagement();
+    const { setToastInfo } = useAppContext();
+    const { setHeaderButtons, setHeaderTitle, setFooterInfo, footerInfo } = useManagement();
     const [showAddRoleModal, setShowAddRoleModal] = useState(false);
     const [showEditRoleModal, setShowEditRoleModal] = useState(false);
     const [roleList, setRoleList] = useState<{
@@ -21,32 +23,6 @@ export default function Page() {
         roleName: string;
         isCheck: boolean;
     }[]>([]);
-    const [paginationInfoToRender, setPaginationInfoToRender] = useState<{
-        pageNumber: string;
-        total: string;
-        start: string;
-        end: string;
-        pageSize: string;
-    }>({
-        pageNumber: '0',
-        total: '0',
-        start: '0',
-        end: '0',
-        pageSize: '1',
-    });
-    const [paginationInfoToGetData, setPaginationInfoToGetData] = useState<{
-        pageNumber: string;
-        total: string;
-        start: string;
-        end: string;
-        pageSize: string;
-    }>({
-        pageNumber: '',
-        total: '',
-        start: '',
-        end: '',
-        pageSize: '',
-    });
     const [filterData, setFilterData] = useState<{
         permissionCode: string;
         permissionName: string;
@@ -61,15 +37,6 @@ export default function Page() {
         provinceId: '',
         deptId: ''
     });
-    const [toastInfo, setToastInfo] = useState<{
-        showToast: boolean
-        severity: 'success' | 'error';
-        message: string
-    }>({
-        showToast: false,
-        severity: 'success',
-        message: ''
-    });
     const [refreshData, setRefreshData] = useState(false);
     const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState(false);
     const [checkedItems, setCheckedItems] = useState<string[]>([]);
@@ -81,38 +48,21 @@ export default function Page() {
             getRoles(selectorData.deptId).then((result) => {
                 if (result.success) {
                     setRoleList(result.roles);
-                    setPaginationInfoToRender({
-                        ...paginationInfoToRender,
-                        pageNumber: result.pageInfo.pageNumber,
-                        total: result.pageInfo.total,
-                        start: result.pageInfo.start,
-                        end: result.pageInfo.end,
+                    setFooterInfo({
+                        ...footerInfo,
+                        paginationInfo: result.pageInfo
                     });
                 } else {
-                    setToastInfo({
-                        showToast: true,
+                    setToastInfo && setToastInfo({
+                        show: true,
                         severity: 'error',
                         message: result.message
                     });
                     setRoleList([]);
-                    setPaginationInfoToRender({
-                        pageNumber: '',
-                        total: '',
-                        start: '',
-                        end: '',
-                        pageSize: '',
-                    });
                 }
             });
         } else {
             setRoleList([]);
-            setPaginationInfoToRender({
-                pageNumber: '',
-                total: '',
-                start: '',
-                end: '',
-                pageSize: '',
-            });
         }
     }
 
@@ -149,8 +99,8 @@ export default function Page() {
                 label: 'Thêm vai trò',
                 onClick: () => {
                     if (!selectorData.deptId) {
-                        setToastInfo({
-                            showToast: true,
+                        setToastInfo && setToastInfo({
+                            show: true,
                             severity: 'error',
                             message: 'Vui lòng chọn đơn vị trước khi thêm vai trò!'
                         });
@@ -165,58 +115,29 @@ export default function Page() {
     // Get data when selectorData change
     useEffect(() => {
         if (selectorData.deptId) {
-            console.log('selectorData change');
             updateRoleAndPageInfo();
         } else {
             setRoleList([]);
-            setPaginationInfoToRender({
-                pageNumber: '0',
-                total: '0',
-                start: '0',
-                end: '0',
-                pageSize: '1',
-            });
         }
     }, [selectorData])
 
     // Set footer
     useEffect(() => {
-        console.log('CheckVar');
         setFooterInfo({
+            ...footerInfo,
             exportDataFooter: () => {
                 downloadExcelFile(
                     filterData.permissionCode,
                     filterData.permissionName,
                     selectorData.deptId,
-                    paginationInfoToGetData.pageNumber,
-                    paginationInfoToGetData.pageSize
+                    footerInfo?.paginationInfo?.pageNumber?.toString() ? footerInfo?.paginationInfo?.pageNumber?.toString() : '',
+                    footerInfo?.paginationInfo?.pageSize?.toString() ? footerInfo?.paginationInfo?.pageSize?.toString() : '',
                 ).then((result) => {
-                    if (result.success) {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'success',
-                            message: result.message
-                        });
-                    } else {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'error',
-                            message: result.message
-                        });
-                    }
-                });
-            },
-            onChangePageNumber: (pageNumber) => {
-                setPaginationInfoToGetData({
-                    ...paginationInfoToGetData,
-                    pageNumber: pageNumber.toString()
-                });
-            },
-            onChangePageSize: (pageSize) => {
-                setPaginationInfoToGetData({
-                    ...paginationInfoToGetData,
-                    pageNumber: '1',
-                    pageSize: pageSize.toString()
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        severity: result.success ? 'success' : 'error',
+                        message: result.message
+                    });
                 });
             }
         });
@@ -229,16 +150,9 @@ export default function Page() {
                 getRoles(selectorData.deptId).then((result) => {
                     if (result.success) {
                         setRoleList(result.roles);
-                        setPaginationInfoToRender({
-                            ...paginationInfoToRender,
-                            pageNumber: result.pageInfo.pageNumber,
-                            total: result.pageInfo.total,
-                            start: result.pageInfo.start,
-                            end: result.pageInfo.end,
-                        });
                     } else {
-                        setToastInfo({
-                            showToast: true,
+                        setToastInfo && setToastInfo({
+                            show: true,
                             severity: 'error',
                             message: result.message
                         });
@@ -246,13 +160,6 @@ export default function Page() {
                 });
             } else {
                 setRoleList([]);
-                setPaginationInfoToRender({
-                    pageNumber: '0',
-                    total: '0',
-                    start: '0',
-                    end: '0',
-                    pageSize: '1',
-                });
             }
             setRefreshData(false);
         }
@@ -274,16 +181,13 @@ export default function Page() {
                 getRolesByFilter(selectorData.deptId, filterData.permissionCode, filterData.permissionName).then((result) => {
                     if (result.success) {
                         setRoleList(result.roles);
-                        setPaginationInfoToRender({
-                            ...paginationInfoToRender,
-                            pageNumber: result.pageInfo.pageNumber,
-                            total: result.pageInfo.total,
-                            start: result.pageInfo.start,
-                            end: result.pageInfo.end,
+                        setFooterInfo({
+                            ...footerInfo,
+                            paginationInfo: result.pageInfo
                         });
                     } else {
-                        setToastInfo({
-                            showToast: true,
+                        setToastInfo && setToastInfo({
+                            show: true,
                             severity: 'error',
                             message: result.message
                         });
@@ -295,35 +199,38 @@ export default function Page() {
         }
     }, [filterData]);
 
-    // Use 2 pageInfo to avoid infinite loop
+    // PageSize and PageNumber change
     useEffect(() => {
         if (selectorData.deptId) {
-            getRolesByFilter(
-                selectorData.deptId,
-                filterData.permissionCode,
-                filterData.permissionName,
-                paginationInfoToGetData.pageNumber,
-                paginationInfoToGetData.pageSize
-            ).then((result) => {
-                if (result.success) {
-                    setRoleList(result.roles);
-                    setPaginationInfoToRender({
-                        ...paginationInfoToRender,
-                        pageNumber: result.pageInfo.pageNumber,
-                        total: result.pageInfo.total,
-                        start: result.pageInfo.start,
-                        end: result.pageInfo.end,
+            if (footerInfo?.paginationInfo?.pageNumber && footerInfo?.paginationInfo?.pageSize) {
+                if (filterData.permissionCode || filterData.permissionName) {
+                    getRolesByFilter(
+                        selectorData.deptId,
+                        filterData.permissionCode,
+                        filterData.permissionName,
+                        footerInfo?.paginationInfo?.pageSize?.toString(),
+                        footerInfo?.paginationInfo?.pageNumber?.toString(),
+                    ).then((result) => {
+                        if (result.success) {
+                            setRoleList(result.roles);
+                            setFooterInfo({
+                                ...footerInfo,
+                                paginationInfo: result.pageInfo
+                            });
+                        } else {
+                            setToastInfo && setToastInfo({
+                                show: true,
+                                severity: 'error',
+                                message: result.message
+                            });
+                        }
                     });
                 } else {
-                    setToastInfo({
-                        showToast: true,
-                        severity: 'error',
-                        message: result.message
-                    });
+                    updateRoleAndPageInfo();
                 }
-            });
+            }
         }
-    }, [paginationInfoToGetData]);
+    }, [footerInfo?.paginationInfo?.pageSize, footerInfo?.paginationInfo?.pageNumber]);
 
     // Render ------------------------------------------------------------------------------------------------    
     return (
@@ -356,8 +263,8 @@ export default function Page() {
                     }}
                     onSubmitted={(data) => {
                         if (!selectorData.deptId) {
-                            setToastInfo({
-                                showToast: true,
+                            setToastInfo && setToastInfo({
+                                show: true,
                                 severity: 'error',
                                 message: 'Vui lòng chọn tỉnh, đơn vị trước khi lọc!'
                             });
@@ -425,20 +332,13 @@ export default function Page() {
                 deptId={selectorData.deptId}
                 onClose={() => setShowAddRoleModal(false)}
                 onSubmitted={(success, message) => {
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        severity: success ? 'success' : 'error',
+                        message: message
+                    });
                     if (success) {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'success',
-                            message: message
-                        });
                         setRefreshData(true);
-
-                    } else {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'error',
-                            message: message
-                        });
                     }
                 }}
             />
@@ -447,20 +347,13 @@ export default function Page() {
                 roleId={selectedItemIdToEdit}
                 onClose={() => setShowEditRoleModal(false)}
                 onSubmitted={(success, message) => {
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        severity: success ? 'success' : 'error',
+                        message: message
+                    });
                     if (success) {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'success',
-                            message: message
-                        });
                         setRefreshData(true);
-
-                    } else {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'error',
-                            message: message
-                        });
                     }
                 }}
             />
@@ -473,21 +366,14 @@ export default function Page() {
                         const result = await deleteRole(
                             checkedItems
                         );
+                        setToastInfo && setToastInfo({
+                            show: true,
+                            severity: result.success ? 'success' : 'error',
+                            message: result.message
+                        });
                         if (result.success) {
-                            setToastInfo({
-                                showToast: true,
-                                severity: 'success',
-                                message: 'Xóa vai trò thành công!'
-                            });
                             setCheckedItems([]);
                             updateRoleAndPageInfo();
-                            console.log('Delete success');
-                        } else {
-                            setToastInfo({
-                                showToast: true,
-                                severity: 'error',
-                                message: result.message
-                            });
                         }
                     }
                     dl();
@@ -496,14 +382,6 @@ export default function Page() {
                     handleUnselectAll();
                     setShowSelectedDataToolbar(false);
                 }}
-            />
-            <Toast
-                open={toastInfo.showToast}
-                message={toastInfo.message}
-                severity={toastInfo.severity}
-                autoClose={true}
-                duration={2000}
-                onClose={() => setToastInfo({ ...toastInfo, showToast: false })}
             />
         </Fragment>
     );

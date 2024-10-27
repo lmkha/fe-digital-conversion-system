@@ -1,4 +1,5 @@
 import role from "@/api/role"
+import PaginationInfo from "@/core/types/pagination-info";
 
 export const getRolesByFilter = async (
     deptId: string,
@@ -6,12 +7,23 @@ export const getRolesByFilter = async (
     roleName: string = '',
     pageSize: string = '',
     pageNumber: string = '',
-) => {
+): Promise<{
+    success: boolean;
+    message: string;
+    pageInfo: PaginationInfo;
+    roles: {
+        roleId: string;
+        roleCode: string;
+        roleName: string;
+        isCheck: boolean;
+    }[];
+}> => {
     const result = await role.findRolesByFilter(roleCode, roleName, deptId, pageSize, pageNumber);
     if (result.success) {
         return {
             success: true,
             pageInfo: {
+                pageSize: 10,
                 pageNumber: result.data.pageNumber,
                 total: result.data.total,
                 start: result.data.start,
@@ -22,13 +34,15 @@ export const getRolesByFilter = async (
                 roleCode: role.roleCode,
                 roleName: role.roleName,
                 isCheck: false,
-            }))
+            })),
+            message: result.message,
         }
     } else {
         return {
             success: false,
             message: result.message,
             pageInfo: {
+                pageSize: 10,
                 pageNumber: 0,
                 total: 0,
                 start: 0,
