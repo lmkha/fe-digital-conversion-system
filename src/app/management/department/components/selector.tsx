@@ -6,6 +6,12 @@ import { BasicDepartment, DetailedDepartment, findDepartmentsByFilter, getProvin
 import { useEffect, useState } from "react";
 import { useUserInfo } from "@/contexts/user-info-context";
 
+export interface SelectorData {
+    provinceId: string,
+    provinceName: string,
+    parentId: string
+}
+
 interface SelectorProps {
     onChange: (provinceId: string, provinceName: string, parentId: string) => void;
     refreshData: boolean;

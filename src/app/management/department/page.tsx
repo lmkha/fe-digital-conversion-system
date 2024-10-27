@@ -3,8 +3,9 @@
 
 import { Fragment, useEffect, useState } from "react";
 import DepartmentItem from "./components/department-item";
-import Filter from "./components/filter";
+import Filter, { FilterData } from "./components/filter";
 import Selector from "./components/selector";
+import { SelectorData } from "./components/selector";
 import AddNewDepartmentModal from "./modals/add-new-department";
 import { useManagement } from "@/contexts/management-context";
 import EditDepartmentModal from "./modals/edit-department";
@@ -23,64 +24,19 @@ import {
 import Toast from "@/core/components/toast";
 
 export default function Page() {
-    const [selectorData, setSelectorData] = useState({
-        provinceId: '',
-        provinceName: '',
-        parentId: ''
-    });
-    const [filterData, setFilterData] = useState({
-        code: '',
-        level: '',
-        district: '',
-        ward: ''
-    });
+    const [selectorData, setSelectorData] = useState<SelectorData>();
+    const [filterData, setFilterData] = useState<FilterData>();
     const { setHeaderButtons, setHeaderTitle, setFooterInfo } = useManagement();
     const [showAddNewDepartmentModal, setShowAddNewDepartmentModal] = useState(false);
     const [showEditDepartmentModal, setShowEditDepartmentModal] = useState(false);
     const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState(false);
-    const [checkedItems, setCheckedItems] = useState<CheckedItem[]>([]);
+    const [checkedItems, setCheckedItems] = useState<CheckedItem[]>();
     const [refreshData, setRefreshData] = useState(false);
-    const [pageInfo, setPageInfo] = useState({
-        pageNumber: 0,
-        total: 0,
-        start: 0,
-        end: 0,
-    });
-    const [departmentListInfo, setDepartmentListInfo] = useState<{
-        provinceId: string,
-        parentId: string,
-        deptName: string,
-        level: string,
-        wardName: string,
-        districtName: string,
-        pageSize: string,
-        pageNumber: string,
-        toTalPage: string
-    }>({
-        provinceId: '',
-        parentId: '',
-        deptName: '',
-        level: '',
-        wardName: '',
-        districtName: '',
-        pageSize: '',
-        pageNumber: '',
-        toTalPage: ''
-    });
     const [departmentList, setDepartmentList] = useState<{
         department: DetailedDepartment;
         isCheck: boolean;
     }[]>([]);
-    const [editingDepartment, setEditingDepartment] = useState<BasicDepartment | null>(null);
-    const [toastInfo, setToastInfo] = useState<{
-        showToast: boolean
-        severity: 'success' | 'error';
-        message: string
-    }>({
-        showToast: false,
-        severity: 'success',
-        message: ''
-    });
+    const [editingDepartment, setEditingDepartment] = useState<BasicDepartment>();
 
     // Update department list and page info
     const updateDepartmentListAndPageInfo = async () => {
@@ -125,7 +81,6 @@ export default function Page() {
     // Set footer info
     useEffect(() => {
         setFooterInfo({
-            hasExportDataFooter: true,
             exportDataFooter: () => {
                 if (!departmentListInfo.provinceId) {
                     setToastInfo({

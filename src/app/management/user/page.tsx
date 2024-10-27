@@ -114,6 +114,7 @@ export default function Page() {
 
     // Get data when selectorData change
     useEffect(() => {
+        console.log('selectorData in Page:', selectorData);
         if (selectorData?.deptId) {
             updateUserList();
         } else {
@@ -219,15 +220,15 @@ export default function Page() {
     return (
         <div>
             <Selector
-                onChange={(provinceId, provinceName, parentId) => {
-                    setSelectorData({
-                        provinceId: provinceId,
-                        deptId: parentId
-                    });
-                }}
+                onChange={(provinceId, provinceName, parentId) => { }}
                 refreshData={false}
                 onRefreshDataFinished={() => { }}
-                onCallBackInfoChange={(callBackInfo) => { }}
+                onCallBackInfoChange={(callBackInfo) => {
+                    setSelectorData({
+                        provinceId: callBackInfo.provinceId,
+                        deptId: callBackInfo.parentId
+                    });
+                }}
             />
             <Filter
                 deptId={selectorData?.deptId}
@@ -301,10 +302,10 @@ export default function Page() {
                 }}
             />
 
-            {/* <EditUserModal
+            <EditUserModal
                 open={openEditUserModal ? true : false}
-                userId={selectedItemIdToEdit}
-                deptId={selectorData?.deptId}
+                userId={selectedItemIdToEdit ? selectedItemIdToEdit : ''}
+                deptId={selectorData?.deptId ? selectorData.deptId : ''}
                 onClose={() => setOpenEditUserModal(false)}
                 onSubmitted={(success, message) => {
                     if (success) {
@@ -318,7 +319,7 @@ export default function Page() {
                         setRefreshData(true);
                     }
                 }}
-            /> */}
+            />
 
             <SelectedDataToolbar
                 label="người dùng"

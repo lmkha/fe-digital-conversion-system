@@ -189,6 +189,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
 
     // Callback to parent component
     useEffect(() => {
+        console.log(callBackInfo);
         onCallBackInfoChange(callBackInfo);
     }, [callBackInfo])
 

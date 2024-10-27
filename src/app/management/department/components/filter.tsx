@@ -3,6 +3,13 @@ import TextInput from "@/core/components/text-input";
 import { useEffect, useState, useRef } from "react";
 import { RiCheckboxIndeterminateFill, RiCheckboxIndeterminateLine } from "react-icons/ri";
 
+export interface FilterData {
+    code: string,
+    level: string,
+    district: string,
+    ward: string
+}
+
 interface FilterProps {
     isCheck: boolean;
     onTextChange: (key: 'name' | 'level' | 'district' | 'ward', value: string) => void;
