@@ -1,6 +1,7 @@
 import department from "@/api/department";
 import address from "@/api/address";
 import PaginationInfo from "@/core/types/pagination-info";
+import { DepartmentItem } from "./models/department-item";
 
 export interface Province {
     provinceId: string;
@@ -12,17 +13,6 @@ export interface District {
 }
 export interface Ward {
     wardId: string;
-    wardName: string;
-}
-export interface DetailedDepartment {
-    deptId: string;
-    deptName: string;
-    level: number;
-    provinceId: string;
-    districtId: string;
-    wardId: string;
-    provinceName: string;
-    districtName: string;
     wardName: string;
 }
 export interface BasicDepartment {
@@ -76,11 +66,11 @@ export const getWards = async (districtId: string): Promise<Ward[]> => {
     }
 }
 
-export const getDepartments = async (): Promise<DetailedDepartment[]> => {
+export const getDepartments = async (): Promise<DepartmentItem[]> => {
     const result = await department.getDepartments();
     console.log(result.data);
     if (result.success) {
-        return result.data.map((dept: any) => ({
+        return result.data.map((dept: any): DepartmentItem => ({
             deptId: dept.deptId,
             deptName: dept.deptName,
             level: dept.level,
@@ -89,7 +79,8 @@ export const getDepartments = async (): Promise<DetailedDepartment[]> => {
             wardId: dept.wardId,
             provinceName: dept.provinceName,
             districtName: dept.districtName,
-            wardName: dept.wardName
+            wardName: dept.wardName,
+            selected: false
         }));
     } else {
         console.error("Error fetching departments:", result.message);
@@ -97,10 +88,21 @@ export const getDepartments = async (): Promise<DetailedDepartment[]> => {
     }
 };
 
-export const getDepartmentById = async (deptId: string): Promise<DetailedDepartment> => {
+export const getDepartmentById = async (deptId: string): Promise<DepartmentItem> => {
     const result = await department.getDepartmentById(deptId);
     if (result.success) {
-        return result.data;
+        return {
+            deptId: result.data.deptId,
+            deptName: result.data.deptName,
+            level: result.data.level,
+            provinceId: result.data.provinceId,
+            districtId: result.data.districtId,
+            wardId: result.data.wardId,
+            provinceName: result.data.provinceName,
+            districtName: result.data.districtName,
+            wardName: result.data.wardName,
+            selected: false
+        }
     } else {
         console.error("Error fetching department by id:", result.message);
         return {
@@ -112,7 +114,8 @@ export const getDepartmentById = async (deptId: string): Promise<DetailedDepartm
             wardId: '',
             provinceName: '',
             districtName: '',
-            wardName: ''
+            wardName: '',
+            selected: false
         };
     }
 }
@@ -168,11 +171,11 @@ export const findDepartmentsByFilter = async (
     districtName: string,
     pageSize: string,
     pageNumber: string,
-): Promise<DetailedDepartment[]> => {
+): Promise<DepartmentItem[]> => {
     const result = await department.findDepartmentsByFilter(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
 
     if (result.success) {
-        return result.data.depts.map((dept: any): DetailedDepartment => ({
+        return result.data.depts.map((dept: any): DepartmentItem => ({
             deptName: dept.deptname,
             deptId: dept.deptid,
             level: dept.level,
@@ -181,7 +184,8 @@ export const findDepartmentsByFilter = async (
             wardName: dept.wardname,
             provinceId: '',
             districtId: '',
-            wardId: ''
+            wardId: '',
+            selected: false
         }));
     } else {
         console.error("Error filtering department:", result.message);
@@ -209,7 +213,7 @@ export const findDepartmentsByFilterWithPageInfo = async ({
     pageNumber?: string,
 }): Promise<{
     paginationInfo: PaginationInfo,
-    departments: DetailedDepartment[]
+    departments: DepartmentItem[]
 }> => {
     const result = await department.findDepartmentsByFilter(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
     if (result.success) {
@@ -221,7 +225,7 @@ export const findDepartmentsByFilterWithPageInfo = async ({
                 start: result.data.start,
                 end: result.data.end,
             },
-            departments: result.data.depts.map((dept: any): DetailedDepartment => ({
+            departments: result.data.depts.map((dept: any): DepartmentItem => ({
                 deptName: dept.deptname,
                 deptId: dept.deptid,
                 level: dept.level,
@@ -230,7 +234,8 @@ export const findDepartmentsByFilterWithPageInfo = async ({
                 wardName: dept.wardname,
                 provinceId: '',
                 districtId: '',
-                wardId: ''
+                wardId: '',
+                selected: false
             }))
         }
     } else {
@@ -261,80 +266,3 @@ export const downloadDepartmentsExcelFile = async (
     const result = await department.downloadDepartmentsExcelFile(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
     return result;
 }
-
-//=========================================================================================================
-// Handle isCheck change
-export const handleIsCheckChange = (
-    id: string,
-    isCheck: boolean,
-    setCheckedItems: React.Dispatch<React.SetStateAction<CheckedItem[]>>,
-    setDepartmentList: React.Dispatch<React.SetStateAction<{
-        department: DetailedDepartment;
-        isCheck: boolean
-    }[]>>
-) => {
-    if (isCheck) {
-        setCheckedItems(prevSelectedData => [
-            ...prevSelectedData,
-            { id }
-        ]);
-    } else {
-        setCheckedItems(prevSelectedData =>
-            prevSelectedData.filter(item => item.id !== id)
-        );
-    }
-
-    setDepartmentList(prevDepartmentList =>
-        prevDepartmentList.map(department =>
-            department.department.deptId === id
-                ? { ...department, isCheck }
-                : department
-        )
-    );
-};
-
-// Handle select all
-export const handleSelectAll = (
-    departmentList: {
-        department: DetailedDepartment;
-        isCheck: boolean
-    }[],
-    setCheckedItems: React.Dispatch<React.SetStateAction<CheckedItem[]>>,
-    setDepartmentList: React.Dispatch<React.SetStateAction<{
-        department: DetailedDepartment;
-        isCheck: boolean
-    }[]>>
-) => {
-    console.log('Select all');
-
-    setDepartmentList(prevDepartmentList =>
-        prevDepartmentList.map(department =>
-            ({ ...department, isCheck: true })
-        )
-    );
-
-    setCheckedItems(
-        departmentList.map(item => ({ id: item.department.deptId }))
-    );
-};
-
-// Handle unselect all
-export const handleUnselectAll = (
-    setCheckedItems: React.Dispatch<React.SetStateAction<CheckedItem[]>>,
-    setDepartmentList: React.Dispatch<React.SetStateAction<{
-        department: DetailedDepartment;
-        isCheck: boolean
-    }[]>>
-) => {
-    console.log('Unselect all');
-
-    setDepartmentList(prevDepartmentList =>
-        prevDepartmentList.map(department =>
-            ({ ...department, isCheck: false })
-        )
-    );
-
-    setCheckedItems([]);
-};
-
-// Handle selector data change

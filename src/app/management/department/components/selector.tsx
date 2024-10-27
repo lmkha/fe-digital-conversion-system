@@ -2,7 +2,8 @@
 'use client';
 
 import Combobox from "@/core/components/combobox";
-import { BasicDepartment, DetailedDepartment, findDepartmentsByFilter, getProvinces, Province } from '@/services/department';
+import { BasicDepartment, findDepartmentsByFilter, getProvinces, Province } from '@/services/department';
+import { DepartmentItem } from "@/services/models/department-item";
 import { useEffect, useState } from "react";
 import { useUserInfo } from "@/contexts/user-info-context";
 
@@ -31,10 +32,10 @@ interface SelectorProps {
 export default function Selector({ onChange, refreshData, onRefreshDataFinished, onCallBackInfoChange }: SelectorProps) {
     const { userInfo } = useUserInfo();
     const [provinceList, setProvinceList] = useState<Province[]>([]);
-    const [deptLevel1List, setDeptLevel1List] = useState<DetailedDepartment[]>([]);
-    const [deptLevel2List, setDeptLevel2List] = useState<DetailedDepartment[]>([]);
-    const [deptLevel3List, setDeptLevel3List] = useState<DetailedDepartment[]>([]);
-    const [deptLevel4List, setDeptLevel4List] = useState<DetailedDepartment[]>([]);
+    const [deptLevel1List, setDeptLevel1List] = useState<DepartmentItem[]>();
+    const [deptLevel2List, setDeptLevel2List] = useState<DepartmentItem[]>();
+    const [deptLevel3List, setDeptLevel3List] = useState<DepartmentItem[]>();
+    const [deptLevel4List, setDeptLevel4List] = useState<DepartmentItem[]>();
     const [province, setProvince] = useState<Province>({ provinceId: '', provinceName: '' });
     const [deptLevel1, setDeptLevel1] = useState<BasicDepartment>({ deptId: '', deptName: '' });
     const [deptLevel2, setDeptLevel2] = useState<BasicDepartment>({ deptId: '', deptName: '' });
@@ -226,7 +227,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
                 className="w-1/3 h-10"
                 value={{ id: deptLevel1.deptId, name: deptLevel1.deptName }}
                 label="Phòng ban cấp 1 *"
-                options={deptLevel1List.map(department => ({ id: department.deptId, name: department.deptName }))}
+                options={deptLevel1List && deptLevel1List.map(department => ({ id: department.deptId, name: department.deptName })) || []}
                 onChange={(department) => {
                     setDeptLevel1({
                         deptId: department.id,
@@ -240,7 +241,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
                 className="w-1/3 h-10"
                 value={{ id: deptLevel2.deptId, name: deptLevel2.deptName }}
                 label="Phòng ban cấp 2 *"
-                options={deptLevel2List.map(department => ({ id: department.deptId, name: department.deptName }))}
+                options={deptLevel2List && deptLevel2List.map(department => ({ id: department.deptId, name: department.deptName })) || []}
                 onChange={(department) => {
                     setDeptLevel2({
                         deptId: department.id,
@@ -254,7 +255,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
                 className="w-1/3 h-10"
                 value={{ id: deptLevel3.deptId, name: deptLevel3.deptName }}
                 label="Phòng ban cấp 3 *"
-                options={deptLevel3List.map(department => ({ id: department.deptId, name: department.deptName }))}
+                options={deptLevel3List && deptLevel3List.map(department => ({ id: department.deptId, name: department.deptName })) || []}
                 onChange={(department) => {
                     setDeptLevel3({
                         deptId: department.id,
@@ -268,7 +269,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
                 className="w-1/3 h-10"
                 value={{ id: deptLevel4.deptId, name: deptLevel4.deptName }}
                 label="Phòng ban cấp 4 *"
-                options={deptLevel4List.map(department => ({ id: department.deptId, name: department.deptName }))}
+                options={deptLevel4List && deptLevel4List.map(department => ({ id: department.deptId, name: department.deptName })) || []}
                 onChange={(department) => {
                     setDeptLevel4({
                         deptId: department.id,

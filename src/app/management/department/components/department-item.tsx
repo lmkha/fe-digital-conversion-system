@@ -14,11 +14,12 @@ interface DepartmentItemProps {
     district: string;
     ward: string;
     isCheck: boolean;
-    onIsCheckChange: (id: string, isCheck: boolean) => void;
+    onSelect: (id: string) => void;
+    onUnselect: (id: string) => void;
     onEdit: () => void;
 }
 
-export default function DepartmentItem({ id, name, level, district, ward, isCheck, onIsCheckChange, onEdit }: DepartmentItemProps) {
+export default function DepartmentItem({ id, name, level, district, ward, isCheck, onSelect, onUnselect, onEdit }: DepartmentItemProps) {
     const checkIcon = isCheck ?
         <MdCheckBox className="text-3xl text-blue-500" /> :
         <MdCheckBoxOutlineBlank className="text-3xl text-gray-300 hover:text-gray-600" />;
@@ -28,7 +29,13 @@ export default function DepartmentItem({ id, name, level, district, ward, isChec
             <div className="flex items-end justify-center gap-2 mr-5 w-20">
                 <button
                     onClick={() => {
-                        onIsCheckChange(id, !isCheck);
+                        if (isCheck) {
+                            onUnselect(id);
+                            console.log(`Unselect ${id}`);
+                        } else {
+                            onSelect(id);
+                            console.log(`Select ${id}`);
+                        }
                     }}
                 >
                     {checkIcon}

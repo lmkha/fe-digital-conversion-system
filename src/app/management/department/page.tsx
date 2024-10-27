@@ -2,7 +2,7 @@
 'use client';
 
 import { Fragment, useEffect, useState } from "react";
-import DepartmentItem from "./components/department-item";
+import DepartmentComponent from "./components/department-item";
 import Filter, { FilterData } from "./components/filter";
 import Selector from "./components/selector";
 import { SelectorData } from "./components/selector";
@@ -11,17 +11,14 @@ import { useManagement } from "@/contexts/management-context";
 import EditDepartmentModal from "./modals/edit-department";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
 import {
-    handleIsCheckChange,
-    handleSelectAll,
-    handleUnselectAll,
     BasicDepartment,
-    DetailedDepartment,
     CheckedItem,
     deleteDepartments,
     findDepartmentsByFilterWithPageInfo,
     downloadDepartmentsExcelFile
 } from '@/services/department';
 import { useAppContext } from "@/contexts/app-context";
+import { DepartmentItem } from "@/services/models/department-item";
 
 export default function Page() {
     const { setToastInfo } = useAppContext();
@@ -31,12 +28,9 @@ export default function Page() {
     const [showAddNewDepartmentModal, setShowAddNewDepartmentModal] = useState(false);
     const [showEditDepartmentModal, setShowEditDepartmentModal] = useState(false);
     const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState(false);
-    const [checkedItems, setCheckedItems] = useState<CheckedItem[]>();
+    const [checkedItemIds, setCheckedItemIds] = useState<string[]>();
     const [refreshData, setRefreshData] = useState(false);
-    const [departmentList, setDepartmentList] = useState<{
-        department: DetailedDepartment;
-        isCheck: boolean;
-    }[]>([]);
+    const [departmentList, setDepartmentList] = useState<DepartmentItem[]>();
     const [editingDepartment, setEditingDepartment] = useState<BasicDepartment>();
 
     // Update department list and page info
@@ -49,23 +43,30 @@ export default function Page() {
                     level: filterData?.level,
                     districtName: filterData?.district,
                     wardName: filterData?.ward,
-                    pageSize: footerInfo?.paginationInfo?.pageSize?.toString(),
-                    pageNumber: footerInfo?.paginationInfo?.pageNumber?.toString()
                 }).then((result) => {
-                    setDepartmentList(result.departments.map(item => ({
-                        department: item,
-                        isCheck: false
-                    })));
+                    setDepartmentList(result.departments);
+                    setFooterInfo && setFooterInfo({
+                        ...footerInfo,
+                        paginationInfo: result.paginationInfo
+                    });
                 });
         } else {
             setDepartmentList([]);
-
         }
     }
+    // UseEffect----------------------------------------------------------------------------------------------------------------
+    useEffect(() => {
+        if (selectorData && selectorData.provinceId) {
+            updateDepartmentListAndPageInfo();
+        } else {
+            setDepartmentList([]);
+        }
+    }, [selectorData]);
 
-    // Set footer info
+    // Update export data footer
     useEffect(() => {
         setFooterInfo({
+            ...footerInfo,
             exportDataFooter: () => {
                 if (!selectorData?.provinceId) {
                     setToastInfo && setToastInfo({
@@ -95,116 +96,98 @@ export default function Page() {
         });
     }, [departmentList]);
 
-
     // Set header buttons
-    // useEffect(() => {
-    //     setHeaderTitle('Phòng ban');
-    //     if (departmentListInfo.level === '4') {
-    //         setHeaderButtons([]);
-    //         return;
-    //     }
-    //     setHeaderButtons([
-    //         {
-    //             type: 'add',
-    //             label: 'Thêm phòng ban',
-    //             onClick: () => {
-    //                 if (!departmentListInfo.provinceId) {
-    //                     setToastInfo({
-    //                         showToast: true,
-    //                         severity: 'error',
-    //                         message: 'Vui lòng chọn tỉnh/thành phố trước khi thêm phòng ban!'
-    //                     });
-    //                 } else {
-    //                     setShowAddNewDepartmentModal(true)
-    //                 }
-    //             }
-    //         }
-    //     ]);
-    // }, [setHeaderTitle, setHeaderButtons, departmentListInfo?.provinceId, departmentListInfo.level]);
+    useEffect(() => {
+        setHeaderTitle('Phòng ban');
+        setHeaderButtons([
+            {
+                type: 'add',
+                label: 'Thêm phòng ban',
+                onClick: () => {
+                    if (!selectorData?.provinceId) {
+                        setToastInfo && setToastInfo({
+                            show: true,
+                            severity: 'error',
+                            message: 'Vui lòng chọn tỉnh/thành phố trước khi thêm phòng ban!'
+                        });
+                    } else {
+                        setShowAddNewDepartmentModal(true)
+                    }
+                }
+            }
+        ]);
+    }, [setHeaderTitle, setHeaderButtons, selectorData?.provinceId]);
 
     // Show or hide selected data toolbar
     useEffect(() => {
-        if (checkedItems && checkedItems.length > 0) {
+        if (checkedItemIds && checkedItemIds.length > 0) {
             setShowSelectedDataToolbar(true);
         } else {
             setShowSelectedDataToolbar(false);
         }
-    }, [checkedItems]);
+    }, [checkedItemIds]);
+
+    useEffect(() => {
+        if (footerInfo?.paginationInfo?.pageSize && footerInfo?.paginationInfo?.pageNumber) {
+            if (selectorData?.provinceId) {
+                findDepartmentsByFilterWithPageInfo({
+                    provinceId: selectorData.provinceId,
+                    parentId: selectorData.parentId,
+                    level: filterData?.level,
+                    districtName: filterData?.district,
+                    wardName: filterData?.ward,
+                    pageSize: footerInfo?.paginationInfo?.pageSize?.toString(),
+                    pageNumber: footerInfo?.paginationInfo?.pageNumber?.toString()
+                }).then((result) => {
+                    setDepartmentList(result.departments);
+                });
+            }
+        }
+    }, [footerInfo?.paginationInfo?.pageSize, footerInfo?.paginationInfo?.pageNumber]);
 
     return (
         <Fragment>
             <div className="flex-col text-black mt-4">
                 <Selector
-                    onChange={(provinceId, provinceName, parentId) => {
-                        // setSelectorData({
-                        //     provinceId: provinceId,
-                        //     provinceName: provinceName,
-                        //     parentId: parentId
-                        // });
-                    }}
+                    onChange={(provinceId, provinceName, parentId) => { }}
                     refreshData={refreshData}
                     onRefreshDataFinished={() => setRefreshData(false)}
                     onCallBackInfoChange={(callBackInfo) => {
-                        // setDepartmentListInfo({
-                        //     ...departmentListInfo,
-                        //     provinceId: callBackInfo.provinceId,
-                        //     parentId: callBackInfo.parentId,
-                        //     deptName: callBackInfo.deptName,
-                        //     level: callBackInfo.level,
-                        //     wardName: callBackInfo.wardName,
-                        //     districtName: callBackInfo.districtName,
-                        //     pageSize: callBackInfo.pageSize,
-                        //     pageNumber: callBackInfo.pageNumber
-                        // });
+                        setSelectorData && setSelectorData({
+                            provinceId: callBackInfo.provinceId,
+                            provinceName: '',
+                            parentId: callBackInfo.parentId
+                        })
                     }}
                 />
                 <Filter
                     isCheck={false}
-                    onCheckAllChange={(isCheck) => {
-                        // if (isCheck) {
-                        //     handleSelectAll(departmentList, setCheckedItems, setDepartmentList);
-                        // } else {
-                        //     handleUnselectAll(setCheckedItems, setDepartmentList);
-                        // }
-                    }}
-                    onTextChange={(key, value) => {
-                        // setFilterData({ ...filterData, [key]: value });
-                    }}
-                    onSubmitted={(filterData) => {
-                        // if (!departmentListInfo.provinceId) {
-                        //     setToastInfo({
-                        //         showToast: true,
-                        //         severity: 'error',
-                        //         message: 'Vui lòng chọn tỉnh/thành phố trước khi tìm kiếm!'
-                        //     });
-                        //     return;
-                        // }
-                        // setDepartmentListInfo({
-                        //     ...departmentListInfo,
-                        //     deptName: filterData.name,
-                        //     level: filterData.level,
-                        //     districtName: filterData.district,
-                        //     wardName: filterData.ward
-                        // });
-                    }}
+                    onCheckAllChange={(isCheck) => { }}
+                    onTextChange={(key, value) => { }}
+                    onSubmitted={(filterData) => { }}
                 />
 
                 {/* TableList */}
                 <div className="flex-1 w-full max-h-[480px] overflow-y-auto">
-                    {departmentList.map((item, index) => (
-                        <DepartmentItem
-                            id={item.department.deptId}
+                    {departmentList && departmentList.map((item, index) => (
+                        <DepartmentComponent
+                            id={item?.deptId ? item.deptId : ''}
                             key={index}
-                            name={item.department.deptName}
-                            level={item.department.level}
-                            district={item.department.districtName}
-                            ward={item.department.wardName}
-                            isCheck={item.isCheck}
-                            onIsCheckChange={(id, isCheck) => { }}
-                            onEdit={async () => {
+                            name={item?.deptName ? item.deptName : ''}
+                            level={item?.level ? item.level : 0}
+                            district={item?.districtName ? item.districtName : ''}
+                            ward={item?.wardName ? item.wardName : ''}
+                            isCheck={checkedItemIds && checkedItemIds.includes(item.deptId) ? true : false}
+                            onSelect={(id) => {
+                                setCheckedItemIds([...(checkedItemIds ? checkedItemIds : []), id]);
+                            }}
+                            onUnselect={(id) => {
+                                setCheckedItemIds(checkedItemIds?.filter((item) => item !== id));
+                            }}
+                            onEdit={() => {
                                 setEditingDepartment({
-                                    deptId: item.department.deptId,
-                                    deptName: item.department.deptName,
+                                    deptId: item.deptId,
+                                    deptName: item.deptName,
                                 })
                                 setShowEditDepartmentModal(true)
                             }}
@@ -251,22 +234,20 @@ export default function Page() {
             <SelectedDataToolbar
                 label="phòng ban"
                 isShow={showSelectedDataToolbar}
-                totalSelected={checkedItems && checkedItems.length ? checkedItems.length : 0}
+                totalSelected={checkedItemIds ? checkedItemIds.length : 0}
                 onDelete={() => {
-                    if (!checkedItems || checkedItems.length === 0) {
+                    if (!checkedItemIds || checkedItemIds.length === 0) {
                         return;
                     }
                     const dl = async () => {
-                        const result = await deleteDepartments(
-                            checkedItems.map(item => item.id)
-                        );
+                        const result = await deleteDepartments(checkedItemIds);
                         setToastInfo && setToastInfo({
                             show: true,
                             severity: result.success ? 'success' : 'error',
                             message: result.message
                         });
                         if (result.success) {
-                            setCheckedItems([]);
+                            setCheckedItemIds([]);
                             updateDepartmentListAndPageInfo()
                             setRefreshData(true);
                         }
@@ -274,7 +255,7 @@ export default function Page() {
                     dl();
                 }}
                 onClose={() => {
-                    setCheckedItems([]);
+                    setCheckedItemIds([]);
                     setShowSelectedDataToolbar(false);
                 }}
             />
