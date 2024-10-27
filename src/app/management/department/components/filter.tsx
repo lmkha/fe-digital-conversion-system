@@ -4,10 +4,10 @@ import { useEffect, useState, useRef } from "react";
 import { RiCheckboxIndeterminateFill, RiCheckboxIndeterminateLine } from "react-icons/ri";
 
 export interface FilterData {
-    code: string,
-    level: string,
-    district: string,
-    ward: string
+    name: string;
+    level: string;
+    district: string;
+    ward: string;
 }
 
 interface FilterProps {

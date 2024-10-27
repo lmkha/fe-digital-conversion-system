@@ -207,8 +207,8 @@ export const findUserByFilter = async ({
             message: result.message,
             data: {
                 paginationInfo: {
-                    pageSize: 1,
-                    pageNumber: 1,
+                    pageSize: 0,
+                    pageNumber: 0,
                     total: 0,
                     start: 0,
                     end: 0

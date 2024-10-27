@@ -21,12 +21,13 @@ import {
     findDepartmentsByFilterWithPageInfo,
     downloadDepartmentsExcelFile
 } from '@/services/department';
-import Toast from "@/core/components/toast";
+import { useAppContext } from "@/contexts/app-context";
 
 export default function Page() {
+    const { setToastInfo } = useAppContext();
+    const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
     const [selectorData, setSelectorData] = useState<SelectorData>();
     const [filterData, setFilterData] = useState<FilterData>();
-    const { setHeaderButtons, setHeaderTitle, setFooterInfo } = useManagement();
     const [showAddNewDepartmentModal, setShowAddNewDepartmentModal] = useState(false);
     const [showEditDepartmentModal, setShowEditDepartmentModal] = useState(false);
     const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState(false);
@@ -40,131 +41,90 @@ export default function Page() {
 
     // Update department list and page info
     const updateDepartmentListAndPageInfo = async () => {
-        if (departmentListInfo.provinceId) {
+        if (selectorData?.provinceId) {
             await findDepartmentsByFilterWithPageInfo(
-                departmentListInfo.provinceId,
-                departmentListInfo.parentId,
-                departmentListInfo.deptName,
-                '',
-                departmentListInfo.wardName,
-                departmentListInfo.districtName,
-                departmentListInfo.pageSize,
-                departmentListInfo.pageNumber
-            ).then((result) => {
-                setPageInfo({
-                    pageNumber: result.pageNumber,
-                    total: result.total,
-                    start: result.start,
-                    end: result.end
+                {
+                    provinceId: selectorData.provinceId,
+                    parentId: selectorData.parentId,
+                    level: filterData?.level,
+                    districtName: filterData?.district,
+                    wardName: filterData?.ward,
+                    pageSize: footerInfo?.paginationInfo?.pageSize?.toString(),
+                    pageNumber: footerInfo?.paginationInfo?.pageNumber?.toString()
+                }).then((result) => {
+                    setDepartmentList(result.departments.map(item => ({
+                        department: item,
+                        isCheck: false
+                    })));
                 });
-                setDepartmentList(result.departments.map(item => ({
-                    department: item,
-                    isCheck: false
-                })));
-            });
         } else {
             setDepartmentList([]);
-            setPageInfo({
-                pageNumber: 0,
-                total: 0,
-                start: 0,
-                end: 0
-            });
+
         }
     }
-
-    // Update department list and page info when departmentListInfo changes
-    useEffect(() => {
-        updateDepartmentListAndPageInfo();
-    }, [departmentListInfo]);
 
     // Set footer info
     useEffect(() => {
         setFooterInfo({
             exportDataFooter: () => {
-                if (!departmentListInfo.provinceId) {
-                    setToastInfo({
-                        showToast: true,
+                if (!selectorData?.provinceId) {
+                    setToastInfo && setToastInfo({
+                        show: true,
                         severity: 'error',
                         message: 'Vui lòng chọn tỉnh/thành phố trước khi tải file!'
                     });
                     return;
                 }
                 downloadDepartmentsExcelFile(
-                    departmentListInfo.provinceId,
-                    departmentListInfo.parentId,
-                    departmentListInfo.deptName,
-                    departmentListInfo.level,
-                    departmentListInfo.districtName,
-                    departmentListInfo.wardName,
-                    departmentListInfo.pageSize,
-                    departmentListInfo.pageNumber
+                    selectorData.provinceId,
+                    selectorData.parentId,
+                    filterData?.name ? filterData?.name : '',
+                    filterData?.level ? filterData?.level : '',
+                    filterData?.district ? filterData?.district : '',
+                    filterData?.ward ? filterData?.ward : '',
+                    footerInfo?.paginationInfo?.pageSize?.toString() ? footerInfo?.paginationInfo?.pageSize?.toString() : '',
+                    footerInfo?.paginationInfo?.pageNumber?.toString() ? footerInfo?.paginationInfo?.pageNumber?.toString() : ''
                 ).then((result) => {
-                    if (!result) {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'error',
-                            message: 'Tải file thất bại!'
-                        });
-                    } else {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'success',
-                            message: 'Tải file thành công!'
-                        });
-                    }
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        severity: result ? 'success' : 'error',
+                        message: result ? 'Tải file thành công!' : 'Tải file thất bại!'
+                    });
                 });
             },
-            pageNumber: pageInfo.pageNumber,
-            total: pageInfo.total,
-            start: pageInfo.start,
-            end: pageInfo.end,
-            onChangePageNumber: (pageNumber: number) => {
-                setDepartmentListInfo({
-                    ...departmentListInfo,
-                    pageNumber: pageNumber.toString()
-                });
-            },
-            onChangePageSize: (pageSize: number) => {
-                setDepartmentListInfo({
-                    ...departmentListInfo,
-                    pageNumber: '1',
-                    pageSize: pageSize.toString()
-                });
-            }
         });
     }, [departmentList]);
 
 
     // Set header buttons
-    useEffect(() => {
-        setHeaderTitle('Phòng ban');
-        if (departmentListInfo.level === '4') {
-            setHeaderButtons([]);
-            return;
-        }
-        setHeaderButtons([
-            {
-                type: 'add',
-                label: 'Thêm phòng ban',
-                onClick: () => {
-                    if (!departmentListInfo.provinceId) {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'error',
-                            message: 'Vui lòng chọn tỉnh/thành phố trước khi thêm phòng ban!'
-                        });
-                    } else {
-                        setShowAddNewDepartmentModal(true)
-                    }
-                }
-            }
-        ]);
-    }, [setHeaderTitle, setHeaderButtons, departmentListInfo.provinceId, departmentListInfo.level]);
+    // useEffect(() => {
+    //     setHeaderTitle('Phòng ban');
+    //     if (departmentListInfo.level === '4') {
+    //         setHeaderButtons([]);
+    //         return;
+    //     }
+    //     setHeaderButtons([
+    //         {
+    //             type: 'add',
+    //             label: 'Thêm phòng ban',
+    //             onClick: () => {
+    //                 if (!departmentListInfo.provinceId) {
+    //                     setToastInfo({
+    //                         showToast: true,
+    //                         severity: 'error',
+    //                         message: 'Vui lòng chọn tỉnh/thành phố trước khi thêm phòng ban!'
+    //                     });
+    //                 } else {
+    //                     setShowAddNewDepartmentModal(true)
+    //                 }
+    //             }
+    //         }
+    //     ]);
+    // }, [setHeaderTitle, setHeaderButtons, departmentListInfo?.provinceId, departmentListInfo.level]);
 
     // Show or hide selected data toolbar
     useEffect(() => {
-        if (checkedItems.length > 0) {
+        if (checkedItems && checkedItems.length > 0) {
             setShowSelectedDataToolbar(true);
         } else {
             setShowSelectedDataToolbar(false);
@@ -176,57 +136,56 @@ export default function Page() {
             <div className="flex-col text-black mt-4">
                 <Selector
                     onChange={(provinceId, provinceName, parentId) => {
-                        setSelectorData({
-                            provinceId: provinceId,
-                            provinceName: provinceName,
-                            parentId: parentId
-                        });
+                        // setSelectorData({
+                        //     provinceId: provinceId,
+                        //     provinceName: provinceName,
+                        //     parentId: parentId
+                        // });
                     }}
                     refreshData={refreshData}
                     onRefreshDataFinished={() => setRefreshData(false)}
                     onCallBackInfoChange={(callBackInfo) => {
-                        console.log(`Level: ${callBackInfo.level}`);
-                        setDepartmentListInfo({
-                            ...departmentListInfo,
-                            provinceId: callBackInfo.provinceId,
-                            parentId: callBackInfo.parentId,
-                            deptName: callBackInfo.deptName,
-                            level: callBackInfo.level,
-                            wardName: callBackInfo.wardName,
-                            districtName: callBackInfo.districtName,
-                            pageSize: callBackInfo.pageSize,
-                            pageNumber: callBackInfo.pageNumber
-                        });
+                        // setDepartmentListInfo({
+                        //     ...departmentListInfo,
+                        //     provinceId: callBackInfo.provinceId,
+                        //     parentId: callBackInfo.parentId,
+                        //     deptName: callBackInfo.deptName,
+                        //     level: callBackInfo.level,
+                        //     wardName: callBackInfo.wardName,
+                        //     districtName: callBackInfo.districtName,
+                        //     pageSize: callBackInfo.pageSize,
+                        //     pageNumber: callBackInfo.pageNumber
+                        // });
                     }}
                 />
                 <Filter
                     isCheck={false}
                     onCheckAllChange={(isCheck) => {
-                        if (isCheck) {
-                            handleSelectAll(departmentList, setCheckedItems, setDepartmentList);
-                        } else {
-                            handleUnselectAll(setCheckedItems, setDepartmentList);
-                        }
+                        // if (isCheck) {
+                        //     handleSelectAll(departmentList, setCheckedItems, setDepartmentList);
+                        // } else {
+                        //     handleUnselectAll(setCheckedItems, setDepartmentList);
+                        // }
                     }}
                     onTextChange={(key, value) => {
-                        setFilterData({ ...filterData, [key]: value });
+                        // setFilterData({ ...filterData, [key]: value });
                     }}
                     onSubmitted={(filterData) => {
-                        if (!departmentListInfo.provinceId) {
-                            setToastInfo({
-                                showToast: true,
-                                severity: 'error',
-                                message: 'Vui lòng chọn tỉnh/thành phố trước khi tìm kiếm!'
-                            });
-                            return;
-                        }
-                        setDepartmentListInfo({
-                            ...departmentListInfo,
-                            deptName: filterData.name,
-                            level: filterData.level,
-                            districtName: filterData.district,
-                            wardName: filterData.ward
-                        });
+                        // if (!departmentListInfo.provinceId) {
+                        //     setToastInfo({
+                        //         showToast: true,
+                        //         severity: 'error',
+                        //         message: 'Vui lòng chọn tỉnh/thành phố trước khi tìm kiếm!'
+                        //     });
+                        //     return;
+                        // }
+                        // setDepartmentListInfo({
+                        //     ...departmentListInfo,
+                        //     deptName: filterData.name,
+                        //     level: filterData.level,
+                        //     districtName: filterData.district,
+                        //     wardName: filterData.ward
+                        // });
                     }}
                 />
 
@@ -241,9 +200,7 @@ export default function Page() {
                             district={item.department.districtName}
                             ward={item.department.wardName}
                             isCheck={item.isCheck}
-                            onIsCheckChange={(id, isCheck) =>
-                                handleIsCheckChange(id, isCheck, setCheckedItems, setDepartmentList)
-                            }
+                            onIsCheckChange={(id, isCheck) => { }}
                             onEdit={async () => {
                                 setEditingDepartment({
                                     deptId: item.department.deptId,
@@ -261,47 +218,32 @@ export default function Page() {
                 label="Thêm phòng ban"
                 onClose={() => setShowAddNewDepartmentModal(false)}
                 onSubmitted={(success, message, code) => {
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        severity: success ? 'success' : 'error',
+                        message: message
+                    });
                     if (success) {
                         setRefreshData(true);
-                        // Refresh department list
                         updateDepartmentListAndPageInfo()
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'success',
-                            message: 'Thêm phòng ban thành công!'
-                        });
-                    } else {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'error',
-                            message: message
-                        });
                     }
                 }}
-                parentId={selectorData.parentId}
-                provinceId={selectorData.provinceId}
-                provinceName={selectorData.provinceName}
+                parentId={selectorData?.parentId ? selectorData.parentId : ''}
+                provinceId={selectorData?.provinceId ? selectorData.provinceId : ''}
+                provinceName={selectorData?.provinceName ? selectorData.provinceName : ''}
             />
             <EditDepartmentModal
                 isVisible={showEditDepartmentModal}
                 label="Chỉnh sửa phòng ban"
                 onClose={() => setShowEditDepartmentModal(false)}
                 onSubmitted={(success, message, code) => {
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        severity: success ? 'success' : 'error',
+                        message: message
+                    });
                     if (success) {
-                        // Refresh department list
                         updateDepartmentListAndPageInfo()
-
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'success',
-                            message: 'Cập nhật phòng ban thành công!'
-                        });
-                    } else {
-                        setToastInfo({
-                            showToast: true,
-                            severity: 'error',
-                            message: message
-                        });
                     }
                 }}
                 deptId={editingDepartment?.deptId ? editingDepartment.deptId : ''}
@@ -309,46 +251,33 @@ export default function Page() {
             <SelectedDataToolbar
                 label="phòng ban"
                 isShow={showSelectedDataToolbar}
-                totalSelected={checkedItems.length}
+                totalSelected={checkedItems && checkedItems.length ? checkedItems.length : 0}
                 onDelete={() => {
+                    if (!checkedItems || checkedItems.length === 0) {
+                        return;
+                    }
                     const dl = async () => {
                         const result = await deleteDepartments(
                             checkedItems.map(item => item.id)
                         );
+                        setToastInfo && setToastInfo({
+                            show: true,
+                            severity: result.success ? 'success' : 'error',
+                            message: result.message
+                        });
                         if (result.success) {
-                            setToastInfo({
-                                showToast: true,
-                                severity: 'success',
-                                message: 'Xóa phòng ban thành công!'
-                            });
                             setCheckedItems([]);
                             updateDepartmentListAndPageInfo()
                             setRefreshData(true);
-                        } else {
-                            setToastInfo({
-                                showToast: true,
-                                severity: 'error',
-                                message: result.message
-                            });
                         }
                     }
                     dl();
                 }}
                 onClose={() => {
-                    handleUnselectAll(setCheckedItems, setDepartmentList);
+                    setCheckedItems([]);
                     setShowSelectedDataToolbar(false);
                 }}
             />
-            <Toast
-                open={toastInfo.showToast}
-                message={toastInfo.message}
-                severity={toastInfo.severity}
-                autoClose={true}
-                duration={2000}
-                onClose={() => setToastInfo({ ...toastInfo, showToast: false })}
-            />
-
-
         </Fragment>
     );
 }

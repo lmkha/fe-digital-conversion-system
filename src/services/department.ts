@@ -1,5 +1,6 @@
 import department from "@/api/department";
 import address from "@/api/address";
+import PaginationInfo from "@/core/types/pagination-info";
 
 export interface Province {
     provinceId: string;
@@ -188,29 +189,38 @@ export const findDepartmentsByFilter = async (
     }
 }
 
-export const findDepartmentsByFilterWithPageInfo = async (
+export const findDepartmentsByFilterWithPageInfo = async ({
+    provinceId,
+    parentId,
+    deptName = '',
+    level = '',
+    wardName = '',
+    districtName = '',
+    pageSize = '',
+    pageNumber = '',
+}: {
     provinceId: string,
     parentId: string,
-    deptName: string,
-    level: string,
-    wardName: string,
-    districtName: string,
-    pageSize: string,
-    pageNumber: string,
-): Promise<{
-    pageNumber: number,
-    total: number,
-    start: number,
-    end: number,
+    deptName?: string,
+    level?: string,
+    wardName?: string,
+    districtName?: string,
+    pageSize?: string,
+    pageNumber?: string,
+}): Promise<{
+    paginationInfo: PaginationInfo,
     departments: DetailedDepartment[]
 }> => {
     const result = await department.findDepartmentsByFilter(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
     if (result.success) {
         return {
-            pageNumber: result.data.pageNumber,
-            total: result.data.total,
-            start: result.data.start,
-            end: result.data.end,
+            paginationInfo: {
+                pageSize: 10,
+                pageNumber: result.data.pageNumber,
+                total: result.data.total,
+                start: result.data.start,
+                end: result.data.end,
+            },
             departments: result.data.depts.map((dept: any): DetailedDepartment => ({
                 deptName: dept.deptname,
                 deptId: dept.deptid,
@@ -226,10 +236,13 @@ export const findDepartmentsByFilterWithPageInfo = async (
     } else {
         console.error("Error filtering department:", result.message);
         return {
-            pageNumber: 0,
-            total: 0,
-            start: 0,
-            end: 0,
+            paginationInfo: {
+                pageSize: 0,
+                pageNumber: 0,
+                total: 0,
+                start: 0,
+                end: 0
+            },
             departments: []
         }
     }

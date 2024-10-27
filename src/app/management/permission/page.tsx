@@ -128,11 +128,6 @@ export default function Page() {
     // Update footer when list change, list only change when data update
     useEffect(() => {
         setFooterInfo({
-            hasExportDataFooter: false,
-            pageNumber: parseInt(paginationInfo.pageNumber),
-            total: parseInt(paginationInfo.total),
-            start: parseInt(paginationInfo.start),
-            end: parseInt(paginationInfo.end),
             onChangePageNumber: (pageNumber: number) => {
                 console.log(`Page number: ${pageNumber}`);
                 setPaginationInfo({

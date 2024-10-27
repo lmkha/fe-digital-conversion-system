@@ -183,7 +183,6 @@ export default function Page() {
     useEffect(() => {
         console.log('CheckVar');
         setFooterInfo({
-            hasExportDataFooter: true,
             exportDataFooter: () => {
                 downloadExcelFile(
                     filterData.permissionCode,
@@ -207,10 +206,6 @@ export default function Page() {
                     }
                 });
             },
-            pageNumber: parseInt(paginationInfoToRender.pageNumber),
-            total: parseInt(paginationInfoToRender.total),
-            start: parseInt(paginationInfoToRender.start),
-            end: parseInt(paginationInfoToRender.end),
             onChangePageNumber: (pageNumber) => {
                 setPaginationInfoToGetData({
                     ...paginationInfoToGetData,
