@@ -87,7 +87,7 @@ export default function UserItem({ userId, name, username, email, phone, role, j
                         <Switch
                             checked={status == '1'}
                             onChange={() => {
-                                if (onStatusChange) onStatusChange(userId, status === '1' ? '0' : '1');
+                                onStatusChange && onStatusChange(userId, status == '1' ? '0' : '1');
                             }}
                             color="primary"
                         />

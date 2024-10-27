@@ -32,7 +32,7 @@ export default function Page() {
         setCheckedItems([]);
     }
 
-    const updateUserList = () => {
+    const updateUserListAndPaginationInfo = () => {
         if (selectorData?.provinceId && selectorData.deptId) {
             findUserByDeptId(selectorData.deptId).then((result) => {
                 if (result.success) {
@@ -64,7 +64,7 @@ export default function Page() {
                     severity: 'success',
                     message: 'Thay đổi trạng thái thành công!'
                 });
-                updateUserList();
+                updateUserListAndPaginationInfo();
             } else {
                 if (setToastInfo) setToastInfo({
                     show: true,
@@ -116,7 +116,7 @@ export default function Page() {
     useEffect(() => {
         console.log('selectorData in Page:', selectorData);
         if (selectorData?.deptId) {
-            updateUserList();
+            updateUserListAndPaginationInfo();
         } else {
             setUserList([]);
         }
@@ -182,7 +182,7 @@ export default function Page() {
                     }
                 });
             } else {
-                updateUserList();
+                updateUserListAndPaginationInfo();
             }
         }
     }, [filterData]);
@@ -262,7 +262,9 @@ export default function Page() {
                             role={user.realRole}
                             jobTitle={user.jobTitle}
                             status={user.status}
-                            onStatusChange={(id, status) => { handleChangeUserStatus(id, status) }}
+                            onStatusChange={(id, status) => {
+                                handleChangeUserStatus(id, status)
+                            }}
                             checked={checkedItems && checkedItems.includes(user.userId) ? true : false}
                             onChangePassword={() => { }}
                             onEdit={() => {
@@ -335,7 +337,7 @@ export default function Page() {
                             })
                             if (result.success) {
                                 setCheckedItems([]);
-                                updateUserList();
+                                updateUserListAndPaginationInfo();
                             }
                         });
                     }
