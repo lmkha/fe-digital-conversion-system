@@ -22,6 +22,7 @@ import { findUserById, updateUser, uploadAvatarAndUpdateUser } from "@/services/
 import ImagePickerForEditModal from "../components/image-picker-edit";
 import { useUserInfo } from '@/contexts/user-info-context';
 import { userInfo } from "os";
+import { EditUserValidatedField, editUserValidator } from "@/validators/edit-user";
 
 interface EditUserModalProps {
     open: boolean;
@@ -122,9 +123,23 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
     const [isFirstTime, setIsFirstTime] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [errorFields, setErrorFields] = useState<EditUserValidatedField[]>();
     // handle submit data
     const handleSubmit = async () => {
-        setIsSubmitting(true); // Bắt đầu trạng thái loading
+        setIsSubmitting(true);
+
+        // Validate data
+        const errorFields = editUserValidator({
+            name: submitData.name,
+            jobTitle: submitData.jobTitle
+        });
+        if (errorFields.length > 0) {
+            setErrorFields(errorFields);
+            setIsSubmitting(false);
+            return;
+        } else {
+            setErrorFields([]);
+        }
 
         try {
             let result;
@@ -171,12 +186,6 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
 
             if (result.success) {
                 // Update user avatar
-                if (userId === userInfo.userId) {
-                    // setUserInfo({
-                    //     ...userInfo,
-                    //     avatar: result.avatar;
-                    // });
-                }
                 onSubmitted(true, "Cập nhật người dùng thành công!");
                 onClose();
             } else {
@@ -189,7 +198,6 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
             setIsSubmitting(false); // Dừng trạng thái loading khi API hoàn thành
         }
     };
-
 
     // UseEffect ----------------------------------------------------------------
     // Fetch user info base on userId
@@ -455,7 +463,8 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                     <Stack spacing={4}>
                                         {/* Name, job title */}
                                         <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
-                                            <TextField size="small" sx={{ width: '55%' }} label={'Họ tên *'}
+                                            <TextField size="small" label={'Họ tên *'} sx={{ width: '55%' }}
+                                                error={errorFields?.includes('name')}
                                                 value={submitData.name}
                                                 onChange={(e) => {
                                                     setSubmitData({
@@ -465,6 +474,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                                 }}
                                             />
                                             <TextField size="small" sx={{ width: '45%' }} label={'Công việc *'}
+                                                error={errorFields?.includes('jobTitle')}
                                                 value={submitData.jobTitle}
                                                 onChange={(e) => {
                                                     setSubmitData({
@@ -631,10 +641,10 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                     fontSize: 18,
                                 }}
                                 onClick={handleSubmit}
-                                disabled={isSubmitting}  // Vô hiệu hóa button khi đang loading
+                                disabled={isSubmitting}
                             >
                                 {isSubmitting ? (
-                                    <CircularProgress size={24} sx={{ color: 'white' }} /> // Hiển thị vòng tròn xoay
+                                    <CircularProgress size={24} sx={{ color: 'white' }} />
                                 ) : (
                                     'Lưu'
                                 )}

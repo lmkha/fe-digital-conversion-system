@@ -21,6 +21,7 @@ import ImagePickerForAddModal from "../components/image-picker-add";
 import { getRolesByDeptId } from "@/services/role";
 import { uploadAvatarAndCreateUser } from "@/services/user";
 import { CircularProgress } from '@mui/material';
+import { AddUserValidatedField, addUserValidator } from "@/validators/add-user";
 
 interface AddUserModalProps {
     open: boolean;
@@ -119,9 +120,27 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
         avatar: ''
     });
     const [loading, setLoading] = useState(false);
+    const [errorFields, setErrorFields] = useState<AddUserValidatedField[]>();
 
     const handleSubmit = async () => {
         setLoading(true);
+
+        // Validate input
+        const errorFields = addUserValidator({
+            username: submitData.username,
+            password: submitData.password,
+            name: submitData.name,
+            jobTitle: submitData.jobTitle,
+        });
+
+        if (errorFields.length > 0) {
+            setErrorFields(errorFields);
+            setLoading(false);
+            return;
+        } else {
+            setErrorFields([]);
+        }
+
         const result = await uploadAvatarAndCreateUser(
             imageUploadInfo.file,
             submitData.username,
@@ -358,6 +377,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             {/* Username and password */}
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                 <TextField size="small" sx={{ width: '55%' }} label={'Tên tài khoản *'}
+                                    error={errorFields?.includes('username')}
                                     value={submitData.username}
                                     onChange={(e) => {
                                         setSubmitData({
@@ -367,7 +387,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                     }}
                                 />
                                 <Password
-                                    isError={false}
+                                    isError={errorFields?.includes('password')}
                                     onChange={(value) => {
                                         setSubmitData({
                                             ...submitData,
@@ -381,6 +401,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             {/* Name, job title */}
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                 <TextField size="small" sx={{ width: '55%' }} label={'Họ tên *'}
+                                    error={errorFields?.includes('name')}
                                     value={submitData.name}
                                     onChange={(e) => {
                                         setSubmitData({
@@ -390,6 +411,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                     }}
                                 />
                                 <TextField size="small" sx={{ width: '45%' }} label={'Công việc *'}
+                                    error={errorFields?.includes('jobTitle')}
                                     value={submitData.jobTitle}
                                     onChange={(e) => {
                                         setSubmitData({
@@ -567,10 +589,10 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                         fontSize: 18,
                     }}
                     onClick={handleSubmit}
-                    disabled={loading}  // Vô hiệu hóa button khi đang loading
+                    disabled={loading}
                 >
                     {loading ? (
-                        <CircularProgress size={24} sx={{ color: 'white' }} /> // Hiển thị vòng tròn xoay
+                        <CircularProgress size={24} sx={{ color: 'white' }} />
                     ) : (
                         'Thêm'
                     )}
