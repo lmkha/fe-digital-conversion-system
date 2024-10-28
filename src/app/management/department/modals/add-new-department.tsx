@@ -43,7 +43,6 @@ export default function AddNewDepartmentModal({
     const [provinceList, setProvinceList] = useState<Province[]>([]);
     const [districtList, setDistrictList] = useState<District[]>([]);
     const [wardList, setWardList] = useState<Ward[]>([]);
-    const [parentDepartment, setParentDepartment] = useState<DepartmentItem>();
     const [department, setDepartment] = useState<DepartmentItem>();
     const [toastInfo, setToastInfo] = useState<{
         showToast: boolean
@@ -60,38 +59,42 @@ export default function AddNewDepartmentModal({
         if (isVisible) {
             if (parentId) {
                 getDepartmentById(parentId).then(result => {
-                    setParentDepartment(result);
-                });
-                department && parentDepartment && setDepartment({
-                    ...department,
-                    provinceId: parentDepartment.provinceId,
-                    districtId: parentDepartment.districtId,
-                    wardId: parentDepartment.wardId,
-                    provinceName: parentDepartment.provinceName,
-                    districtName: parentDepartment.districtName,
-                    wardName: parentDepartment.wardName
+                    setDepartment({
+                        deptId: '',
+                        deptName: '',
+                        level: result.level + 1,
+                        provinceName: result.provinceName,
+                        provinceId: result.provinceId,
+                        districtName: '',
+                        districtId: '',
+                        wardName: '',
+                        wardId: '',
+                        selected: false
+                    });
                 });
             }
             getProvinces().then(result => {
                 setProvinceList(result);
             });
-            if (provinceId) {
-                department && setDepartment({
-                    ...department,
-                    provinceId: provinceId,
-                    provinceName: provinceName
-                });
-            }
+            // if (provinceId) {
+            //     department && setDepartment({
+            //         ...department,
+            //         provinceId: provinceId,
+            //         provinceName: provinceName
+            //     });
+            // }
         } else {
             department && setDepartment({
-                ...department,
+                deptId: '',
                 deptName: '',
                 provinceId: '',
                 districtId: '',
                 wardId: '',
                 provinceName: '',
                 districtName: '',
-                wardName: ''
+                wardName: '',
+                selected: false,
+                level: 0
             });
         }
     }, [isVisible, parentId, provinceId]);
@@ -252,11 +255,18 @@ export default function AddNewDepartmentModal({
                                     label="Tỉnh / Thành phố"
                                     options={provinceList.map(province => ({ id: province.provinceId, name: province.provinceName }))}
                                     onChange={(province) => {
+                                        // department && setDepartment({
+                                        //     ...department,
+                                        //     provinceId: province.id,
+                                        //     provinceName: province.name
+                                        // });
+                                        console.log(province);
                                         department && setDepartment({
                                             ...department,
                                             provinceId: province.id,
                                             provinceName: province.name
                                         });
+                                        console.log(department);
                                     }}
                                 />
                             </div>
@@ -304,14 +314,17 @@ export default function AddNewDepartmentModal({
                         <div className="flex h-14 w-full bg-white justify-end">
                             <button className="w-40 h-full bg-checkVarSecondary rounded-lg text-white hover:bg-white hover:text-blue-600 hover:border-blue-500 border-2"
                                 onClick={async () => {
+                                    console.log('level:', department?.level);
+                                    console.log(`Data submit: ${JSON.stringify(department)}`);
+                                    console.log(`Level khac 1`, department?.level !== 1);
                                     if (!validateDataBeforeSubmit()) return;
-                                    if (parentDepartment?.deptId && department) {
+                                    if (department?.level !== 1 && department) {
                                         const result = await createDepartment({
                                             deptName: department.deptName,
                                             wardId: department.wardId,
                                             districtId: department.districtId,
                                             provinceId: department.provinceId,
-                                            parentId: parentDepartment.deptId
+                                            parentId: parentId
                                         });
                                         onSubmitted(result.success, result.message, result.code);
                                     } else {

@@ -11,6 +11,7 @@ import { useRouter } from 'next/navigation';
 import Footer from './components/footer';
 import Toast from '@/core/components/toast';
 import { useAppContext } from '@/contexts/app-context';
+import { get, set } from "@/hooks/use-local-storage";
 
 type LayoutProps = {
     children: ReactNode;
@@ -20,12 +21,19 @@ export default function Layout({ children }: LayoutProps) {
     const router = useRouter();
     const { isLoggedIn } = useAuth();
     const { toastInfo, setToastInfo } = useAppContext();
+    // const { userInfo } = get("userInfo");
 
     useEffect(() => {
         if (!isLoggedIn) {
             router.replace('/login');
         }
     }, [isLoggedIn]);
+
+    // useEffect(() => {
+    //     if (!userInfo) {
+    //         router.replace('/login');
+    //     }
+    // }, [userInfo]);
 
     return (
         <ManagementProvider>

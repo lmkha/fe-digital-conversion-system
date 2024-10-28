@@ -31,6 +31,7 @@ interface SelectorProps {
 
 export default function Selector({ onChange, refreshData, onRefreshDataFinished, onCallBackInfoChange }: SelectorProps) {
     const { userInfo } = useUserInfo();
+    const [level, setLevel] = useState<number>();
     const [provinceList, setProvinceList] = useState<Province[]>([]);
     const [deptLevel1List, setDeptLevel1List] = useState<DepartmentItem[]>();
     const [deptLevel2List, setDeptLevel2List] = useState<DepartmentItem[]>();
@@ -62,13 +63,6 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
     });
 
     // UseEffect -----------------------------------------------------
-    useEffect(() => {
-        console.log('Selector init')
-        getProvinces().then(result => {
-            setProvinceList(result);
-        });
-    }, []);
-
     // Only refresh children department list when parent department is selected
     useEffect(() => {
         if (refreshData) {
@@ -96,26 +90,6 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             onRefreshDataFinished();
         }
     }, [refreshData])
-
-    // Province change
-    useEffect(() => {
-        if (province.provinceId) {
-            findDepartmentsByFilter(province.provinceId, '', '', '1', '', '', '', '').then(result => {
-                setDeptLevel1List(result);
-            });
-        } else {
-            setDeptLevel1List([]);
-            setCallBackInfo({
-                ...callBackInfo,
-                provinceId: '',
-                parentId: '',
-            });
-        }
-        setDeptLevel1({
-            deptId: '',
-            deptName: ''
-        });
-    }, [province.provinceId])
 
     // Dept level 1 change
     useEffect(() => {
@@ -207,9 +181,46 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
         onCallBackInfoChange(callBackInfo);
     }, [callBackInfo])
 
+    useEffect(() => {
+        setLevel(userInfo.dept.level ? userInfo.dept.level : 0);
+        setProvince({
+            provinceId: userInfo.dept.provinceId ? userInfo.dept.provinceId : '',
+            provinceName: userInfo.dept.provinceName ? userInfo.dept.provinceName : ''
+        })
+        if (userInfo.dept.level == 1) {
+            setDeptLevel1({
+                deptId: userInfo.dept.deptId ? userInfo.dept.deptId : '',
+                deptName: userInfo.dept.deptName ? userInfo.dept.deptName : '',
+            });
+            return;
+        }
+        if (userInfo.dept.level == 2) {
+            setDeptLevel2({
+                deptId: userInfo.dept.deptId ? userInfo.dept.deptId : '',
+                deptName: userInfo.dept.deptName ? userInfo.dept.deptName : ''
+            });
+            return;
+        }
+        if (userInfo.dept.level == 3) {
+            setDeptLevel3({
+                deptId: userInfo.dept.deptId ? userInfo.dept.deptId : '',
+                deptName: userInfo.dept.deptName ? userInfo.dept.deptName : ''
+            });
+            return;
+        }
+        if (userInfo.dept.level == 4) {
+            setDeptLevel4({
+                deptId: userInfo.dept.deptId ? userInfo.dept.deptId : '',
+                deptName: userInfo.dept.deptName ? userInfo.dept.deptName : ''
+            });
+            return;
+        }
+    }, [userInfo]);
+
     return (
         <div className="flex justify-between items-center w-full h-fit pb-4 bg-white border-b-1 text-black gap-2">
             <Combobox
+                disabled={true}
                 className="w-1/3 h-10"
                 value={{ id: province.provinceId, name: province.provinceName }}
                 label="Tỉnh/Thành phố *"
@@ -224,6 +235,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             />
 
             <Combobox
+                disabled={level && level >= 1 ? true : false}
                 className="w-1/3 h-10"
                 value={{ id: deptLevel1.deptId, name: deptLevel1.deptName }}
                 label="Phòng ban cấp 1 *"
@@ -238,6 +250,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             />
 
             <Combobox
+                disabled={level && level >= 2 ? true : false}
                 className="w-1/3 h-10"
                 value={{ id: deptLevel2.deptId, name: deptLevel2.deptName }}
                 label="Phòng ban cấp 2 *"
@@ -252,6 +265,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             />
 
             <Combobox
+                disabled={level && level >= 3 ? true : false}
                 className="w-1/3 h-10"
                 value={{ id: deptLevel3.deptId, name: deptLevel3.deptName }}
                 label="Phòng ban cấp 3 *"
@@ -266,6 +280,7 @@ export default function Selector({ onChange, refreshData, onRefreshDataFinished,
             />
 
             <Combobox
+                disabled={level && level >= 4 ? true : false}
                 className="w-1/3 h-10"
                 value={{ id: deptLevel4.deptId, name: deptLevel4.deptName }}
                 label="Phòng ban cấp 4 *"

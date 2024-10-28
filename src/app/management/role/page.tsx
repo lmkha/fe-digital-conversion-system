@@ -242,15 +242,15 @@ export default function Page() {
             <div className="flex-col text-black mt-4">
                 {/* Selector */}
                 <Selector
-                    onChange={(provinceId, provinceName, parentId) => {
-                        setSelectorData({
-                            provinceId: provinceId,
-                            deptId: parentId
-                        });
-                    }}
+                    onChange={(provinceId, provinceName, parentId) => { }}
                     refreshData={false}
                     onRefreshDataFinished={() => { }}
-                    onCallBackInfoChange={(callBackInfo) => { }}
+                    onCallBackInfoChange={(callBackInfo) => {
+                        setSelectorData({
+                            provinceId: callBackInfo.provinceId,
+                            deptId: callBackInfo.parentId
+                        });
+                    }}
                 />
                 {/* Filter */}
                 <Filter

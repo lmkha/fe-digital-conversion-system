@@ -145,7 +145,7 @@ const MiddleSideNav = () => {
 
                     <li key={'report-configuration'}>
                         <Link
-                            href={'/management/department'}
+                            href={'/management/report-configuration'}
                             className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report-configuration' ? "bg-blue-800" : ""
                                 }`}
                             onClick={() => handleLinkClick('report-configuration')}
