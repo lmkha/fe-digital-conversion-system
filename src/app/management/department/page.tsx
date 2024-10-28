@@ -65,6 +65,12 @@ export default function Page() {
         }
     }, [selectorData]);
 
+    useEffect(() => {
+        if (selectorData && selectorData.parentId && filterData) {
+            updateDepartmentListAndPageInfo();
+        }
+    }, [filterData]);
+
     // Update export data footer
     useEffect(() => {
         setFooterInfo({
@@ -170,7 +176,10 @@ export default function Page() {
                     isCheck={false}
                     onCheckAllChange={(isCheck) => { }}
                     onTextChange={(key, value) => { }}
-                    onSubmitted={(filterData) => { }}
+                    onSubmitted={(filterData) => {
+                        console.log(filterData);
+                        setFilterData(filterData);
+                    }}
                 />
 
                 {/* TableList */}
