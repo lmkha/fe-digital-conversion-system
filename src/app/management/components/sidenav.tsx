@@ -12,6 +12,7 @@ import { useAuth } from '@/contexts/auth-context';
 import { get } from "@/hooks/use-local-storage";
 import { logout as serviceLogout } from "@/services/auth";
 import { CldImage } from 'next-cloudinary';
+import { usePermission } from '@/contexts/permission-context';
 
 export default function SideNav() {
     return (
@@ -52,15 +53,10 @@ const TopSideNav = () => {
 }
 
 const MiddleSideNav = () => {
+    const { permissionList } = usePermission();
     /* System toggle, manage department, permission, role, user, report configuration */
-    const list = [
-        { route: 'department', name: 'Phòng ban' },
-        { route: 'permission', name: 'Phân quyền' },
-        { route: 'role', name: 'Vai trò' },
-        { route: 'user', name: 'Người dùng' },
-        { route: 'report-configuration', name: 'Cấu hình báo cáo' },
-    ]
-    const [activeLink, setActiveLink] = useState<string | null>(null); const [isOpen, setIsOpen] = useState(true);
+    const [activeLink, setActiveLink] = useState<string | null>(null);
+    const [isOpen, setIsOpen] = useState(true);
     const handleToggle = () => {
         setIsOpen(!isOpen);
     };
@@ -93,19 +89,71 @@ const MiddleSideNav = () => {
             </button>
             {isOpen && (
                 <ul className="ml-6 max-h-screen">
-                    {list.map((item, index) => (
-                        <li key={index}>
+                    {permissionList.department.read && (
+                        <li key={'department'}>
                             <Link
-                                href={`/management/${item.route}`}
-                                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === item.route ? "bg-blue-800" : ""
+                                href={'/management/department'}
+                                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'department' ? "bg-blue-800" : ""
                                     }`}
-                                onClick={() => handleLinkClick(item.route)}
+                                onClick={() => handleLinkClick('department')}
                             >
                                 <LuDot />
-                                {item.name}
+                                Phòng ban
                             </Link>
                         </li>
-                    ))}
+                    )}
+
+                    <li key={'permission'}>
+                        <Link
+                            href={'/management/permission'}
+                            className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'permission' ? "bg-blue-800" : ""
+                                }`}
+                            onClick={() => handleLinkClick('permission')}
+                        >
+                            <LuDot />
+                            Phân quyền
+                        </Link>
+                    </li>
+
+                    {permissionList.role.read && (
+                        <li key={'role'}>
+                            <Link
+                                href={'/management/role'}
+                                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'role' ? "bg-blue-800" : ""
+                                    }`}
+                                onClick={() => handleLinkClick('role')}
+                            >
+                                <LuDot />
+                                Vai trò
+                            </Link>
+                        </li>
+                    )}
+
+                    {permissionList.user.read && (
+                        <li key={'user'}>
+                            <Link
+                                href={'/management/user'}
+                                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'user' ? "bg-blue-800" : ""
+                                    }`}
+                                onClick={() => handleLinkClick('user')}
+                            >
+                                <LuDot />
+                                Người dùng
+                            </Link>
+                        </li>
+                    )}
+
+                    <li key={'report-configuration'}>
+                        <Link
+                            href={'/management/department'}
+                            className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report-configuration' ? "bg-blue-800" : ""
+                                }`}
+                            onClick={() => handleLinkClick('report-configuration')}
+                        >
+                            <LuDot />
+                            Cấu hình báo cáo
+                        </Link>
+                    </li>
                 </ul>
             )}
         </div>

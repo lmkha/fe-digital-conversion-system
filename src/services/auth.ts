@@ -30,9 +30,13 @@ export const login = async (
             user: setPermissions('User'),
             role: setPermissions('Role')
         })
-
         set("accessToken", result.data.access_token)
         set("userInfo", result.data.user)
+        set("permissionList", {
+            department: setPermissions('Department'),
+            user: setPermissions('User'),
+            role: setPermissions('Role')
+        })
         return {
             success: true,
             message: result.message,

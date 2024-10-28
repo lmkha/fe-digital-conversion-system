@@ -2,6 +2,7 @@
 import TextInput from "@/core/components/text-input";
 import { useEffect, useState, useRef } from "react";
 import { RiCheckboxIndeterminateFill, RiCheckboxIndeterminateLine } from "react-icons/ri";
+import { usePermission } from '@/contexts/permission-context';
 
 interface FilterProps {
     isCheck: boolean;
@@ -11,6 +12,7 @@ interface FilterProps {
 }
 
 export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubmitted }: FilterProps) {
+    const { permissionList } = usePermission();
     const [data, setData] = useState<{
         isCheck: boolean;
         code: string;
@@ -61,14 +63,18 @@ export default function Filter({ isCheck, onTextChange, onCheckAllChange, onSubm
     return (
         <div className="flex bg-gray-200 p-2 mt-3 rounded-t-md text-black">
             <div className="flex items-start justify-center gap-4 mr-5 w-28">
-                <button
-                    onClick={() => {
-                        onCheckAllChange(!data.isCheck);
-                        setData({ ...data, isCheck: !data.isCheck });
-                    }}
-                >
-                    {checkAllIcon}
-                </button>
+                {
+                    permissionList.role.delete && (
+                        <button
+                            onClick={() => {
+                                onCheckAllChange(!data.isCheck);
+                                setData({ ...data, isCheck: !data.isCheck });
+                            }}
+                        >
+                            {checkAllIcon}
+                        </button>
+                    )
+                }
                 <h1 className="font-semibold">Chọn</h1>
             </div>
             <div className="flex-1 flex items-center gap-2 h-auto">

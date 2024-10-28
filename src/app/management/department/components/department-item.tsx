@@ -1,11 +1,9 @@
 'use client';
 
-// import { ImCheckboxChecked } from "react-icons/im";
-// import { ImCheckboxUnchecked } from "react-icons/im";
 import { MdModeEditOutline } from "react-icons/md";
 import { MdCheckBoxOutlineBlank } from "react-icons/md";
 import { MdCheckBox } from "react-icons/md";
-
+import { usePermission } from '@/contexts/permission-context';
 
 interface DepartmentItemProps {
     id: string;
@@ -20,6 +18,7 @@ interface DepartmentItemProps {
 }
 
 export default function DepartmentItem({ id, name, level, district, ward, isCheck, onSelect, onUnselect, onEdit }: DepartmentItemProps) {
+    const { permissionList } = usePermission();
     const checkIcon = isCheck ?
         <MdCheckBox className="text-3xl text-blue-500" /> :
         <MdCheckBoxOutlineBlank className="text-3xl text-gray-300 hover:text-gray-600" />;
@@ -27,24 +26,32 @@ export default function DepartmentItem({ id, name, level, district, ward, isChec
     return (
         <div className="flex bg-white p-2 rounded-t-md border-b-2 text-black">
             <div className="flex items-end justify-center gap-2 mr-5 w-20">
-                <button
-                    onClick={() => {
-                        if (isCheck) {
-                            onUnselect(id);
-                            console.log(`Unselect ${id}`);
-                        } else {
-                            onSelect(id);
-                            console.log(`Select ${id}`);
-                        }
-                    }}
-                >
-                    {checkIcon}
-                </button>
-                <button
-                    onClick={onEdit}
-                >
-                    {<MdModeEditOutline className="text-2xl text-gray-400 hover:text-gray-600" />}
-                </button>
+                {
+                    permissionList.department.delete && (
+                        <button
+                            onClick={() => {
+                                if (isCheck) {
+                                    onUnselect(id);
+                                    console.log(`Unselect ${id}`);
+                                } else {
+                                    onSelect(id);
+                                    console.log(`Select ${id}`);
+                                }
+                            }}
+                        >
+                            {checkIcon}
+                        </button>
+                    )
+                }
+                {
+                    permissionList.department.update && (
+                        <button
+                            onClick={onEdit}
+                        >
+                            {<MdModeEditOutline className="text-2xl text-gray-400 hover:text-gray-600" />}
+                        </button>
+                    )
+                }
             </div>
             <div className="flex-1 flex items-center gap-2 h-auto">
                 <div className="flex-col flex-1">

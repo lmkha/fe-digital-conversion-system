@@ -11,8 +11,10 @@ import { deleteRole, downloadExcelFile, getRoles, getRolesByFilter } from "@/ser
 import SelectedDataToolbar from "../components/selected-data-toolbar";
 import { EditRoleModal } from "./modals/edit-role-modal";
 import { useAppContext } from "@/contexts/app-context";
+import { usePermission } from '@/contexts/permission-context';
 
 export default function Page() {
+    const { permissionList } = usePermission();
     const { setToastInfo } = useAppContext();
     const { setHeaderButtons, setHeaderTitle, setFooterInfo, footerInfo } = useManagement();
     const [showAddRoleModal, setShowAddRoleModal] = useState(false);
@@ -93,24 +95,26 @@ export default function Page() {
     // Set header
     useEffect(() => {
         setHeaderTitle('Vai trò');
-        setHeaderButtons([
-            {
-                type: 'add',
-                label: 'Thêm vai trò',
-                onClick: () => {
-                    if (!selectorData.deptId) {
-                        setToastInfo && setToastInfo({
-                            show: true,
-                            severity: 'error',
-                            message: 'Vui lòng chọn đơn vị trước khi thêm vai trò!'
-                        });
-                    } else {
-                        setShowAddRoleModal(true);
+        if (permissionList.role.create) {
+            setHeaderButtons([
+                {
+                    type: 'add',
+                    label: 'Thêm vai trò',
+                    onClick: () => {
+                        if (!selectorData.deptId) {
+                            setToastInfo && setToastInfo({
+                                show: true,
+                                severity: 'error',
+                                message: 'Vui lòng chọn đơn vị trước khi thêm vai trò!'
+                            });
+                        } else {
+                            setShowAddRoleModal(true);
+                        }
                     }
                 }
-            }
-        ]);
-    }, [setHeaderButtons, setHeaderTitle, selectorData]);
+            ]);
+        }
+    }, [setHeaderButtons, setHeaderTitle, selectorData, permissionList.role.create]);
 
     // Get data when selectorData change
     useEffect(() => {

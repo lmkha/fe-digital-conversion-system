@@ -257,39 +257,43 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                     name: result.data.fullName,
                     jobTitle: result.data.jobTitle,
                     gender: {
-                        name: result.data.gender,
-                        id: result.data.gender
+                        name: result.data?.gender || '',
+                        id: result.data?.gender || ''
                     },
-                    dob: dayjs(result.data.dateOfBirth, 'YYYY/MM/DD'),
+                    dob: dayjs(result.data?.dateOfBirth, 'YYYY/MM/DD') || dayjs(),
                     role: {
-                        name: result.data.role.roleName,
-                        id: result.data.role.roleId
+                        name: result.data.role?.roleName || '',
+                        id: result.data.role?.roleId || ''
                     },
                     email: result.data.email,
-                    phone: result.data.phone,
+                    phone: result.data.phone || '',
 
                     province: {
-                        name: result.data.province.provinceName,
-                        id: result.data.province.provinceId
+                        name: result.data.province?.provinceName || '',
+                        id: result.data.province?.provinceId || ''
                     },
                     district: {
-                        name: result.data.district.districtName,
-                        id: result.data.district.districtId
+                        name: result.data.district?.districtName || '',
+                        id: result.data.district?.districtId || ''
                     },
                     ward: {
-                        name: result.data.ward.wardName,
-                        id: result.data.ward.wardId
+                        name: result.data.ward?.wardName || '',
+                        id: result.data.ward?.wardId || ''
                     },
-                    addressDetail: result.data.address,
-                    status: result.data.status.toString(),
+                    addressDetail: result.data?.address || '',
+                    status: result.data.status?.toString() || '',
                     avatar: result.data.avatar
                 });
-                getDistricts(result.data.province.provinceId).then((res) => {
-                    setDistrictList(res);
-                });
-                getWards(result.data.district.districtId).then((res) => {
-                    setWardList(res);
-                });
+                if (result.data.province?.provinceId) {
+                    getDistricts(result.data.province.provinceId).then((res) => {
+                        setDistrictList(res);
+                    });
+                }
+                if (result.data.district?.districtId) {
+                    getWards(result.data.district.districtId).then((res) => {
+                        setWardList(res);
+                    });
+                }
                 getRolesByDeptId(deptId).then((res) => {
                     setRoles(res.roles);
                 });

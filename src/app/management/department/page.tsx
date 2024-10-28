@@ -19,8 +19,10 @@ import {
 } from '@/services/department';
 import { useAppContext } from "@/contexts/app-context";
 import { DepartmentItem } from "@/services/models/department-item";
+import { usePermission } from '@/contexts/permission-context';
 
 export default function Page() {
+    const { permissionList } = usePermission();
     const { setToastInfo } = useAppContext();
     const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
     const [selectorData, setSelectorData] = useState<SelectorData>();
@@ -99,24 +101,28 @@ export default function Page() {
     // Set header buttons
     useEffect(() => {
         setHeaderTitle('Phòng ban');
-        setHeaderButtons([
-            {
-                type: 'add',
-                label: 'Thêm phòng ban',
-                onClick: () => {
-                    if (!selectorData?.provinceId) {
-                        setToastInfo && setToastInfo({
-                            show: true,
-                            severity: 'error',
-                            message: 'Vui lòng chọn tỉnh/thành phố trước khi thêm phòng ban!'
-                        });
-                    } else {
-                        setShowAddNewDepartmentModal(true)
+        if (permissionList.department.create) {
+            setHeaderButtons([
+                {
+                    type: 'add',
+                    label: 'Thêm phòng ban',
+                    onClick: () => {
+                        if (!selectorData?.provinceId) {
+                            setToastInfo && setToastInfo({
+                                show: true,
+                                severity: 'error',
+                                message: 'Vui lòng chọn tỉnh/thành phố trước khi thêm phòng ban!'
+                            });
+                        } else {
+                            setShowAddNewDepartmentModal(true)
+                        }
                     }
                 }
-            }
-        ]);
-    }, [setHeaderTitle, setHeaderButtons, selectorData?.provinceId]);
+            ]);
+        } else {
+            setHeaderButtons([]);
+        }
+    }, [setHeaderTitle, setHeaderButtons, selectorData?.provinceId, permissionList.department.create]);
 
     // Show or hide selected data toolbar
     useEffect(() => {
@@ -168,7 +174,7 @@ export default function Page() {
                 />
 
                 {/* TableList */}
-                <div className="flex-1 w-full max-h-[480px] overflow-y-auto">
+                <div className="flex-1 w-full max-h-[420px] overflow-y-auto">
                     {departmentList && departmentList.map((item, index) => (
                         <DepartmentComponent
                             id={item?.deptId ? item.deptId : ''}

@@ -10,11 +10,13 @@ import { SelectorData } from "./components/selector";
 import { changeUserStatus, deleteUsers, findUserByDeptId, findUserByFilter } from "@/services/user";
 import EditUserModal from "./modals/edit-user-modal";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useAppContext } from "@/contexts/app-context";
 import { UserItem } from "@/services/models/user-item";
+import { usePermission } from '@/contexts/permission-context';
 
 export default function Page() {
+    const { permissionList } = usePermission();
     const { setToastInfo } = useAppContext();
     const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
     const [openAddUserModal, setOpenAddUserModal] = useState<boolean>();
@@ -56,7 +58,7 @@ export default function Page() {
         }
     }
 
-    const handleChangeUserStatus = (id: string, status: string) => {
+    const handleChangeUserStatus = (id: string, status: '0' | '1' | '2') => {
         changeUserStatus(id, status).then((result) => {
             if (result.success) {
                 if (setToastInfo) setToastInfo({
@@ -64,7 +66,15 @@ export default function Page() {
                     severity: 'success',
                     message: 'Thay đổi trạng thái thành công!'
                 });
-                updateUserListAndPaginationInfo();
+                setUserList(userList?.map((user) => {
+                    if (user.userId === id) {
+                        return {
+                            ...user,
+                            status: status
+                        }
+                    }
+                    return user;
+                }));
             } else {
                 if (setToastInfo) setToastInfo({
                     show: true,
@@ -78,39 +88,44 @@ export default function Page() {
     // Set header
     useEffect(() => {
         setHeaderTitle('Người dùng');
-        setHeaderButtons([
-            {
-                type: 'import',
-                label: 'Thêm từ file',
-                onClick: () => {
-                    if (setToastInfo) {
-                        setToastInfo({
-                            show: true,
-                            severity: 'success',
-                            message: 'Chức năng đang được phát triển!',
-                            autoClose: true,
-                            duration: 2000,
-                        });
+
+        if (permissionList.user.create) {
+            setHeaderButtons([
+                {
+                    type: 'import',
+                    label: 'Thêm từ file',
+                    onClick: () => {
+                        if (setToastInfo) {
+                            setToastInfo({
+                                show: true,
+                                severity: 'success',
+                                message: 'Chức năng đang được phát triển!',
+                                autoClose: true,
+                                duration: 2000,
+                            });
+                        }
+                    }
+                },
+                {
+                    type: 'add',
+                    label: 'Thêm người dùng',
+                    onClick: () => {
+                        if (!selectorData?.deptId) {
+                            if (setToastInfo) setToastInfo({
+                                show: true,
+                                severity: 'error',
+                                message: 'Vui lòng chọn đơn vị trước khi thêm người dùng!'
+                            });
+                        } else {
+                            setOpenAddUserModal(true);
+                        }
                     }
                 }
-            },
-            {
-                type: 'add',
-                label: 'Thêm người dùng',
-                onClick: () => {
-                    if (!selectorData?.deptId) {
-                        if (setToastInfo) setToastInfo({
-                            show: true,
-                            severity: 'error',
-                            message: 'Vui lòng chọn đơn vị trước khi thêm người dùng!'
-                        });
-                    } else {
-                        setOpenAddUserModal(true);
-                    }
-                }
-            }
-        ]);
-    }, [setHeaderButtons, setHeaderTitle, selectorData?.deptId]);
+            ]);
+        } else {
+            setHeaderButtons([]);
+        }
+    }, [setHeaderButtons, setHeaderTitle, selectorData?.deptId, permissionList.user.create]);
 
     // Get data when selectorData change
     useEffect(() => {
@@ -172,6 +187,10 @@ export default function Page() {
                 }).then((result) => {
                     if (result.success) {
                         setUserList(result.data.users);
+                        setFooterInfo({
+                            ...footerInfo,
+                            paginationInfo: result.data.paginationInfo
+                        });
 
                     } else {
                         if (setToastInfo) setToastInfo({
@@ -249,9 +268,14 @@ export default function Page() {
             {
                 (userList && userList.length === 0) && <Typography variant="h6" className="text-center mt-4">Không có dữ liệu</Typography>
             }
-            {userList && userList.length > 0 &&
-                userList.map((user) => {
-                    return (
+            {userList && userList.length > 0 && (
+                <Box
+                    sx={{
+                        maxHeight: 430,
+                        overflowY: 'auto',
+                    }}
+                >
+                    {userList.map((user) => (
                         <UserItemComponent
                             key={user.userId}
                             userId={user.userId}
@@ -278,8 +302,9 @@ export default function Page() {
                                 setCheckedItems(checkedItems ? checkedItems.filter((item) => item !== id) : []);
                             }}
                         />
-                    );
-                })}
+                    ))}
+                </Box>
+            )}
 
             <AddUserModal
                 open={openAddUserModal ? true : false}
