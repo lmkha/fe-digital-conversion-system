@@ -508,7 +508,17 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                 <DemoContainer components={['DatePicker', 'DatePicker']} sx={{ width: '45%' }}>
                                                     <MUIDatePicker
-                                                        sx={{ width: '100%' }}
+                                                        sx={{
+                                                            width: '100%',
+                                                            '.MuiInputBase-root': {
+                                                                height: '40px',
+                                                                fontSize: '14px'
+                                                            },
+                                                            '.MuiFormLabel-root': {
+                                                                lineHeight: '1.2',
+                                                                padding: 0,
+                                                            },
+                                                        }}
                                                         label="Ngày sinh "
                                                         format="DD/MM/YYYY"
                                                         value={submitData.dob}
