@@ -131,6 +131,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
             password: submitData.password,
             name: submitData.name,
             jobTitle: submitData.jobTitle,
+            roleId: submitData.role.id
         });
 
         if (errorFields.length > 0) {
@@ -169,12 +170,6 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
 
         setLoading(false);
     };
-
-    const [errorInput, setErrorInput] = useState([]); // username, password, name, jobTitle
-    const validate = () => {
-        // username: 50 characters, no vietnamese
-    };
-
     // UseEffect ----------------------------------------------------------------
 
     // Address ------------------------------------------------------------------
@@ -218,6 +213,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                 success: true,
                 errorMessage: ''
             });
+            setErrorFields([]);
             return;
         }
         if (open && deptId) {
@@ -492,6 +488,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                             {/* Role, province */}
                             <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                 <AutoComplete
+                                    error={errorFields?.includes('roleId')}
                                     label="Vai trò *"
                                     value={submitData.role}
                                     options={roles.map((role) => ({

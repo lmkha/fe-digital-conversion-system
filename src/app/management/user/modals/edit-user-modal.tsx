@@ -131,7 +131,8 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
         // Validate data
         const errorFields = editUserValidator({
             name: submitData.name,
-            jobTitle: submitData.jobTitle
+            jobTitle: submitData.jobTitle,
+            roleId: submitData.role.id,
         });
         if (errorFields.length > 0) {
             setErrorFields(errorFields);
@@ -246,6 +247,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                 success: true,
                 errorMessage: ''
             });
+            setErrorFields([]);
             setIsLoading(true);
             setIsFirstTime(true);
 
@@ -546,6 +548,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                         {/* Role, province */}
                                         <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
                                             <AutoComplete
+                                                error={errorFields?.includes('roleId')}
                                                 label="Vai trò *"
                                                 value={submitData.role}
                                                 options={roles.map((role) => ({

@@ -67,7 +67,7 @@ axiosInstance.interceptors.response.use(
             set("userInfo", {});
             window.location.href = "/login";
         }
-        // return Promise.reject(error);
+        return Promise.reject(error);
     }
 );
 

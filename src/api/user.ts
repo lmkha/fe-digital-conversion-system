@@ -1,24 +1,41 @@
 import Base from "./base";
 
 class UserAPI extends Base {
-    async createUser(
+    async createUser({
+        username,
+        password,
+        fullName,
+        jobTitle,
+        email,
+        phone,
+        roleId,
+        deptId,
+        provinceId,
+        districtId,
+        wardId,
+        gender,
+        dateOfBirth,
+        status,
+        address,
+        avatar
+    }: {
         username: string,
         password: string,
         fullName: string,
-        email: string,
-        phone: string,
-        roleId: string,
-        deptId: string,
-        provinceId: string,
-        districtId: string,
-        wardId: string,
-        gender: string,
-        dateOfBirth: string,
-        status: string,
         jobTitle: string,
-        address: string,
+        email: string | null,
+        phone: string | null,
+        roleId: string | null,
+        deptId: string | null,
+        provinceId: string | null,
+        districtId: string | null,
+        wardId: string | null,
+        gender: string | null,
+        dateOfBirth: string | null,
+        status: string | null,
+        address: string | null,
         avatar: string
-    ) {
+    }) {
         try {
             const url = '/user/create';
             const response = await this.post(url, {
@@ -144,23 +161,39 @@ class UserAPI extends Base {
         }
     }
 
-    async updateUser(
+    async updateUser({
+        userId,
+        roleId,
+        jobTitle,
+        deptId,
+        avatar,
+        fullName,
+        email,
+        phone,
+        wardId,
+        districtId,
+        provinceId,
+        gender,
+        dateOfBirth,
+        status,
+        address,
+    }: {
         userId: string,
-        email: string,
-        fullName: string,
-        phone: string,
-        wardId: string,
-        districtId: string,
-        provinceId: string,
-        gender: string,
-        dateOfBirth: string,
-        status: string,
         roleId: string,
         jobTitle: string,
         deptId: string,
-        address: string,
         avatar: string,
-    ) {
+        fullName: string,
+        email: string | null,
+        phone: string | null,
+        wardId: string | null,
+        districtId: string | null,
+        provinceId: string | null,
+        gender: string | null,
+        dateOfBirth: string | null,
+        status: string | null,
+        address: string | null
+    }) {
         try {
             const response = await this.put('/user/update', {
                 userId: userId,

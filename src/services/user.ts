@@ -41,24 +41,24 @@ const createUser = async (
     address: string,
     avatar: string
 ) => {
-    const result = await user.createUser(
-        username = username,
-        password = password,
-        fullName = fullName,
-        email = email,
-        phone = phone,
-        roleId = roleId,
-        deptId = deptId,
-        provinceId = provinceId,
-        districtId = districtId,
-        wardId = wardId,
-        gender = gender,
-        dateOfBirth = dateOfBirth,
-        status = status,
-        jobTitle = jobTitle,
-        address = address,
-        avatar = avatar
-    )
+    const result = await user.createUser({
+        username: username,
+        password: password,
+        fullName: fullName,
+        jobTitle: jobTitle,
+        roleId: roleId,
+        deptId: deptId,
+        avatar: avatar,
+        email: email || null,
+        phone: phone || null,
+        provinceId: provinceId || null,
+        districtId: districtId || null,
+        wardId: wardId || null,
+        gender: gender || null,
+        dateOfBirth: dateOfBirth || null,
+        status: status || null,
+        address: address || null
+    })
 
     if (result.success) {
         return {
@@ -247,23 +247,23 @@ export const updateUser = async (
     avatar: string
 
 ) => {
-    return await user.updateUser(
-        userId = userId,
-        email = email,
-        fullName = fullName,
-        phone = phone,
-        wardId = wardId,
-        districtId = districtId,
-        provinceId = provinceId,
-        gender = gender,
-        dateOfBirth = dateOfBirth,
-        status = status,
-        roleId = roleId,
-        jobTitle = jobTitle,
-        deptId = deptId,
-        address = address,
-        avatar = avatar
-    );
+    return await user.updateUser({
+        userId: userId,
+        roleId: roleId,
+        jobTitle: jobTitle,
+        deptId: deptId,
+        avatar: avatar,
+        fullName: fullName,
+        email: email || null,
+        phone: phone || null,
+        wardId: wardId || null,
+        districtId: districtId || null,
+        provinceId: provinceId || null,
+        gender: gender || null,
+        dateOfBirth: dateOfBirth || null,
+        status: status || null,
+        address: address || null,
+    });
 }
 
 export const uploadAvatarAndUpdateUser = async (

@@ -14,6 +14,7 @@ import { Box, Typography } from "@mui/material";
 import { useAppContext } from "@/contexts/app-context";
 import { UserItem } from "@/services/models/user-item";
 import { usePermission } from '@/contexts/permission-context';
+import ImportUsersPopup from "./modals/import-user-modal";
 
 export default function Page() {
     const { permissionList } = usePermission();
@@ -21,6 +22,7 @@ export default function Page() {
     const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
     const [openAddUserModal, setOpenAddUserModal] = useState<boolean>();
     const [openEditUserModal, setOpenEditUserModal] = useState<boolean>();
+    const [openImportUserModal, setOpenImportUserModal] = useState<boolean>();
     const [selectedItemIdToEdit, setSelectedItemIdToEdit] = useState<string>();
     const [userList, setUserList] = useState<UserItem[]>();
     const [refreshData, setRefreshData] = useState<boolean>();
@@ -95,14 +97,14 @@ export default function Page() {
                     type: 'import',
                     label: 'Thêm từ file',
                     onClick: () => {
-                        if (setToastInfo) {
-                            setToastInfo({
+                        if (!selectorData?.deptId) {
+                            if (setToastInfo) setToastInfo({
                                 show: true,
-                                severity: 'success',
-                                message: 'Chức năng đang được phát triển!',
-                                autoClose: true,
-                                duration: 2000,
+                                severity: 'error',
+                                message: 'Vui lòng chọn đơn vị!'
                             });
+                        } else {
+                            setOpenImportUserModal(true);
                         }
                     }
                 },
@@ -346,6 +348,11 @@ export default function Page() {
                         setRefreshData(true);
                     }
                 }}
+            />
+
+            <ImportUsersPopup
+                open={openImportUserModal ? true : false}
+                onClose={() => setOpenImportUserModal(false)}
             />
 
             <SelectedDataToolbar
