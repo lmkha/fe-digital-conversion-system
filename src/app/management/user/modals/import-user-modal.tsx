@@ -13,17 +13,21 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
-import axios from "axios";
+import { useAppContext } from "@/contexts/app-context";
+import { downloadUserTemplate } from "@/services/user";
 
 interface ImportUsersPopupProps {
     open: boolean;
+    deptId: string;
     onClose: () => void;
 }
 
 const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
     open,
+    deptId,
     onClose,
 }) => {
+    const { setToastInfo } = useAppContext();
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [errorMessage, setErrorMessage] = useState<string>("");
     const [isSuccess, setIsSuccess] = useState<boolean | null>(null); // null = chưa tải lên, true = thành công, false = thất bại
@@ -96,18 +100,18 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
 
     // ham xu li tai file mau
     const handleDownloadSample = async () => {
-        try {
-            const response = await axios.get(
-                "http://localhost:3333/api/v1/user/download-user-template?deptId=91f31539-1817-4f4e-a7b5-15a7786a4a10"
-            );
-        } catch (error) {
-            setErrorMessage("Không thể tải xuống file mẫu. Vui lòng thử lại.");
-        }
+        downloadUserTemplate(deptId).then((result) => {
+            setToastInfo && setToastInfo({
+                show: true,
+                message: result.success ? "Tải file mẫu thành công" : "Tải file mẫu thất bại",
+                severity: result.success ? "success" : "error",
+            });
+        })
     };
 
     return (
         <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-            <DialogTitle>
+            <DialogTitle sx={{ fontWeight: 'bold' }}>
                 Nhập tài khoản
                 <IconButton
                     aria-label="close"

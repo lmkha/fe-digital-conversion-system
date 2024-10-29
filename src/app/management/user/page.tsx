@@ -352,6 +352,7 @@ export default function Page() {
 
             <ImportUsersPopup
                 open={openImportUserModal ? true : false}
+                deptId={selectorData?.deptId || ''}
                 onClose={() => setOpenImportUserModal(false)}
             />
 

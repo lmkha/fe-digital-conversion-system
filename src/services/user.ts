@@ -329,3 +329,7 @@ export const changeUserStatus = async (userId: string, status: string) => {
 export const deleteUsers = async (userIds: string[]) => {
     return await user.deleteUsers(userIds);
 }
+
+export const downloadUserTemplate = async (deptId: string) => {
+    return await user.downloadUserTemplate(deptId);
+}

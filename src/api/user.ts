@@ -1,3 +1,4 @@
+import axiosInstance from "@/core/axios/axios-instance";
 import Base from "./base";
 
 class UserAPI extends Base {
@@ -264,6 +265,32 @@ class UserAPI extends Base {
             }
         }
     }
+
+    async downloadUserTemplate(deptId: string) {
+        try {
+            const url = `/user/download-user-template?deptId=${deptId}`;
+            const response = await axiosInstance.get(url, { responseType: 'blob' });
+            const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'file_mau_import.xlsx';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            return {
+                success: true
+            };
+        } catch (err: any) {
+            console.error(err);
+            return {
+                success: false,
+                message: err.response?.data?.message,
+                code: err.response?.data?.code
+            };
+        }
+    }
+
 }
 
 const user = new UserAPI();
