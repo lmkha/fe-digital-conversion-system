@@ -8,13 +8,15 @@ import {
     DialogTitle,
     Typography,
     IconButton,
+    Stack,
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 import { useAppContext } from "@/contexts/app-context";
-import { downloadUserTemplate } from "@/services/user";
+import { downloadUserTemplate, importUsers } from "@/services/user";
+import ErrorUser from "@/services/models/error-user";
 
 interface ImportUsersPopupProps {
     open: boolean;
@@ -31,6 +33,9 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [errorMessage, setErrorMessage] = useState<string>("");
     const [isSuccess, setIsSuccess] = useState<boolean | null>(null); // null = chưa tải lên, true = thành công, false = thất bại
+    const [countError, setCountError] = useState<number>();
+    const [countSuccess, setCountSuccess] = useState<number>();
+    const [errorUsers, setErrorUsers] = useState<ErrorUser[]>();
 
     // Hàm kiểm tra định dạng và kích thước của file
     const validateFile = (file: File): boolean => {
@@ -81,20 +86,17 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
         }
     };
     //ham xu li bam nut tai len
-    const handleUpload = async () => {
+    const handleSubmit = async () => {
         if (!selectedFile) return;
-
-        const formData = new FormData();
-        formData.append("file", selectedFile);
-
-        try {
-            //   await axios.post("/api/v1/Users/import", formData, {
-            //     headers: { "Content-Type": "multipart/form-data" },
-            //   });
-            setIsSuccess(false); // Đặt trạng thái thành công
-            setSelectedFile(null); // Xóa file sau khi tải lên thành công
-        } catch (error) {
-            setIsSuccess(false); // Đặt trạng thái thất bại
+        const result = await importUsers(selectedFile, deptId);
+        setErrorUsers(result.data?.errorUsers);
+        if (!result.success) {
+            setIsSuccess(false);
+            setErrorMessage(result.message);
+        } else {
+            setIsSuccess(true);
+            setCountError(result.data?.countError);
+            setCountSuccess(result.data?.countSuccess);
         }
     };
 
@@ -123,29 +125,75 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
             </DialogTitle>
             <DialogContent>
                 {isSuccess === true ? (
-                    <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        justifyContent="center"
-                        textAlign="center"
-                        p={4}
-                        border="1px solid #4caf50"
-                        borderRadius="8px"
-                        bgcolor="#e8f5e9"
-                    >
-                        <CheckCircleIcon sx={{ fontSize: 48, color: "#4caf50" }} />
-                        <Typography variant="h6" sx={{ color: "#4caf50", mt: 2 }}>
-                            Thành công!
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                            File CSV của bạn đã được nhập thành công.
-                        </Typography>
-                        <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                            Kiểm tra danh sách sản phẩm của bạn để đảm bảo dữ liệu đã nhập
-                            chính xác.
-                        </Typography>
-                    </Box>
+                    // Success all
+                    countError === 0 ? (
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            textAlign="center"
+                            p={4}
+                            border="1px solid #4caf50"
+                            borderRadius="8px"
+                            bgcolor="#e8f5e9"
+                        >
+                            <CheckCircleIcon sx={{ fontSize: 48, color: "#4caf50" }} />
+                            <Typography variant="h6" sx={{ color: "#4caf50", mt: 2 }}>
+                                Thành công!
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary">
+                                File của bạn đã được nhập thành công.
+                            </Typography>
+                            <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                                Kiểm tra danh sách người dùng để đảm bảo dữ liệu đã nhập chính xác.
+                            </Typography>
+                        </Box>
+                    ) : (
+                        // Success with error
+                        <Box
+                            display="flex"
+                            flexDirection="column"
+                            alignItems="center"
+                            justifyContent="center"
+                            textAlign="center"
+                            sx={{ borderRadius: 4 }}
+                        >
+                            <Typography variant="h5" sx={{
+                                fontWeight: 'medium',
+                                color: 'black',
+                                mb: 2
+                            }}>
+                                Kết quả thêm người dùng
+                            </Typography>
+                            <Stack sx={{ width: '70%', mb: 2 }}>
+                                <Stack direction={'row'} sx={{ width: '100%', justifyContent: 'space-between' }}>
+                                    <Typography variant="body2" color="green">
+                                        Số lượng người dùng được thêm thành công:
+                                    </Typography>
+                                    <Typography variant="body2" color="green">
+                                        {countSuccess}
+                                    </Typography>
+                                </Stack>
+                                <Stack direction={'row'} sx={{ width: '100%', justifyContent: 'space-between' }}>
+                                    <Typography variant="body2" color="red">
+                                        Số lượng người dùng không được thêm:
+                                    </Typography>
+                                    <Typography variant="body2" color="red">
+                                        {countError}
+                                    </Typography>
+                                </Stack>
+                            </Stack>
+                            <Button
+                                size="medium"
+                                variant="outlined"
+                                sx={{
+                                    textTransform: "none",
+                                }}
+                                onClick={() => { }}
+                            >Tải file các người dùng bị lỗi</Button>
+                        </Box>
+                    )
                 ) : isSuccess === false ? (
                     <Box
                         display="flex"
@@ -159,19 +207,12 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
                         bgcolor="#ffebee"
                     >
                         <ErrorIcon sx={{ fontSize: 48, color: "#f44336" }} />
-                        <Typography variant="h6" sx={{ color: "#f44336", mt: 2 }}>
+                        <Typography variant="h6" sx={{ color: "#f44336", mt: 1 }}>
                             Thất bại!
                         </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                            File CSV của bạn đã không thể nhập thành công.
+                        <Typography variant="body2" color="black">
+                            {errorMessage}
                         </Typography>
-                        <Button
-                            variant="outlined"
-                            sx={{ mt: 2 }}
-                            onClick={() => window.open("/path/to/error-report.csv", "_blank")}
-                        >
-                            Tải Báo Cáo Lỗi
-                        </Button>
                     </Box>
                 ) : (
                     <>
@@ -274,7 +315,7 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
                         Hủy
                     </Button>
                     <Button
-                        onClick={handleUpload}
+                        onClick={handleSubmit}
                         color="primary"
                         disabled={!selectedFile || Boolean(errorMessage)}
                         variant="contained"

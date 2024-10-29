@@ -7,7 +7,7 @@ import UserItemComponent from "./components/user-item";
 import AddUserModal from "./modals/add-user-modal";
 import Selector from "./components/selector";
 import { SelectorData } from "./components/selector";
-import { changeUserStatus, deleteUsers, findUserByDeptId, findUserByFilter } from "@/services/user";
+import { changeUserStatus, deleteUsers, downloadUsersExcelFile, findUserByDeptId, findUserByFilter, provideRandomPassword } from "@/services/user";
 import EditUserModal from "./modals/edit-user-modal";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
 import { Box, Typography } from "@mui/material";
@@ -237,6 +237,35 @@ export default function Page() {
             }
         }
     }, [footerInfo?.paginationInfo]);
+
+    // Change data for export data
+    useEffect(() => {
+        if (userList) {
+            setFooterInfo({
+                ...footerInfo,
+                exportDataFooter: () => {
+                    downloadUsersExcelFile({
+                        deptId: selectorData?.deptId || '',
+                        pageSize: footerInfo?.paginationInfo?.pageSize?.toString() || '',
+                        pageNumber: footerInfo?.paginationInfo?.pageNumber?.toString() || '',
+                        fullName: filterData?.name,
+                        username: filterData?.username,
+                        email: filterData?.email,
+                        phone: filterData?.phone,
+                        realRole: filterData?.role,
+                        jobTitle: filterData?.jobTitle,
+                        status: filterData?.status
+                    }).then((result) => {
+                        setToastInfo && setToastInfo({
+                            show: true,
+                            severity: result.success ? 'success' : 'error',
+                            message: result.message
+                        });
+                    });
+                }
+            });
+        }
+    }, [userList]);
     // Render -------------------------------------------------------------------
     return (
         <div>
@@ -292,7 +321,15 @@ export default function Page() {
                                 handleChangeUserStatus(id, status)
                             }}
                             checked={checkedItems && checkedItems.includes(user.userId) ? true : false}
-                            onChangePassword={() => { }}
+                            onChangePassword={(id) => {
+                                provideRandomPassword(id).then((result) => {
+                                    setToastInfo && setToastInfo({
+                                        show: true,
+                                        severity: result.success ? 'success' : 'error',
+                                        message: result.message
+                                    });
+                                });
+                            }}
                             onEdit={() => {
                                 setSelectedItemIdToEdit(user.userId);
                                 setOpenEditUserModal(true);

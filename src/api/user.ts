@@ -291,6 +291,93 @@ class UserAPI extends Base {
         }
     }
 
+    async importUsers(file: File, deptId: string) {
+        try {
+            const url = `/user/import-user?deptId=${deptId}`;
+            const formData = new FormData();
+            formData.append('file', file);
+
+            const response = await this.post(url, formData);
+
+            return {
+                success: true,
+                message: 'Import thành công',
+                data: response.data
+            };
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response?.data?.message || err.message,
+            };
+        }
+    }
+
+    async downloadUsersExcelFile({
+        deptId,
+        pageSize = '',
+        pageNumber = '',
+        fullName = '',
+        username = '',
+        email = '',
+        phone = '',
+        realRole = '',
+        jobTitle = '',
+        status = ''
+    }: {
+        deptId: string;
+        pageSize?: string;
+        pageNumber?: string;
+        fullName?: string;
+        username?: string;
+        email?: string;
+        phone?: string;
+        realRole?: string;
+        jobTitle?: string;
+        status?: string;
+    }) {
+        try {
+            const url = `/user/download-excel?deptId=${deptId}&pageSize=${pageSize}&pageNumber=${pageNumber}&fullName=${fullName}&userName=${username}&email=${email}&phone=${phone}&realRole=${realRole}&jobTitle=${jobTitle}&status=${status}`;
+            const response = await axiosInstance.get(url, { responseType: 'blob' });
+            const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'users.xlsx';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+            return {
+                success: true,
+                data: response.data,
+                message: 'Tải file thành công',
+            };
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response?.data?.message || err.message,
+            }
+        }
+    }
+
+    async changeRandomPassword(userId: string) {
+        const url = '/user/provide-random-password';
+        try {
+            const response = await this.put(url, {
+                userId: userId
+            });
+            return {
+                success: true,
+                message: 'Đổi mật khẩu thành công, mật khẩu mới: Abcd1@34',
+                data: response.data
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            }
+        }
+    }
 }
 
 const user = new UserAPI();

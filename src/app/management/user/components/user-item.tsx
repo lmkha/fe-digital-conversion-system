@@ -16,7 +16,7 @@ interface UserItemProps {
     onselect?: (id: string) => void;
     onUnselect?: (id: string) => void;
     onEdit?: () => void;
-    onChangePassword?: () => void;
+    onChangePassword?: (id: string) => void;
     onStatusChange?: (id: string, status: '0' | '1' | '2') => void;
 }
 
@@ -64,7 +64,7 @@ export default function UserItem({ userId, name, username, email, phone, role, j
                                 <IconButton sx={{ '&:hover': { color: 'black' } }} onClick={() => {
                                     // Change password
                                     if (onChangePassword) {
-                                        onChangePassword();
+                                        onChangePassword(userId);
                                     }
                                 }}>
                                     <FaKey />

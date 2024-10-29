@@ -1,6 +1,7 @@
 import user from "@/api/user";
 import { UserItem } from "./models/user-item";
 import PaginationInfo from "@/core/types/pagination-info";
+import ErrorUser from "./models/error-user";
 
 const uploadAvatar = async (file: File | null) => {
     if (!file) {
@@ -332,4 +333,65 @@ export const deleteUsers = async (userIds: string[]) => {
 
 export const downloadUserTemplate = async (deptId: string) => {
     return await user.downloadUserTemplate(deptId);
+}
+
+export const importUsers = async (file: File, deptId: string) => {
+    const result = await user.importUsers(file, deptId);
+    return {
+        success: result.success,
+        message: result.message,
+        data: {
+            countSuccess: result?.data?.countSuccess,
+            countError: result?.data?.countError,
+            errorUsers: result?.data?.userError.map((errorUser: any) => ({
+                userName: errorUser.userName,
+                fullName: errorUser.fullName,
+                email: errorUser.email,
+                jobTitle: errorUser.jobTitle,
+                role: errorUser.role,
+                description: errorUser.description,
+            } as ErrorUser)) as ErrorUser[]
+        }
+    }
+}
+
+export const downloadUsersExcelFile = async ({
+    deptId,
+    pageSize = '',
+    pageNumber = '',
+    fullName = '',
+    username = '',
+    email = '',
+    phone = '',
+    realRole = '',
+    jobTitle = '',
+    status = ''
+}: {
+    deptId: string;
+    pageSize?: string;
+    pageNumber?: string;
+    fullName?: string;
+    username?: string;
+    email?: string;
+    phone?: string;
+    realRole?: string;
+    jobTitle?: string;
+    status?: string;
+}) => {
+    return user.downloadUsersExcelFile({
+        deptId: deptId,
+        pageSize: pageSize,
+        pageNumber: pageNumber,
+        fullName: fullName,
+        username: username,
+        email: email,
+        phone: phone,
+        realRole: realRole,
+        jobTitle: jobTitle,
+        status: status
+    });
+}
+
+export const provideRandomPassword = async (userId: string) => {
+    return await user.changeRandomPassword(userId);
 }
