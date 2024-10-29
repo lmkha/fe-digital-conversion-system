@@ -216,7 +216,7 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
                                         Kéo và thả file vào đây hoặc{" "}
                                         <label
                                             htmlFor="file-upload"
-                                            style={{ color: "#1976d2", cursor: "pointer" }}
+                                            className="text-blue-600 cursor-pointer"
                                         >
                                             Nhấp để tải lên
                                         </label>
@@ -226,7 +226,7 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
                                         type="file"
                                         accept=".csv,.xls,.xlsx"
                                         onChange={handleFileChange}
-                                        style={{ display: "none" }}
+                                        hidden
                                     />
                                     <Typography variant="caption" color="textSecondary">
                                         Định dạng hỗ trợ: Excel
