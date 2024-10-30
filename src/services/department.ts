@@ -314,3 +314,20 @@ export const downloadDepartmentsExcelFile = async (
     const result = await department.downloadDepartmentsExcelFile(provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
     return result;
 }
+
+export const findAllParentDepartments = async (deptId: string): Promise<DepartmentItem[]> => {
+    const result = await department.findAllParentDepartments(deptId);
+    console.log(result.message);
+    return result.data.map((dept: any): DepartmentItem => ({
+        deptName: dept.deptName,
+        deptId: dept.deptId,
+        level: dept.level,
+        provinceName: '',
+        districtName: '',
+        wardName: '',
+        provinceId: '',
+        districtId: '',
+        wardId: '',
+        selected: false
+    }));
+}

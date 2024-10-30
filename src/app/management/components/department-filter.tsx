@@ -2,30 +2,31 @@
 'use client';
 
 import Combobox from "@/core/components/combobox";
-import { findDepartmentByFilterForSelector, Province } from '@/services/department';
+import { findAllParentDepartments, findDepartmentByFilterForSelector, Province } from '@/services/department';
 import { DepartmentItem } from "@/services/models/department-item";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useUserInfo } from "@/contexts/user-info-context";
 
-export interface SelectorData {
+export interface DeptFilterData {
     provinceId: string;
     deptId: string;
 }
 
-interface SelectorProps {
-    onSubmitted: (selectorData: SelectorData) => void;
+interface DeptFilterProps {
+    onSubmitted: (selectorData: DeptFilterData) => void;
     refreshData: boolean;
     onRefreshDataFinished: () => void;
 }
 
-export default function Selector({ refreshData, onRefreshDataFinished, onSubmitted }: SelectorProps) {
-    const [selectorData, setSelectorData] = useState<SelectorData>();
+export default function DepartmentFilter({ refreshData, onRefreshDataFinished, onSubmitted }: DeptFilterProps) {
+    const [selectorData, setSelectorData] = useState<DeptFilterData>();
     const { userInfo } = useUserInfo();
-    const [level, setLevel] = useState<number>();
-    const [deptLevel1List, setDeptLevel1List] = useState<DepartmentItem[]>([]);
-    const [deptLevel2List, setDeptLevel2List] = useState<DepartmentItem[]>([]);
-    const [deptLevel3List, setDeptLevel3List] = useState<DepartmentItem[]>([]);
-    const [deptLevel4List, setDeptLevel4List] = useState<DepartmentItem[]>([]);
+    const [level, setLevel] = useState<number>(0);
+    const [deptLevel1List, setDeptLevel1List] = useState<DepartmentItem[]>();
+    const [deptLevel2List, setDeptLevel2List] = useState<DepartmentItem[]>();
+    const [deptLevel3List, setDeptLevel3List] = useState<DepartmentItem[]>();
+    const [deptLevel4List, setDeptLevel4List] = useState<DepartmentItem[]>();
+    const [parentDeptList, setParentDeptList] = useState<DepartmentItem[]>();
     const [province, setProvince] = useState<Province>();
     const [deptLevel1, setDeptLevel1] = useState<DepartmentItem>();
     const [deptLevel2, setDeptLevel2] = useState<DepartmentItem>();
@@ -74,6 +75,10 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
     // Update departments level 2 when department level 1 changes
     useEffect(() => {
         if (deptLevel1?.deptId) {
+            setSelectorData({
+                provinceId: province?.provinceId || '',
+                deptId: deptLevel1.deptId
+            });
             findDepartmentByFilterForSelector({
                 provinceId: province?.provinceId || '',
                 parentId: deptLevel1.deptId,
@@ -84,15 +89,21 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
         } else {
             setDeptLevel2List([]);
         }
-        setDeptLevel2({
-            deptId: '',
-            deptName: ''
-        });
+        if (level != 2) {
+            setDeptLevel2({
+                deptId: '',
+                deptName: ''
+            });
+        }
     }, [deptLevel1?.deptId])
 
     // Update departments level 3 when department level 2 changes
     useEffect(() => {
         if (deptLevel2?.deptId) {
+            setSelectorData({
+                provinceId: province?.provinceId || '',
+                deptId: deptLevel2.deptId
+            });
             findDepartmentByFilterForSelector({
                 provinceId: province?.provinceId || '',
                 parentId: deptLevel2.deptId,
@@ -103,15 +114,21 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
         } else {
             setDeptLevel3List([]);
         }
-        setDeptLevel3({
-            deptId: '',
-            deptName: ''
-        });
+        if (level != 3) {
+            setDeptLevel3({
+                deptId: '',
+                deptName: ''
+            });
+        }
     }, [deptLevel2?.deptId])
 
     // Update departments level 4 when department level 3 changes
     useEffect(() => {
         if (deptLevel3?.deptId) {
+            setSelectorData({
+                provinceId: province?.provinceId || '',
+                deptId: deptLevel3.deptId
+            });
             findDepartmentByFilterForSelector({
                 provinceId: province?.provinceId || '',
                 parentId: deptLevel3.deptId,
@@ -122,90 +139,79 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
         } else {
             setDeptLevel4List([]);
         }
-        setDeptLevel4({
-            deptId: '',
-            deptName: ''
-        });
+        if (level != 4) {
+            setDeptLevel4({
+                deptId: '',
+                deptName: ''
+            });
+        }
     }, [deptLevel3?.deptId])
 
     // Initialize selector data base on user info
     useEffect(() => {
-        setLevel(userInfo.dept.level ? userInfo.dept.level : 0);
+        if (!userInfo.dept.deptId) {
+            return;
+        }
         setProvince({
-            provinceId: userInfo.dept.provinceId ? userInfo.dept.provinceId : '',
-            provinceName: userInfo.dept.provinceName ? userInfo.dept.provinceName : ''
+            provinceId: userInfo.dept.provinceId || '',
+            provinceName: userInfo.dept.provinceName || ''
         })
-        if (userInfo.dept.level == 1) {
-            console.log('level 1');
-            setDeptLevel1({
-                deptId: userInfo.dept.deptId ? userInfo.dept.deptId : '',
-                deptName: userInfo.dept.deptName ? userInfo.dept.deptName : '',
-            });
-            return;
-        }
-        if (userInfo.dept.level == 2) {
-            setDeptLevel2({
-                deptId: userInfo.dept.deptId ? userInfo.dept.deptId : '',
-                deptName: userInfo.dept.deptName ? userInfo.dept.deptName : ''
-            });
-            return;
-        }
-        if (userInfo.dept.level == 3) {
-            setDeptLevel3({
-                deptId: userInfo.dept.deptId ? userInfo.dept.deptId : '',
-                deptName: userInfo.dept.deptName ? userInfo.dept.deptName : ''
-            });
-            return;
-        }
-        if (userInfo.dept.level == 4) {
-            setDeptLevel4({
-                deptId: userInfo.dept.deptId ? userInfo.dept.deptId : '',
-                deptName: userInfo.dept.deptName ? userInfo.dept.deptName : ''
-            });
-            return;
-        }
-    }, [userInfo]);
-
-    // Change selector data when user selects a department
-    useEffect(() => {
-        if (deptLevel4?.deptId) {
-            setSelectorData({
-                provinceId: province?.provinceId || '',
-                deptId: deptLevel4?.deptId,
-            });
-        } else if (deptLevel3?.deptId) {
-            setSelectorData({
-                provinceId: province?.provinceId || '',
-                deptId: deptLevel3.deptId,
-            });
-        } else if (deptLevel2?.deptId) {
-            setSelectorData({
-                provinceId: province?.provinceId || '',
-                deptId: deptLevel2.deptId
-            });
-        } else if (deptLevel1?.deptId) {
-            setSelectorData({
-                provinceId: province?.provinceId || '',
-                deptId: deptLevel1.deptId,
-            });
-        }
-    }, [deptLevel1, deptLevel2, deptLevel3, deptLevel4])
+        userInfo.dept.deptId && findAllParentDepartments(userInfo.dept.deptId).then(result => {
+            setParentDeptList(result);
+            if (userInfo.dept.level == 1) {
+                setDeptLevel1({
+                    deptId: userInfo.dept.deptId || '',
+                    deptName: userInfo.dept.deptName || '',
+                });
+                return;
+            }
+            if (userInfo.dept.level == 2) {
+                setDeptLevel2({
+                    deptId: userInfo.dept.deptId || '',
+                    deptName: userInfo.dept.deptName || ''
+                });
+                setDeptLevel1(result[0]);
+                return;
+            }
+            if (userInfo.dept.level == 3) {
+                setDeptLevel3({
+                    deptId: userInfo.dept.deptId || '',
+                    deptName: userInfo.dept.deptName || '',
+                });
+                setDeptLevel1(result[0]);
+                setDeptLevel2(result[1]);
+                return;
+            }
+            if (userInfo.dept.level == 4) {
+                setDeptLevel4({
+                    deptId: userInfo.dept.deptId || '',
+                    deptName: userInfo.dept.deptName || ''
+                });
+                parentDeptList && parentDeptList[0] && setDeptLevel1(parentDeptList[0]);
+                parentDeptList && parentDeptList[1] && setDeptLevel2(parentDeptList[1]);
+                parentDeptList && parentDeptList[2] && setDeptLevel3(parentDeptList[2]);
+                return;
+            }
+        });
+        setLevel(userInfo.dept.level || 0);
+    }, [userInfo.dept.deptId]);
 
     // Send data to parent component
     useEffect(() => {
-        if (selectorData) {
+        if (selectorData?.deptId) {
             onSubmitted(selectorData);
         }
     }, [selectorData])
 
     return (
         <div className="flex justify-between items-center w-full h-fit pb-4 bg-white border-b-1 text-black gap-2">
+            {/* Province */}
             <Combobox
                 disabled={true}
                 className="w-1/3 h-10"
                 value={{
                     id: userInfo.dept?.provinceId || '',
-                    name: userInfo.dept?.provinceName ? userInfo.dept.provinceName : ''
+                    name: userInfo.dept?.provinceName || ''
                 }}
                 label="Tỉnh/Thành phố *"
                 options={[]}
@@ -221,6 +227,7 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                 }}
             />
 
+            {/* Dept level 1 */}
             <Combobox
                 disabled={level && level >= 1 ? true : false}
                 className="w-1/3 h-10"
@@ -230,10 +237,10 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                 }}
                 label="Phòng ban cấp 1 *"
                 options={
-                    deptLevel1List.map(department => ({
+                    deptLevel1List && deptLevel1List.map(department => ({
                         id: department.deptId || '',
                         name: department.deptName || ''
-                    }))
+                    })) || []
                 }
                 onChange={(department) => {
                     setDeptLevel1({
@@ -242,11 +249,12 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                     });
                     onSubmitted({
                         provinceId: province?.provinceId || '',
-                        deptId: department.id
+                        deptId: department.id || ''
                     })
                 }}
             />
 
+            {/* Dept level 2 */}
             <Combobox
                 disabled={level && level >= 2 ? true : false}
                 className="w-1/3 h-10"
@@ -256,10 +264,10 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                 }}
                 label="Phòng ban cấp 2 *"
                 options={
-                    deptLevel2List.map(department => ({
+                    deptLevel2List && deptLevel2List.map(department => ({
                         id: department.deptId || '',
                         name: department.deptName || ''
-                    }))
+                    })) || []
                 }
                 onChange={(department) => {
                     setDeptLevel2({
@@ -268,11 +276,12 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                     });
                     onSubmitted({
                         provinceId: province?.provinceId || '',
-                        deptId: department.id
+                        deptId: department.id || deptLevel1?.deptId || ''
                     })
                 }}
             />
 
+            {/* Dept level 3 */}
             <Combobox
                 disabled={level && level >= 3 ? true : false}
                 className="w-1/3 h-10"
@@ -282,10 +291,10 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                 }}
                 label="Phòng ban cấp 3 *"
                 options={
-                    deptLevel3List.map(department => ({
+                    deptLevel3List && deptLevel3List.map(department => ({
                         id: department.deptId || '',
                         name: department.deptName || ''
-                    }))
+                    })) || []
                 }
                 onChange={(department) => {
                     setDeptLevel3({
@@ -294,11 +303,12 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                     });
                     onSubmitted({
                         provinceId: province?.provinceId || '',
-                        deptId: department.id
+                        deptId: department.id || deptLevel2?.deptId || ''
                     })
                 }}
             />
 
+            {/* Dept level 4 */}
             <Combobox
                 disabled={level && level >= 4 ? true : false}
                 className="w-1/3 h-10"
@@ -308,10 +318,10 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                 }}
                 label="Phòng ban cấp 4 *"
                 options={
-                    deptLevel4List.map(department => ({
+                    deptLevel4List && deptLevel4List.map(department => ({
                         id: department.deptId || '',
                         name: department.deptName || ''
-                    }))
+                    })) || []
                 }
                 onChange={(department) => {
                     setDeptLevel4({
@@ -320,7 +330,7 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                     });
                     onSubmitted({
                         provinceId: province?.provinceId || '',
-                        deptId: department.id
+                        deptId: department.id || deptLevel3?.deptId || ''
                     })
                 }}
             />

@@ -10,7 +10,7 @@ import SelectedDataToolbar from "../components/selected-data-toolbar";
 import { EditRoleModal } from "./modals/edit-role-modal";
 import { useAppContext } from "@/contexts/app-context";
 import { usePermission } from '@/contexts/permission-context';
-import Selector, { SelectorData } from "../components/selector";
+import DepartmentFilter, { DeptFilterData } from "../components/department-filter";
 import RoleItem from "@/services/models/role-item";
 
 export default function Page() {
@@ -21,7 +21,7 @@ export default function Page() {
     const [showEditRoleModal, setShowEditRoleModal] = useState<boolean>();
     const [roleList, setRoleList] = useState<RoleItem[]>();
     const [filterData, setFilterData] = useState<FilterData>();
-    const [selectorData, setSelectorData] = useState<SelectorData>();
+    const [selectorData, setSelectorData] = useState<DeptFilterData>();
     const [refreshData, setRefreshData] = useState<boolean>();
     const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState<boolean>();
     const [checkedItems, setCheckedItems] = useState<string[]>();
@@ -224,7 +224,7 @@ export default function Page() {
         <Fragment>
             <div className="flex-col text-black mt-4">
                 {/* Selector */}
-                <Selector
+                <DepartmentFilter
                     refreshData={refreshData || false}
                     onRefreshDataFinished={() => { setRefreshData(false) }}
                     onSubmitted={(selectorData) => setSelectorData(selectorData)}

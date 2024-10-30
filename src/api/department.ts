@@ -233,6 +233,24 @@ class DepartmentAPI extends Base {
         }
     }
 
+    async findAllParentDepartments(deptId: string) {
+        const url = '/department/find-all-parents';
+        try {
+            const response = await this.get(url, {
+                deptId: deptId
+            });
+            return {
+                success: true,
+                data: response.data,
+                message: response.message,
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+            }
+        }
+    }
 }
 
 const department = new DepartmentAPI();

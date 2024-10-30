@@ -17,13 +17,13 @@ import {
 import { useAppContext } from "@/contexts/app-context";
 import { DepartmentItem } from "@/services/models/department-item";
 import { usePermission } from '@/contexts/permission-context';
-import Selector, { SelectorData } from "../components/selector";
+import DepartmentFilter, { DeptFilterData } from "../components/department-filter";
 
 export default function Page() {
     const { permissionList } = usePermission();
     const { setToastInfo } = useAppContext();
     const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
-    const [selectorData, setSelectorData] = useState<SelectorData>();
+    const [selectorData, setSelectorData] = useState<DeptFilterData>();
     const [filterData, setFilterData] = useState<FilterData>();
     const [showAddNewDepartmentModal, setShowAddNewDepartmentModal] = useState(false);
     const [showEditDepartmentModal, setShowEditDepartmentModal] = useState(false);
@@ -158,7 +158,7 @@ export default function Page() {
     return (
         <Fragment>
             <div className="flex-col text-black mt-4">
-                <Selector
+                <DepartmentFilter
                     refreshData={refreshData || false}
                     onRefreshDataFinished={() => setRefreshData(false)}
                     onSubmitted={(selectorData) => setSelectorData(selectorData)}

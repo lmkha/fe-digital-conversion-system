@@ -13,7 +13,7 @@ import { useAppContext } from "@/contexts/app-context";
 import { UserItem } from "@/services/models/user-item";
 import { usePermission } from '@/contexts/permission-context';
 import ImportUsersPopup from "./modals/import-user-modal";
-import Selector, { SelectorData } from "../components/selector";
+import DepartmentFilter, { DeptFilterData } from "../components/department-filter";
 
 export default function Page() {
     const { permissionList } = usePermission();
@@ -27,7 +27,7 @@ export default function Page() {
     const [refreshData, setRefreshData] = useState<boolean>();
     const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState<boolean>();
     const [checkedItems, setCheckedItems] = useState<string[]>();
-    const [selectorData, setSelectorData] = useState<SelectorData>();
+    const [selectorData, setSelectorData] = useState<DeptFilterData>();
     const [filterData, setFilterData] = useState<FilterData>();
 
     // Logic functions ----------------------------------------------------------
@@ -268,7 +268,7 @@ export default function Page() {
     // Render -------------------------------------------------------------------
     return (
         <div>
-            <Selector
+            <DepartmentFilter
                 refreshData={refreshData || false}
                 onRefreshDataFinished={() => setRefreshData(false)}
                 onSubmitted={(selectorData) => setSelectorData(selectorData)}
