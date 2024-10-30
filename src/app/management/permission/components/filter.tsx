@@ -3,11 +3,9 @@ import { Box, Stack, TextField, Typography } from '@mui/material';
 import { useRef, useState } from 'react';
 
 interface FilerProps {
-    onTextChange: (key: 'type' | 'permissionCode' | 'permissionName', value: string) => void;
-    onSubmitted: ({ type, permissionCode, permissionName }: { type: string; permissionCode: string; permissionName: string }) => void;
+    onSubmitted: ({ type, permissionCode, permissionName }: PermissionFilterData) => void;
 }
-
-export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
+export default function Filter({ onSubmitted }: FilerProps) {
     const [data, setData] = useState<{
         type: string;
         permissionCode: string;
@@ -23,16 +21,12 @@ export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
     const changeData = (key: 'type' | 'permissionCode' | 'permissionName', value: string) => {
         setData(prevData => {
             const newData = { ...prevData, [key]: value };
-            onTextChange(key, value);
-
             if (timeoutRef.current) {
                 clearTimeout(timeoutRef.current);
             }
-
             timeoutRef.current = setTimeout(() => {
                 onSubmitted({ type: newData.type, permissionCode: newData.permissionCode, permissionName: newData.permissionName });
             }, 3000);
-
             return newData;
         });
     };
@@ -69,7 +63,6 @@ export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
                         value={data.type}
                         onChange={(e) => {
                             changeData('type', e.target.value);
-                            onTextChange('type', e.target.value);
                         }}
                         onKeyDown={handleKeyDown}
                         disabled={true}
@@ -82,7 +75,6 @@ export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
                         value={data.permissionCode}
                         onChange={(e) => {
                             changeData('permissionCode', e.target.value);
-                            onTextChange('permissionCode', e.target.value);
                         }}
                         onKeyDown={handleKeyDown}
                     />
@@ -94,7 +86,6 @@ export default function Filter({ onTextChange, onSubmitted }: FilerProps) {
                         value={data.permissionName}
                         onChange={(e) => {
                             changeData('permissionName', e.target.value);
-                            onTextChange('permissionName', e.target.value);
                         }}
                         onKeyDown={handleKeyDown}
                     />
