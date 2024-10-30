@@ -4,7 +4,7 @@
 import Combobox from "@/core/components/combobox";
 import { findAllParentDepartments, findDepartmentByFilterForSelector, Province } from '@/services/department';
 import { DepartmentItem } from "@/services/models/department-item";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserInfo } from "@/contexts/user-info-context";
 
 export interface DeptFilterData {
@@ -26,12 +26,12 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
     const [deptLevel2List, setDeptLevel2List] = useState<DepartmentItem[]>();
     const [deptLevel3List, setDeptLevel3List] = useState<DepartmentItem[]>();
     const [deptLevel4List, setDeptLevel4List] = useState<DepartmentItem[]>();
-    const [parentDeptList, setParentDeptList] = useState<DepartmentItem[]>();
     const [province, setProvince] = useState<Province>();
     const [deptLevel1, setDeptLevel1] = useState<DepartmentItem>();
     const [deptLevel2, setDeptLevel2] = useState<DepartmentItem>();
     const [deptLevel3, setDeptLevel3] = useState<DepartmentItem>();
     const [deptLevel4, setDeptLevel4] = useState<DepartmentItem>();
+    const [edited, setEdited] = useState<boolean>(false);
 
     // Refresh selector when page had add, delete or update department
     useEffect(() => {
@@ -89,11 +89,8 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
         } else {
             setDeptLevel2List([]);
         }
-        if (level != 2) {
-            setDeptLevel2({
-                deptId: '',
-                deptName: ''
-            });
+        if (edited) {
+            setDeptLevel2({});
         }
     }, [deptLevel1?.deptId])
 
@@ -114,11 +111,8 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
         } else {
             setDeptLevel3List([]);
         }
-        if (level != 3) {
-            setDeptLevel3({
-                deptId: '',
-                deptName: ''
-            });
+        if (edited) {
+            setDeptLevel3({});
         }
     }, [deptLevel2?.deptId])
 
@@ -139,11 +133,8 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
         } else {
             setDeptLevel4List([]);
         }
-        if (level != 4) {
-            setDeptLevel4({
-                deptId: '',
-                deptName: ''
-            });
+        if (edited) {
+            setDeptLevel4({});
         }
     }, [deptLevel3?.deptId])
 
@@ -156,8 +147,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
             provinceId: userInfo.dept.provinceId || '',
             provinceName: userInfo.dept.provinceName || ''
         })
-        userInfo.dept.deptId && findAllParentDepartments(userInfo.dept.deptId).then(result => {
-            setParentDeptList(result);
+        userInfo.dept.deptId && findAllParentDepartments(userInfo.dept.deptId).then(parentList => {
             if (userInfo.dept.level == 1) {
                 setDeptLevel1({
                     deptId: userInfo.dept.deptId || '',
@@ -170,7 +160,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
                     deptId: userInfo.dept.deptId || '',
                     deptName: userInfo.dept.deptName || ''
                 });
-                setDeptLevel1(result[0]);
+                setDeptLevel1(parentList[0]);
                 return;
             }
             if (userInfo.dept.level == 3) {
@@ -178,8 +168,8 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
                     deptId: userInfo.dept.deptId || '',
                     deptName: userInfo.dept.deptName || '',
                 });
-                setDeptLevel1(result[0]);
-                setDeptLevel2(result[1]);
+                setDeptLevel1(parentList[0]);
+                setDeptLevel2(parentList[1]);
                 return;
             }
             if (userInfo.dept.level == 4) {
@@ -187,9 +177,9 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
                     deptId: userInfo.dept.deptId || '',
                     deptName: userInfo.dept.deptName || ''
                 });
-                parentDeptList && parentDeptList[0] && setDeptLevel1(parentDeptList[0]);
-                parentDeptList && parentDeptList[1] && setDeptLevel2(parentDeptList[1]);
-                parentDeptList && parentDeptList[2] && setDeptLevel3(parentDeptList[2]);
+                setDeptLevel1(parentList[0]);
+                setDeptLevel2(parentList[1]);
+                setDeptLevel3(parentList[2]);
                 return;
             }
         });
@@ -253,6 +243,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
                         provinceId: province?.provinceId || '',
                         deptId: department.id || ''
                     })
+                    setEdited(true);
                 }}
             />
 
@@ -281,6 +272,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
                         provinceId: province?.provinceId || '',
                         deptId: department.id || deptLevel1?.deptId || ''
                     })
+                    setEdited(true);
                 }}
             />
 
@@ -309,6 +301,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
                         provinceId: province?.provinceId || '',
                         deptId: department.id || deptLevel2?.deptId || ''
                     })
+                    setEdited(true);
                 }}
             />
 
@@ -337,6 +330,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
                         provinceId: province?.provinceId || '',
                         deptId: department.id || deptLevel3?.deptId || ''
                     })
+                    setEdited(true);
                 }}
             />
         </div>
