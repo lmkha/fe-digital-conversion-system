@@ -4,15 +4,12 @@
 import { Fragment, useEffect, useState } from "react";
 import DepartmentComponent from "./components/department-item";
 import Filter, { FilterData } from "./components/filter";
-import Selector from "./components/selector";
-import { SelectorData } from "./components/selector";
 import AddNewDepartmentModal from "./modals/add-new-department";
 import { useManagement } from "@/contexts/management-context";
 import EditDepartmentModal from "./modals/edit-department";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
 import {
     BasicDepartment,
-    CheckedItem,
     deleteDepartments,
     findDepartmentsByFilterWithPageInfo,
     downloadDepartmentsExcelFile
@@ -20,6 +17,7 @@ import {
 import { useAppContext } from "@/contexts/app-context";
 import { DepartmentItem } from "@/services/models/department-item";
 import { usePermission } from '@/contexts/permission-context';
+import Selector, { SelectorData } from "../components/selector";
 
 export default function Page() {
     const { permissionList } = usePermission();
@@ -33,7 +31,7 @@ export default function Page() {
     const [checkedItemIds, setCheckedItemIds] = useState<string[]>();
     const [refreshData, setRefreshData] = useState(false);
     const [departmentList, setDepartmentList] = useState<DepartmentItem[]>();
-    const [editingDepartment, setEditingDepartment] = useState<BasicDepartment>();
+    const [editingDepartment, setEditingDepartment] = useState<DepartmentItem>();
 
     // Update department list and page info
     const updateDepartmentListAndPageInfo = async () => {
@@ -41,7 +39,7 @@ export default function Page() {
             await findDepartmentsByFilterWithPageInfo(
                 {
                     provinceId: selectorData.provinceId,
-                    parentId: selectorData.parentId,
+                    parentId: selectorData.deptId,
                     level: filterData?.level,
                     districtName: filterData?.district,
                     wardName: filterData?.ward,
@@ -66,7 +64,7 @@ export default function Page() {
     }, [selectorData]);
 
     useEffect(() => {
-        if (selectorData && selectorData.parentId && filterData) {
+        if (selectorData && selectorData.deptId && filterData) {
             updateDepartmentListAndPageInfo();
         }
     }, [filterData]);
@@ -86,7 +84,7 @@ export default function Page() {
                 }
                 downloadDepartmentsExcelFile(
                     selectorData.provinceId,
-                    selectorData.parentId,
+                    selectorData.deptId,
                     filterData?.name ? filterData?.name : '',
                     filterData?.level ? filterData?.level : '',
                     filterData?.district ? filterData?.district : '',
@@ -144,7 +142,7 @@ export default function Page() {
             if (selectorData?.provinceId) {
                 findDepartmentsByFilterWithPageInfo({
                     provinceId: selectorData.provinceId,
-                    parentId: selectorData.parentId,
+                    parentId: selectorData.deptId,
                     level: filterData?.level,
                     districtName: filterData?.district,
                     wardName: filterData?.ward,
@@ -161,16 +159,9 @@ export default function Page() {
         <Fragment>
             <div className="flex-col text-black mt-4">
                 <Selector
-                    onChange={(provinceId, provinceName, parentId) => { }}
-                    refreshData={refreshData}
+                    refreshData={refreshData || false}
                     onRefreshDataFinished={() => setRefreshData(false)}
-                    onCallBackInfoChange={(callBackInfo) => {
-                        setSelectorData && setSelectorData({
-                            provinceId: callBackInfo.provinceId,
-                            provinceName: '',
-                            parentId: callBackInfo.parentId
-                        })
-                    }}
+                    onSubmitted={(selectorData) => setSelectorData(selectorData)}
                 />
                 <Filter
                     isCheck={false}
@@ -192,7 +183,7 @@ export default function Page() {
                             level={item?.level ? item.level : 0}
                             district={item?.districtName ? item.districtName : ''}
                             ward={item?.wardName ? item.wardName : ''}
-                            isCheck={checkedItemIds && checkedItemIds.includes(item.deptId) ? true : false}
+                            isCheck={checkedItemIds && item.deptId && checkedItemIds.includes(item.deptId) ? true : false}
                             onSelect={(id) => {
                                 setCheckedItemIds([...(checkedItemIds ? checkedItemIds : []), id]);
                             }}
@@ -226,9 +217,9 @@ export default function Page() {
                         updateDepartmentListAndPageInfo()
                     }
                 }}
-                parentId={selectorData?.parentId ? selectorData.parentId : ''}
-                provinceId={selectorData?.provinceId ? selectorData.provinceId : ''}
-                provinceName={selectorData?.provinceName ? selectorData.provinceName : ''}
+                parentId={selectorData?.deptId || ''}
+                provinceId={selectorData?.provinceId || ''}
+                provinceName={''}
             />
             <EditDepartmentModal
                 isVisible={showEditDepartmentModal}

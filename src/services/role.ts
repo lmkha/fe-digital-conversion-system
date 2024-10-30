@@ -1,5 +1,6 @@
 import role from "@/api/role"
 import PaginationInfo from "@/core/types/pagination-info";
+import RoleItem from "./models/role-item";
 
 export const getRolesByFilter = async (
     deptId: string,
@@ -11,12 +12,7 @@ export const getRolesByFilter = async (
     success: boolean;
     message: string;
     pageInfo: PaginationInfo;
-    roles: {
-        roleId: string;
-        roleCode: string;
-        roleName: string;
-        isCheck: boolean;
-    }[];
+    roles: RoleItem[];
 }> => {
     const result = await role.findRolesByFilter(roleCode, roleName, deptId, pageSize, pageNumber);
     if (result.success) {
@@ -29,11 +25,11 @@ export const getRolesByFilter = async (
                 start: result.data.start,
                 end: result.data.end,
             },
-            roles: result.data.roles.map((role: any) => ({
-                roleId: role.roleId,
-                roleCode: role.roleCode,
-                roleName: role.roleName,
-                isCheck: false,
+            roles: result.data.roles.map((role: any): RoleItem => ({
+                id: role.roleId,
+                code: role.roleCode,
+                name: role.roleName,
+                selected: false,
             })),
             message: result.message,
         }

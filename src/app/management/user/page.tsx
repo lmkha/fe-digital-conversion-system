@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import Filter, { FilterData } from "./components/filter";
 import UserItemComponent from "./components/user-item";
 import AddUserModal from "./modals/add-user-modal";
-import Selector from "./components/selector";
-import { SelectorData } from "./components/selector";
 import { changeUserStatus, deleteUsers, downloadUsersExcelFile, findUserByDeptId, findUserByFilter, provideRandomPassword } from "@/services/user";
 import EditUserModal from "./modals/edit-user-modal";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
@@ -15,6 +13,7 @@ import { useAppContext } from "@/contexts/app-context";
 import { UserItem } from "@/services/models/user-item";
 import { usePermission } from '@/contexts/permission-context';
 import ImportUsersPopup from "./modals/import-user-modal";
+import Selector, { SelectorData } from "../components/selector";
 
 export default function Page() {
     const { permissionList } = usePermission();
@@ -270,15 +269,9 @@ export default function Page() {
     return (
         <div>
             <Selector
-                onChange={(provinceId, provinceName, parentId) => { }}
-                refreshData={false}
-                onRefreshDataFinished={() => { }}
-                onCallBackInfoChange={(callBackInfo) => {
-                    setSelectorData({
-                        provinceId: callBackInfo.provinceId,
-                        deptId: callBackInfo.parentId
-                    });
-                }}
+                refreshData={refreshData || false}
+                onRefreshDataFinished={() => setRefreshData(false)}
+                onSubmitted={(selectorData) => setSelectorData(selectorData)}
             />
             <Filter
                 deptId={selectorData?.deptId}
@@ -390,7 +383,10 @@ export default function Page() {
             <ImportUsersPopup
                 open={openImportUserModal ? true : false}
                 deptId={selectorData?.deptId || ''}
-                onClose={() => setOpenImportUserModal(false)}
+                onClose={() => {
+                    setOpenImportUserModal(false);
+                    setRefreshData(true);
+                }}
             />
 
             <SelectedDataToolbar

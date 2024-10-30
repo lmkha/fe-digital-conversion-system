@@ -4,6 +4,11 @@ import { useEffect, useState, useRef } from "react";
 import { RiCheckboxIndeterminateFill, RiCheckboxIndeterminateLine } from "react-icons/ri";
 import { usePermission } from '@/contexts/permission-context';
 
+export interface FilterData {
+    code: string;
+    name: string;
+}
+
 interface FilterProps {
     isCheck: boolean;
     onTextChange: (key: 'code' | 'name', value: string) => void;

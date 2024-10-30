@@ -143,6 +143,52 @@ class DepartmentAPI extends Base {
         }
     }
 
+    async findDepartmentsByFilterForSelector({
+        provinceId,
+        parentId,
+        deptName,
+        level,
+        wardName,
+        districtName,
+        pageSize,
+        pageNumber
+    }: {
+        provinceId: string,
+        parentId?: string,
+        deptName?: string,
+        level?: string,
+        wardName?: string,
+        districtName?: string,
+        pageSize?: string,
+        pageNumber?: string
+    }) {
+        try {
+            const url = '/department/find-filter';
+            const response = await this.get(url, {
+                provinceId: provinceId,
+                parentId: parentId,
+                deptName: deptName,
+                level: level,
+                wardName: wardName,
+                districtName: districtName,
+                pageSize: pageSize,
+                pageNumber: pageNumber
+            });
+            return {
+                success: true,
+                data: response.data,
+                message: response.message,
+                code: response.code
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            }
+        }
+    }
+
     async downloadDepartmentsExcelFile(
         provinceId: string,
         parentId: string,

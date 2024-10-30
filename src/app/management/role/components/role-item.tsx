@@ -10,12 +10,12 @@ interface RoleItemProps {
     id: string;
     code: string;
     name: string;
-    isCheck: boolean;
-    onIsCheckChange: (id: string, isCheck: boolean) => void;
+    selected: boolean;
+    onSelectedChange: (id: string, isCheck: boolean) => void;
     onEdit: () => void;
 }
 
-export default function RoleItem({ id, code, name, isCheck, onIsCheckChange, onEdit }: RoleItemProps) {
+export default function RoleItem({ id, code, name, selected: isCheck, onSelectedChange: onIsCheckChange, onEdit }: RoleItemProps) {
     const { permissionList } = usePermission();
     const checkIcon = isCheck ?
         <MdCheckBox className="text-3xl text-blue-500" /> :

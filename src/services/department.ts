@@ -193,6 +193,54 @@ export const findDepartmentsByFilter = async (
     }
 }
 
+export const findDepartmentByFilterForSelector = async ({
+    provinceId,
+    parentId,
+    deptName,
+    level,
+    wardName,
+    districtName,
+    pageSize,
+    pageNumber,
+}: {
+    provinceId: string,
+    parentId?: string,
+    deptName?: string,
+    level?: string,
+    wardName?: string,
+    districtName?: string,
+    pageSize?: string,
+    pageNumber?: string,
+}) => {
+    console.log("findDepartmentByFilterForSelector", provinceId, parentId, deptName, level, wardName, districtName, pageSize, pageNumber);
+    const result = await department.findDepartmentsByFilterForSelector({
+        provinceId: provinceId,
+        parentId: parentId,
+        deptName: deptName,
+        level: level,
+        wardName: wardName,
+        districtName: districtName,
+        pageSize: pageSize,
+        pageNumber: pageNumber
+    });
+    if (result.success) {
+        return result.data.depts.map((dept: any): DepartmentItem => ({
+            deptName: dept.deptname,
+            deptId: dept.deptid,
+            level: dept.level,
+            provinceName: dept.provincename,
+            districtName: dept.districtname,
+            wardName: dept.wardname,
+            provinceId: '',
+            districtId: '',
+            wardId: '',
+            selected: false
+        }));
+    } else {
+        return [];
+    }
+}
+
 export const findDepartmentsByFilterWithPageInfo = async ({
     provinceId,
     parentId,

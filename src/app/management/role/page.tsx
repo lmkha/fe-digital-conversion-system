@@ -1,52 +1,35 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 import { useManagement } from "@/contexts/management-context";
-import Toast from "@/core/components/toast";
 import { Fragment, useEffect, useState } from "react";
-import Selector from "./components/selector";
 import { AddRoleModal } from "./modals/add-role-modal";
-import Filter from "./components/filter";
-import RoleItem from "./components/role-item";
+import Filter, { FilterData } from "./components/filter";
+import RoleComponent from "./components/role-item";
 import { deleteRole, downloadExcelFile, getRoles, getRolesByFilter } from "@/services/role";
 import SelectedDataToolbar from "../components/selected-data-toolbar";
 import { EditRoleModal } from "./modals/edit-role-modal";
 import { useAppContext } from "@/contexts/app-context";
 import { usePermission } from '@/contexts/permission-context';
+import Selector, { SelectorData } from "../components/selector";
+import RoleItem from "@/services/models/role-item";
 
 export default function Page() {
     const { permissionList } = usePermission();
     const { setToastInfo } = useAppContext();
     const { setHeaderButtons, setHeaderTitle, setFooterInfo, footerInfo } = useManagement();
-    const [showAddRoleModal, setShowAddRoleModal] = useState(false);
-    const [showEditRoleModal, setShowEditRoleModal] = useState(false);
-    const [roleList, setRoleList] = useState<{
-        roleId: string;
-        roleCode: string;
-        roleName: string;
-        isCheck: boolean;
-    }[]>([]);
-    const [filterData, setFilterData] = useState<{
-        permissionCode: string;
-        permissionName: string;
-    }>({
-        permissionCode: '',
-        permissionName: ''
-    });
-    const [selectorData, setSelectorData] = useState<{
-        provinceId: string;
-        deptId: string;
-    }>({
-        provinceId: '',
-        deptId: ''
-    });
-    const [refreshData, setRefreshData] = useState(false);
-    const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState(false);
-    const [checkedItems, setCheckedItems] = useState<string[]>([]);
-    const [selectedItemIdToEdit, setSelectedItemIdToEdit] = useState<string>('');
+    const [showAddRoleModal, setShowAddRoleModal] = useState<boolean>();
+    const [showEditRoleModal, setShowEditRoleModal] = useState<boolean>();
+    const [roleList, setRoleList] = useState<RoleItem[]>();
+    const [filterData, setFilterData] = useState<FilterData>();
+    const [selectorData, setSelectorData] = useState<SelectorData>();
+    const [refreshData, setRefreshData] = useState<boolean>();
+    const [showSelectedDataToolbar, setShowSelectedDataToolbar] = useState<boolean>();
+    const [checkedItems, setCheckedItems] = useState<string[]>();
+    const [selectedItemIdToEdit, setSelectedItemIdToEdit] = useState<string>();
 
     // Handle logic --------------------------------------------------------------------------------------------
     const updateRoleAndPageInfo = () => {
-        if (selectorData.provinceId && selectorData.deptId) {
+        if (selectorData?.provinceId && selectorData.deptId) {
             getRoles(selectorData.deptId).then((result) => {
                 if (result.success) {
                     setRoleList(result.roles);
@@ -70,9 +53,9 @@ export default function Page() {
 
     const handleSelectAll = () => {
         // Add all id to checkedItems
-        setCheckedItems(roleList.map(item => item.roleId));
+        roleList && setCheckedItems(roleList.flatMap(item => item.id ? [item.id] : []));
         // Set isCheck to true for all item
-        setRoleList(roleList.map(item => {
+        roleList && setRoleList(roleList.map(item => {
             return {
                 ...item,
                 isCheck: true
@@ -84,7 +67,7 @@ export default function Page() {
         // Remove all id from checkedItems
         setCheckedItems([]);
         // Set isCheck to false for all item
-        setRoleList(roleList.map(item => {
+        roleList && setRoleList(roleList.map(item => {
             return {
                 ...item,
                 isCheck: false
@@ -101,7 +84,7 @@ export default function Page() {
                     type: 'add',
                     label: 'Thêm vai trò',
                     onClick: () => {
-                        if (!selectorData.deptId) {
+                        if (!selectorData?.deptId) {
                             setToastInfo && setToastInfo({
                                 show: true,
                                 severity: 'error',
@@ -118,7 +101,7 @@ export default function Page() {
 
     // Get data when selectorData change
     useEffect(() => {
-        if (selectorData.deptId) {
+        if (selectorData?.deptId) {
             updateRoleAndPageInfo();
         } else {
             setRoleList([]);
@@ -131,9 +114,9 @@ export default function Page() {
             ...footerInfo,
             exportDataFooter: () => {
                 downloadExcelFile(
-                    filterData.permissionCode,
-                    filterData.permissionName,
-                    selectorData.deptId,
+                    filterData?.code || '',
+                    filterData?.name || '',
+                    selectorData?.deptId || '',
                     footerInfo?.paginationInfo?.pageNumber?.toString() ? footerInfo?.paginationInfo?.pageNumber?.toString() : '',
                     footerInfo?.paginationInfo?.pageSize?.toString() ? footerInfo?.paginationInfo?.pageSize?.toString() : '',
                 ).then((result) => {
@@ -150,7 +133,7 @@ export default function Page() {
     // Refresh data when refreshData change
     useEffect(() => {
         if (refreshData) {
-            if (selectorData.deptId) {
+            if (selectorData?.deptId) {
                 getRoles(selectorData.deptId).then((result) => {
                     if (result.success) {
                         setRoleList(result.roles);
@@ -171,7 +154,7 @@ export default function Page() {
 
     // Show or hide selected data toolbar
     useEffect(() => {
-        if (checkedItems.length > 0) {
+        if (checkedItems && checkedItems.length > 0) {
             setShowSelectedDataToolbar(true);
         } else {
             setShowSelectedDataToolbar(false);
@@ -180,9 +163,9 @@ export default function Page() {
 
     // Update when filterData change
     useEffect(() => {
-        if (selectorData.deptId) {
-            if (filterData.permissionCode || filterData.permissionName) {
-                getRolesByFilter(selectorData.deptId, filterData.permissionCode, filterData.permissionName).then((result) => {
+        if (selectorData?.deptId) {
+            if (filterData?.code || filterData?.name) {
+                getRolesByFilter(selectorData.deptId, filterData.code, filterData.name).then((result) => {
                     if (result.success) {
                         setRoleList(result.roles);
                         setFooterInfo({
@@ -205,13 +188,13 @@ export default function Page() {
 
     // PageSize and PageNumber change
     useEffect(() => {
-        if (selectorData.deptId) {
+        if (selectorData?.deptId) {
             if (footerInfo?.paginationInfo?.pageNumber && footerInfo?.paginationInfo?.pageSize) {
-                if (filterData.permissionCode || filterData.permissionName) {
+                if (filterData?.code || filterData?.name) {
                     getRolesByFilter(
                         selectorData.deptId,
-                        filterData.permissionCode,
-                        filterData.permissionName,
+                        filterData.code,
+                        filterData.name,
                         footerInfo?.paginationInfo?.pageSize?.toString(),
                         footerInfo?.paginationInfo?.pageNumber?.toString(),
                     ).then((result) => {
@@ -242,15 +225,9 @@ export default function Page() {
             <div className="flex-col text-black mt-4">
                 {/* Selector */}
                 <Selector
-                    onChange={(provinceId, provinceName, parentId) => { }}
-                    refreshData={false}
-                    onRefreshDataFinished={() => { }}
-                    onCallBackInfoChange={(callBackInfo) => {
-                        setSelectorData({
-                            provinceId: callBackInfo.provinceId,
-                            deptId: callBackInfo.parentId
-                        });
-                    }}
+                    refreshData={refreshData || false}
+                    onRefreshDataFinished={() => { setRefreshData(false) }}
+                    onSubmitted={(selectorData) => setSelectorData(selectorData)}
                 />
                 {/* Filter */}
                 <Filter
@@ -263,10 +240,10 @@ export default function Page() {
                         }
                     }}
                     onTextChange={(key, value) => {
-                        setFilterData({ ...filterData, [key]: value });
+                        filterData && setFilterData({ ...filterData, [key]: value });
                     }}
                     onSubmitted={(data) => {
-                        if (!selectorData.deptId) {
+                        if (!selectorData?.deptId) {
                             setToastInfo && setToastInfo({
                                 show: true,
                                 severity: 'error',
@@ -275,32 +252,32 @@ export default function Page() {
                             return;
                         }
                         setFilterData({
-                            permissionCode: data.code,
-                            permissionName: data.name
+                            code: data.code,
+                            name: data.name
                         });
                     }}
                 />
 
                 {/* TableList */}
                 <div className="flex-1 w-full max-h-[480px] overflow-y-auto">
-                    {roleList.length === 0 && (
+                    {roleList && roleList.length === 0 && (
                         <div className="flex justify-center items-center h-full mt-4">
                             <span>Không có dữ liệu</span>
                         </div>
                     )}
-                    {roleList.length > 0 &&
+                    {roleList && roleList.length > 0 &&
                         roleList.map((item, index) => (
-                            <RoleItem
-                                id={item.roleId}
+                            <RoleComponent
+                                id={item.id || ''}
                                 key={index}
-                                code={item.roleCode}
-                                name={item.roleName}
-                                isCheck={item.isCheck}
-                                onIsCheckChange={(id, isCheck) => {
+                                code={item.code || ''}
+                                name={item.name || ''}
+                                selected={item.selected || false}
+                                onSelectedChange={(id, isCheck) => {
                                     if (isCheck) {
-                                        setCheckedItems([...checkedItems, id]);
+                                        checkedItems && setCheckedItems([...checkedItems, id]);
                                         setRoleList(roleList.map(item => {
-                                            if (item.roleId === id) {
+                                            if (item.id === id) {
                                                 return {
                                                     ...item,
                                                     isCheck: true
@@ -309,9 +286,9 @@ export default function Page() {
                                             return item;
                                         }));
                                     } else {
-                                        setCheckedItems(checkedItems.filter(item => item !== id));
+                                        checkedItems && setCheckedItems(checkedItems.filter(item => item !== id));
                                         setRoleList(roleList.map(item => {
-                                            if (item.roleId === id) {
+                                            if (item.id === id) {
                                                 return {
                                                     ...item,
                                                     isCheck: false
@@ -322,8 +299,7 @@ export default function Page() {
                                     }
                                 }}
                                 onEdit={() => {
-                                    console.log(`Edit: ${item.roleId}`);
-                                    setSelectedItemIdToEdit(item.roleId);
+                                    setSelectedItemIdToEdit(item.id);
                                     setShowEditRoleModal(true);
                                 }}
                             />
@@ -332,8 +308,8 @@ export default function Page() {
             </div>
 
             <AddRoleModal
-                isOpen={showAddRoleModal}
-                deptId={selectorData.deptId}
+                isOpen={showAddRoleModal || false}
+                deptId={selectorData?.deptId || ''}
                 onClose={() => setShowAddRoleModal(false)}
                 onSubmitted={(success, message) => {
                     setToastInfo && setToastInfo({
@@ -347,8 +323,8 @@ export default function Page() {
                 }}
             />
             <EditRoleModal
-                isOpen={showEditRoleModal}
-                roleId={selectedItemIdToEdit}
+                isOpen={showEditRoleModal || false}
+                roleId={selectedItemIdToEdit || ''}
                 onClose={() => setShowEditRoleModal(false)}
                 onSubmitted={(success, message) => {
                     setToastInfo && setToastInfo({
@@ -363,13 +339,12 @@ export default function Page() {
             />
             <SelectedDataToolbar
                 label="vai trò"
-                isShow={showSelectedDataToolbar}
-                totalSelected={checkedItems.length}
+                isShow={showSelectedDataToolbar || false}
+                totalSelected={checkedItems?.length || 0}
                 onDelete={() => {
                     const dl = async () => {
-                        const result = await deleteRole(
-                            checkedItems
-                        );
+                        if (!checkedItems) return;
+                        const result = await deleteRole(checkedItems);
                         setToastInfo && setToastInfo({
                             show: true,
                             severity: result.success ? 'success' : 'error',
