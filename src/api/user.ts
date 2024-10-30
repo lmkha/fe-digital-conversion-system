@@ -314,34 +314,48 @@ class UserAPI extends Base {
 
     async downloadUsersExcelFile({
         deptId,
-        pageSize = '',
-        pageNumber = '',
-        fullName = '',
-        username = '',
-        email = '',
-        phone = '',
-        realRole = '',
-        jobTitle = '',
-        status = ''
+        pageSize,
+        pageNumber,
+        fullName,
+        username,
+        email,
+        phone,
+        realRole,
+        jobTitle,
+        status
     }: {
         deptId: string;
-        pageSize?: string;
-        pageNumber?: string;
-        fullName?: string;
-        username?: string;
-        email?: string;
-        phone?: string;
-        realRole?: string;
-        jobTitle?: string;
-        status?: string;
+        pageSize?: string | null;
+        pageNumber?: string | null;
+        fullName?: string | null;
+        username?: string | null;
+        email?: string | null;
+        phone?: string | null;
+        realRole?: string | null;
+        jobTitle?: string | null;
+        status?: string | null;
     }) {
         try {
-            const url = `/user/download-excel?deptId=${deptId}&pageSize=${pageSize}&pageNumber=${pageNumber}&fullName=${fullName}&userName=${username}&email=${email}&phone=${phone}&realRole=${realRole}&jobTitle=${jobTitle}&status=${status}`;
-            const response = await axiosInstance.get(url, { responseType: 'blob' });
+            const url = '/user/download-excel';
+            const response = await axiosInstance.get(url, {
+                responseType: 'blob',
+                params: {
+                    deptId: deptId,
+                    pageSize: pageSize,
+                    pageNumber: pageNumber,
+                    fullName: fullName,
+                    userName: username,
+                    email: email,
+                    phone: phone,
+                    realRole: realRole,
+                    jobTitle: jobTitle,
+                    status: status
+                }
+            });
             const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
-            link.download = 'users.xlsx';
+            link.download = 'danh_sach_nguoi_dung.xlsx';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);

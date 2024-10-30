@@ -204,8 +204,8 @@ export default function Selector({ refreshData, onRefreshDataFinished, onSubmitt
                 disabled={true}
                 className="w-1/3 h-10"
                 value={{
-                    id: userInfo.dept.provinceId || '',
-                    name: userInfo.dept.provinceName ? userInfo.dept.provinceName : ''
+                    id: userInfo.dept?.provinceId || '',
+                    name: userInfo.dept?.provinceName ? userInfo.dept.provinceName : ''
                 }}
                 label="Tỉnh/Thành phố *"
                 options={[]}

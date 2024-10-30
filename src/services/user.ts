@@ -380,15 +380,15 @@ export const downloadUsersExcelFile = async ({
 }) => {
     return user.downloadUsersExcelFile({
         deptId: deptId,
-        pageSize: pageSize,
-        pageNumber: pageNumber,
-        fullName: fullName,
-        username: username,
-        email: email,
-        phone: phone,
-        realRole: realRole,
-        jobTitle: jobTitle,
-        status: status
+        pageSize: pageSize || null,
+        pageNumber: pageNumber || null,
+        fullName: fullName || null,
+        username: username || null,
+        email: email || null,
+        phone: phone || null,
+        realRole: realRole || null,
+        jobTitle: jobTitle || null,
+        status: status || null
     });
 }
 
