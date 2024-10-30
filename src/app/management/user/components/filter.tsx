@@ -85,8 +85,13 @@ export default function Filter({ deptId, onTextChange, onSubmitted }: FilterProp
             display="flex"
             justifyContent="flex-end"
             alignItems="flex-end"
-            height={100}
-            sx={{ backgroundColor: '#F4F6F8E5' }}
+            height={90}
+            sx={{
+                backgroundColor: '#E5E7EB',
+                borderTopRightRadius: 5,
+                borderTopLeftRadius: 5,
+                mt: 1
+            }}
         >
             <Stack
                 direction={"row"}
@@ -94,9 +99,10 @@ export default function Filter({ deptId, onTextChange, onSubmitted }: FilterProp
                 sx={{
                     width: '90%',
                     mb: 1,
+                    mt: 1,
                 }}
             >
-                <Stack width='20%' spacing={2}>
+                <Stack width='20%'>
                     <Typography fontWeight='bold'>Họ tên</Typography>
                     <TextField size="small" sx={{ width: '100%', backgroundColor: 'white' }}
                         onChange={(e) => changeData('name', e.target.value)}
@@ -104,14 +110,14 @@ export default function Filter({ deptId, onTextChange, onSubmitted }: FilterProp
                     />
                 </Stack>
 
-                <Stack width='15%' spacing={2}>
+                <Stack width='15%'>
                     <Typography fontWeight='bold'>Tên tài khoản</Typography>
                     <TextField size="small" sx={{ width: '100%', backgroundColor: 'white' }}
                         onChange={(e) => changeData('username', e.target.value)}
                         onKeyDown={handleKeyDown}
                     />
                 </Stack>
-                <Stack width='20%' spacing={2}>
+                <Stack width='20%'>
                     <Typography fontWeight='bold'>Email</Typography>
                     <TextField size="small" sx={{ width: '100%', backgroundColor: 'white' }}
                         onChange={(e) => changeData('email', e.target.value)}
@@ -119,14 +125,14 @@ export default function Filter({ deptId, onTextChange, onSubmitted }: FilterProp
                     />
                 </Stack>
 
-                <Stack width='15%' spacing={2}>
+                <Stack width='15%'>
                     <Typography fontWeight='bold'>SĐT</Typography>
                     <TextField size="small" sx={{ width: '100%', backgroundColor: 'white' }}
                         onChange={(e) => changeData('phone', e.target.value)}
                         onKeyDown={handleKeyDown}
                     />
                 </Stack>
-                <Stack width='15%' spacing={2} sx={{ color: 'black' }}>
+                <Stack width='15%' sx={{ color: 'black' }}>
                     <Typography fontWeight='bold'>Quyền</Typography>
                     <AutoComplete
                         label=""
@@ -139,14 +145,14 @@ export default function Filter({ deptId, onTextChange, onSubmitted }: FilterProp
                         width="100%"
                     />
                 </Stack>
-                <Stack width='15%' spacing={2}>
+                <Stack width='15%'>
                     <Typography fontWeight='bold'>Công việc</Typography>
                     <TextField size="small" sx={{ width: '100%', backgroundColor: 'white' }}
                         onChange={(e) => changeData('jobTitle', e.target.value)}
                         onKeyDown={handleKeyDown}
                     />
                 </Stack>
-                <Stack width='10%' spacing={2}>
+                <Stack width='10%'>
                     <Typography fontWeight='bold'>Kích hoạt</Typography>
                     <AutoComplete
                         label=""

@@ -24,6 +24,7 @@ export default function ActionButton({ type, label, onClick }: ActionButtonProps
             sx={{
                 textTransform: 'none',
                 fontWeight: 'bold',
+                height: '45px',
             }}
             onClick={onClick}
         >

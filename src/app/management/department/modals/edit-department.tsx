@@ -127,7 +127,7 @@ export default function EditDepartmentModal({
     // Validate data before submit
     const validateDataBeforeSubmit = () => {
         // Trim deptName and check if it's empty or over 30 characters
-        if (department?.deptName.trim() === '') {
+        if (department?.deptName && department.deptName.trim() === '') {
             setToastInfo({
                 showToast: true,
                 severity: 'error',
@@ -135,7 +135,7 @@ export default function EditDepartmentModal({
             });
             return false;
         }
-        if (department && department.deptName.length > 30) {
+        if (department?.deptName && department.deptName.length > 30) {
             setToastInfo({
                 showToast: true,
                 severity: 'error',
@@ -297,7 +297,13 @@ export default function EditDepartmentModal({
                                 onClick={async () => {
                                     if (!validateDataBeforeSubmit()) return;
                                     if (!department) return;
-                                    const result = await updateDepartment(department);
+                                    const result = await updateDepartment({
+                                        deptId: department.deptId || '',
+                                        deptName: department.deptName || '',
+                                        wardId: department.wardId || '',
+                                        districtId: department.districtId || '',
+                                        provinceId: department.provinceId || '',
+                                    });
                                     onSubmitted(result.success, result.message, result.code);
                                     setDepartment({
                                         deptId: '',

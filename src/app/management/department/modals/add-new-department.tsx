@@ -59,7 +59,7 @@ export default function AddNewDepartmentModal({
         if (isVisible) {
             if (parentId) {
                 getDepartmentById(parentId).then(result => {
-                    setDepartment({
+                    result.level && setDepartment({
                         deptId: '',
                         deptName: '',
                         level: result.level + 1,
@@ -76,13 +76,6 @@ export default function AddNewDepartmentModal({
             getProvinces().then(result => {
                 setProvinceList(result);
             });
-            // if (provinceId) {
-            //     department && setDepartment({
-            //         ...department,
-            //         provinceId: provinceId,
-            //         provinceName: provinceName
-            //     });
-            // }
         } else {
             department && setDepartment({
                 deptId: '',
@@ -164,7 +157,7 @@ export default function AddNewDepartmentModal({
 
     const validateDataBeforeSubmit = () => {
         // Trim deptName and check if it's empty or over 30 characters
-        if (department?.deptName.trim() === '') {
+        if (department?.deptName?.trim() === '') {
             setToastInfo({
                 showToast: true,
                 severity: 'error',
@@ -172,7 +165,7 @@ export default function AddNewDepartmentModal({
             });
             return false;
         }
-        if (department && department.deptName.length > 30) {
+        if (department?.deptName && department.deptName.length > 30) {
             setToastInfo({
                 showToast: true,
                 severity: 'error',
@@ -255,11 +248,6 @@ export default function AddNewDepartmentModal({
                                     label="Tỉnh / Thành phố"
                                     options={provinceList.map(province => ({ id: province.provinceId, name: province.provinceName }))}
                                     onChange={(province) => {
-                                        // department && setDepartment({
-                                        //     ...department,
-                                        //     provinceId: province.id,
-                                        //     provinceName: province.name
-                                        // });
                                         console.log(province);
                                         department && setDepartment({
                                             ...department,
@@ -320,20 +308,20 @@ export default function AddNewDepartmentModal({
                                     if (!validateDataBeforeSubmit()) return;
                                     if (department?.level !== 1 && department) {
                                         const result = await createDepartment({
-                                            deptName: department.deptName,
-                                            wardId: department.wardId,
-                                            districtId: department.districtId,
-                                            provinceId: department.provinceId,
+                                            deptName: department.deptName || '',
+                                            wardId: department.wardId || '',
+                                            districtId: department.districtId || '',
+                                            provinceId: department.provinceId || '',
                                             parentId: parentId
                                         });
                                         onSubmitted(result.success, result.message, result.code);
                                     } else {
                                         if (!department) return;
                                         const result = await createDepartmentLevel1({
-                                            deptName: department.deptName,
-                                            wardId: department.wardId,
-                                            districtId: department.districtId,
-                                            provinceId: department.provinceId
+                                            deptName: department.deptName || '',
+                                            wardId: department.wardId || '',
+                                            districtId: department.districtId || '',
+                                            provinceId: department.provinceId || ''
                                         });
                                         onSubmitted(result.success, result.message, result.code);
                                     }

@@ -29,12 +29,6 @@ export default function Layout({ children }: LayoutProps) {
         }
     }, [isLoggedIn]);
 
-    // useEffect(() => {
-    //     if (!userInfo) {
-    //         router.replace('/login');
-    //     }
-    // }, [userInfo]);
-
     return (
         <ManagementProvider>
             <div className='flex w-screen h-screen bg-white'>

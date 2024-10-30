@@ -204,9 +204,10 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
     }, [selectorData])
 
     return (
-        <div className="flex justify-between items-center w-full h-fit pb-4 bg-white border-b-1 text-black gap-2">
+        <div className="flex justify-between items-center w-full h-fit bg-white text-black gap-2">
             {/* Province */}
             <Combobox
+                size="small"
                 disabled={true}
                 className="w-1/3 h-10"
                 value={{
@@ -229,6 +230,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
 
             {/* Dept level 1 */}
             <Combobox
+                size="small"
                 disabled={level && level >= 1 ? true : false}
                 className="w-1/3 h-10"
                 value={{
@@ -256,6 +258,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
 
             {/* Dept level 2 */}
             <Combobox
+                size="small"
                 disabled={level && level >= 2 ? true : false}
                 className="w-1/3 h-10"
                 value={{
@@ -283,6 +286,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
 
             {/* Dept level 3 */}
             <Combobox
+                size="small"
                 disabled={level && level >= 3 ? true : false}
                 className="w-1/3 h-10"
                 value={{
@@ -310,6 +314,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
 
             {/* Dept level 4 */}
             <Combobox
+                size="small"
                 disabled={level && level >= 4 ? true : false}
                 className="w-1/3 h-10"
                 value={{
