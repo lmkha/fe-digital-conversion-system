@@ -164,16 +164,16 @@ export const findUserByFilter = async ({
     };
 }> => {
     const result = await user.findUserByFilter({
-        deptId,
-        pageSize,
-        pageNumber,
-        fullName,
-        username,
-        email,
-        phone,
-        realRole,
-        jobTitle,
-        status
+        deptId: deptId,
+        pageSize: pageSize || null,
+        pageNumber: pageNumber || null,
+        fullName: fullName || null,
+        username: username || null,
+        email: email || null,
+        phone: phone || null,
+        realRole: realRole || null,
+        jobTitle: jobTitle || null,
+        status: status || null
     });
 
     if (result.success) {

@@ -94,39 +94,39 @@ class UserAPI extends Base {
 
     async findUserByFilter({
         deptId,
-        pageSize = '',
-        pageNumber = '',
-        fullName = '',
-        username = '',
-        email = '',
-        phone = '',
-        realRole = '',
-        jobTitle = '',
-        status = ''
+        pageSize = null,
+        pageNumber = null,
+        fullName = null,
+        username = null,
+        email = null,
+        phone = null,
+        realRole = null,
+        jobTitle = null,
+        status = null
     }: {
         deptId: string;
-        pageSize?: string;
-        pageNumber?: string;
-        fullName?: string;
-        username?: string;
-        email?: string;
-        phone?: string;
-        realRole?: string;
-        jobTitle?: string;
-        status?: string;
+        pageSize?: string | null;
+        pageNumber?: string | null;
+        fullName?: string | null;
+        username?: string | null;
+        email?: string | null;
+        phone?: string | null;
+        realRole?: string | null;
+        jobTitle?: string | null;
+        status?: string | null;
     }) {
         try {
             const response = await this.get('/user/find-filter', {
-                deptId,
-                pageSize,
-                pageNumber,
-                fullName,
-                userName: username,  // Lưu ý: nếu backend yêu cầu 'userName', vẫn cần giữ key là 'userName'
-                email,
-                phone,
-                realRole,
-                jobTitle,
-                status
+                deptId: deptId,
+                pageSize: pageSize,
+                pageNumber: pageNumber,
+                fullName: fullName,
+                userName: username,
+                email: email,
+                phone: phone,
+                realRole: realRole,
+                jobTitle: jobTitle,
+                status: status
             });
             return {
                 success: true,
@@ -337,22 +337,20 @@ class UserAPI extends Base {
     }) {
         try {
             const url = '/user/download-excel';
-            const response = await axiosInstance.get(url, {
-                responseType: 'blob',
-                params: {
-                    deptId: deptId,
-                    pageSize: pageSize,
-                    pageNumber: pageNumber,
-                    fullName: fullName,
-                    userName: username,
-                    email: email,
-                    phone: phone,
-                    realRole: realRole,
-                    jobTitle: jobTitle,
-                    status: status
-                }
-            });
-            const blob = new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+            const response = await this.get(url, {
+                deptId,
+                pageSize,
+                pageNumber,
+                fullName,
+                userName: username,
+                email,
+                phone,
+                realRole,
+                jobTitle,
+                status
+            }, { responseType: 'blob' }); // Thêm config `responseType: 'blob'`
+
+            const blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
             const link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
             link.download = 'danh_sach_nguoi_dung.xlsx';
@@ -362,16 +360,17 @@ class UserAPI extends Base {
 
             return {
                 success: true,
-                data: response.data,
+                data: response,
                 message: 'Tải file thành công',
             };
         } catch (err: any) {
             return {
                 success: false,
                 message: err.response?.data?.message || err.message,
-            }
+            };
         }
     }
+
 
     async changeRandomPassword(userId: string) {
         const url = '/user/provide-random-password';
