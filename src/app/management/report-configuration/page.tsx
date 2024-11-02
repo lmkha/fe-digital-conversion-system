@@ -1,22 +1,34 @@
 'use client';
 import { useManagement } from "@/contexts/management-context";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import AddEditReportModal from "./modals/add-edit-modal";
 
-export default function Page() {
+export default function ReportConfigurationPage() {
     const { setHeaderButtons, setHeaderTitle } = useManagement();
+    const [showAddEditModal, setShowAddEditModal] = useState<boolean>(false);
+    const [editedItemId, setEditedItemId] = useState<string | null>(null);
 
     useEffect(() => {
-        setHeaderTitle('Cấu hình báo cáo');
+        setHeaderTitle('Quản lý cấu hình báo cáo');
         setHeaderButtons([
             {
                 type: 'add',
-                label: 'Add new',
-                onClick: () => console.log('Add new report configuration')
+                label: 'Thêm báo cáo',
+                onClick: () => {
+                    setShowAddEditModal(true);
+                    setEditedItemId(null);
+                }
             }
         ]);
     }, [setHeaderButtons, setHeaderTitle]);
 
     return (
-        <div>Report configuration Page</div>
+        <>
+            <AddEditReportModal
+                open={showAddEditModal}
+                reportId={editedItemId}
+                onClose={() => setShowAddEditModal(false)}
+            />
+        </>
     );
 }

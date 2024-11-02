@@ -26,32 +26,24 @@ export default function DepartmentItem({ id, name, level, district, ward, isChec
     return (
         <div className="flex bg-white p-2 rounded-t-md border-b-2 text-black">
             <div className="flex items-end justify-center gap-2 mr-5 w-20">
-                {
-                    permissionList.department.delete && (
-                        <button
-                            onClick={() => {
-                                if (isCheck) {
-                                    onUnselect(id);
-                                    console.log(`Unselect ${id}`);
-                                } else {
-                                    onSelect(id);
-                                    console.log(`Select ${id}`);
-                                }
-                            }}
-                        >
-                            {checkIcon}
-                        </button>
-                    )
-                }
-                {
-                    permissionList.department.update && (
-                        <button
-                            onClick={onEdit}
-                        >
-                            {<MdModeEditOutline className="text-2xl text-gray-400 hover:text-gray-600" />}
-                        </button>
-                    )
-                }
+                <button
+                    disabled={!permissionList.department.delete || false}
+                    onClick={() => {
+                        if (isCheck) {
+                            onUnselect(id);
+                        } else {
+                            onSelect(id);
+                        }
+                    }}
+                >
+                    {checkIcon}
+                </button>
+                <button
+                    disabled={!permissionList.department.update || false}
+                    onClick={onEdit}
+                >
+                    {<MdModeEditOutline className="text-2xl text-gray-400 hover:text-gray-600" />}
+                </button>
             </div>
             <div className="flex-1 flex items-center gap-2 h-auto">
                 <div className="flex-col flex-1">

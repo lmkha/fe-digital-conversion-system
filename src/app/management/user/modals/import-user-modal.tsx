@@ -17,6 +17,7 @@ import ErrorIcon from "@mui/icons-material/Error";
 import { useAppContext } from "@/contexts/app-context";
 import { downloadUserTemplate, importUsers } from "@/services/user";
 import ErrorUser from "@/services/models/error-user";
+import { useManagementUser } from "@/contexts/management-user-context";
 
 interface ImportUsersPopupProps {
     open: boolean;
@@ -29,6 +30,7 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
     deptId,
     onClose,
 }) => {
+    const { setPreviewUserList } = useManagementUser();
     const { setToastInfo } = useAppContext();
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [errorMessage, setErrorMessage] = useState<string>("");
@@ -88,6 +90,7 @@ const ImportUsersPopup: React.FC<ImportUsersPopupProps> = ({
     //ham xu li bam nut tai len
     const handleSubmit = async () => {
         if (!selectedFile) return;
+        // Nếu thành công thì gọi hàm: setPreviewUserList để set dữ liệu vào context, từ đó có dữ liệu để hiển thị bên page preview
         const result = await importUsers(selectedFile, deptId);
         setErrorUsers(result.data?.errorUsers);
         if (!result.success) {
