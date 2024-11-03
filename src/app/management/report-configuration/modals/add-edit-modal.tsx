@@ -1,13 +1,56 @@
-import { Box, IconButton, Modal, Stack, Typography } from "@mui/material";
+import { Box, Button, Divider, IconButton, Modal, Stack, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import AutoComplete from "../../user/components/autocomplete";
+import dayjs from "dayjs";
+import MyDatePicker from "../components/date-picker";
+import ReportConfigItem from "@/services/models/report-config-item";
+import { useEffect, useState } from "react";
+import { useAppContext } from "@/contexts/app-context";
+import { createReportConfiguration } from "@/services/report-config";
 
 interface AddEditReportModalProps {
     open: boolean;
+    deptId: string;
     reportId?: string | null;
     onClose: () => void;
 }
 
-export default function AddEditReportModal({ open, reportId, onClose }: AddEditReportModalProps) {
+export default function AddEditReportModal({ open, deptId, reportId, onClose }: AddEditReportModalProps) {
+    const { setToastInfo } = useAppContext();
+    const [submitData, setSubmitData] = useState<ReportConfigItem>({
+        reportName: 'Báo cáo ATVSLĐ'
+    });
+    const handleAddNew = () => {
+        console.log(submitData);
+        createReportConfiguration({
+            deptId: deptId,
+            year: submitData.year || 0,
+            reportPeriod: submitData.reportPeriod || '',
+            startDate: submitData.startDate || '',
+            finishDate: submitData.finishDate || '',
+            reportName: submitData.reportName || '',
+            status: submitData.status ? 1 : 0
+        }).then((result) => {
+            setToastInfo && setToastInfo({
+                show: true,
+                message: result.message,
+                severity: result.success ? 'success' : 'error'
+            });
+            if (result.success) {
+                onClose();
+            }
+        });
+    };
+
+    const handleEdit = () => {
+    };
+
+    useEffect(() => {
+        if (reportId) {
+            // Call API to get report detail
+        }
+    }, [reportId]);
+
     return (
         <Modal
             open={open}
@@ -19,12 +62,13 @@ export default function AddEditReportModal({ open, reportId, onClose }: AddEditR
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
                 width: '40%',
-                height: '50%',
+                height: '66%',
                 bgcolor: 'background.paper',
                 boxShadow: 10,
                 p: 2,
                 borderRadius: 3,
             }}>
+                {/* Title and close button */}
                 <Stack
                     direction={'row'}
                     justifyContent={'space-between'}
@@ -46,9 +90,156 @@ export default function AddEditReportModal({ open, reportId, onClose }: AddEditR
                         <CloseIcon fontSize='large' />
                     </IconButton>
                 </Stack>
+                <Divider />
 
                 {/* Content */}
-                <Stack direction={'row'} height={'83%'} spacing={2}></Stack>
+                <Stack direction={'column'} height={'83%'} spacing={2} paddingTop={2}>
+                    {/* Report type */}
+                    <AutoComplete
+                        disabled={true}
+                        label="Loại báo cáo * "
+                        value={{
+                            id: '1',
+                            name: 'Báo cáo ATVSLĐ'
+                        }}
+                        options={[]}
+                        onChange={() => { }}
+                        width="100%"
+                        error={false}
+                    />
+
+                    {/* Year, period */}
+                    <Stack direction={'row'} spacing={4}>
+                        <TextField
+                            size="small"
+                            label="Năm * "
+                            value={submitData?.year}
+                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                const inputValue = event.target.value;
+                                const parsedValue = parseInt(inputValue);
+                                setSubmitData({
+                                    ...submitData,
+                                    year: isNaN(parsedValue) ? 0 : parsedValue
+                                });
+                            }}
+                            sx={{ width: '50%' }}
+                        />
+                        <AutoComplete
+                            label="Kỳ * "
+                            value={{
+                                id: submitData?.reportPeriod || '',
+                                name: submitData?.reportPeriod || '',
+                            }}
+                            options={[
+                                {
+                                    name: 'Cả năm',
+                                    id: 'Cả năm'
+                                },
+                                {
+                                    name: '6 tháng',
+                                    id: '6 tháng'
+                                }
+                            ]}
+                            onChange={(value) => {
+                                submitData && setSubmitData({
+                                    ...submitData,
+                                    reportPeriod: value.id
+                                });
+                            }}
+                            width="50%"
+                        />
+                    </Stack>
+
+                    {/* Start date, Finish date */}
+                    <Stack direction={'row'} spacing={4}>
+                        <MyDatePicker
+                            label="Ngày bắt đầu * "
+                            value={submitData?.startDate ? dayjs(submitData.startDate) : null}
+                            onChange={(newValue) => {
+                                submitData && setSubmitData({
+                                    ...submitData,
+                                    startDate: newValue?.format('DD-MM-YYYY') || ''
+                                });
+                            }}
+                            width="50%"
+                        />
+                        <MyDatePicker
+                            label="Ngày kết thúc * "
+                            value={submitData?.finishDate ? dayjs(submitData.finishDate) : null}
+                            onChange={(newValue) => {
+                                submitData && setSubmitData({
+                                    ...submitData,
+                                    finishDate: newValue?.format('DD-MM-YYYY') || ''
+                                });
+                            }}
+                            width="50%"
+                        />
+                    </Stack>
+                    {/* Report type */}
+                    <AutoComplete
+                        label="Trạng thái "
+                        value={{
+                            name: submitData?.status === undefined
+                                ? ''
+                                : submitData.status
+                                    ? 'Kích hoạt'
+                                    : 'Không kích hoạt',
+                            id: submitData?.status === undefined
+                                ? ''
+                                : submitData.status
+                                    ? '1'
+                                    : '0',
+                        }}
+                        options={[
+                            {
+                                id: '1',
+                                name: 'Kích hoạt'
+                            },
+                            {
+                                id: '0',
+                                name: 'Không kích hoạt'
+                            }
+                        ]}
+                        onChange={(newValue) => {
+                            if (!newValue.id) {
+                                setSubmitData({
+                                    ...submitData,
+                                    status: undefined
+                                });
+                            } else {
+                                setSubmitData({
+                                    ...submitData,
+                                    status: newValue.id === '1' ? true : false
+                                });
+                            }
+                        }}
+                        width="100%"
+                        error={false}
+                    />
+                </Stack>
+
+                {/* Button */}
+                <Button
+                    variant="contained"
+                    sx={{
+                        position: 'absolute',
+                        width: 100,
+                        height: 50,
+                        bottom: 0,
+                        right: 0,
+                        m: 2,
+                        bgcolor: '#2962FF',
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        fontSize: 18,
+                    }}
+                    onClick={() => {
+                        reportId ? handleEdit() : handleAddNew();
+                    }}
+                    disabled={false}
+                >
+                    {reportId ? 'Lưu' : 'Thêm'}
+                </Button>
             </Box>
         </Modal>
     );

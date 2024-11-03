@@ -15,14 +15,16 @@ interface AutoCompleteProps {
     onChange?: (value: OptionType) => void;
     width?: string;
     error?: boolean;
+    disabled?: boolean;
 }
 
-export default function AutoComplete({ label, value, options, onChange, width = '100%', error = false }: AutoCompleteProps) {
+export default function AutoComplete({ label, value, options, onChange, width = '100%', error = false, disabled = false }: AutoCompleteProps) {
     const [inputValue, setInputValue] = useState('');
 
     return (
         <MUIAutoComplete
             // error={error}
+            disabled={disabled}
             size='small'
             value={value}
             onChange={(event: any, newValue: OptionType | null) => {
@@ -37,10 +39,6 @@ export default function AutoComplete({ label, value, options, onChange, width = 
             getOptionLabel={(option) => option.name}
             sx={{ width: width, backgroundColor: 'white' }}
             renderInput={(params) =>
-                // <TextField
-                //     {...params}
-                //     label={label}
-                // />
                 <TextField
                     {...params}
                     label={label}

@@ -13,6 +13,7 @@ import { get } from "@/hooks/use-local-storage";
 import { logout as serviceLogout } from "@/services/auth";
 import { CldImage } from 'next-cloudinary';
 import { usePermission } from '@/contexts/permission-context';
+import { useUserInfo } from "@/contexts/user-info-context";
 
 export default function SideNav() {
     return (
@@ -53,6 +54,7 @@ const TopSideNav = () => {
 }
 
 const MiddleSideNav = () => {
+    const { userInfo } = useUserInfo();
     const { permissionList } = usePermission();
     /* System toggle, manage department, permission, role, user, report configuration */
     const [activeLink, setActiveLink] = useState<string | null>(null);
@@ -143,15 +145,29 @@ const MiddleSideNav = () => {
                         </li>
                     )}
 
-                    <li key={'report-configuration'}>
+                    {userInfo?.dept?.level === 1 && (
+                        <li key={'report-configuration'}>
+                            <Link
+                                href={'/management/report-configuration'}
+                                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report-configuration' ? "bg-blue-800" : ""
+                                    }`}
+                                onClick={() => handleLinkClick('report-configuration')}
+                            >
+                                <LuDot />
+                                Cấu hình báo cáo
+                            </Link>
+                        </li>
+                    )}
+
+                    <li key={'report'}>
                         <Link
-                            href={'/management/report-configuration'}
-                            className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report-configuration' ? "bg-blue-800" : ""
+                            href={'/management/report'}
+                            className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report' ? "bg-blue-800" : ""
                                 }`}
-                            onClick={() => handleLinkClick('report-configuration')}
+                            onClick={() => handleLinkClick('report')}
                         >
                             <LuDot />
-                            Cấu hình báo cáo
+                            Báo cáo
                         </Link>
                     </li>
                 </ul>
