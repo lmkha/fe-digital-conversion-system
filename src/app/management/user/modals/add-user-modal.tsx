@@ -89,7 +89,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
         avatar: string;
     }>({
         username: '',
-        password: '',
+        password: 'Abcd1@34',
         name: '',
         jobTitle: '',
         gender: {
@@ -383,6 +383,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                     }}
                                 />
                                 <Password
+                                    defaultValue="Abcd1@34"
                                     isError={errorFields?.includes('password')}
                                     onChange={(value) => {
                                         setSubmitData({

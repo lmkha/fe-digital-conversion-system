@@ -11,12 +11,13 @@ import VisibilityOff from '@mui/icons-material/VisibilityOff';
 interface PasswordProps {
     isError?: boolean;
     helperText?: string;
+    defaultValue?: string;
     onChange: (value: string) => void;
     validatePassword: (password: string) => void;
 }
 
 export default function Password(
-    { isError = false, helperText = '', onChange, validatePassword }: PasswordProps
+    { isError = false, helperText = '', defaultValue, onChange, validatePassword }: PasswordProps
 ) {
     const [showPassword, setShowPassword] = React.useState(true);
     const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -31,6 +32,7 @@ export default function Password(
         <FormControl sx={{ m: 1, width: '45%' }} variant="outlined" error={isError} size='small'>
             <InputLabel htmlFor="outlined-adornment-password">Mật khẩu *</InputLabel>
             <OutlinedInput
+                defaultValue={defaultValue}
                 id="outlined-adornment-password"
                 fullWidth
                 type={showPassword ? 'text' : 'password'}

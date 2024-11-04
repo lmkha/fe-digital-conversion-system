@@ -12,7 +12,7 @@ import { useUserInfo } from "@/contexts/user-info-context";
 import { changeReportConfigurationStatus, findReportConfigurationByFilter } from "@/services/report-config";
 import { useAppContext } from "@/contexts/app-context";
 
-export default function ReportConfigurationPage() {
+export default function Page() {
     const { setToastInfo } = useAppContext();
     const { userInfo } = useUserInfo();
     const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
