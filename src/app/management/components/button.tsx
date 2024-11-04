@@ -39,6 +39,52 @@ export default function ActionButton({ type, label, onClick, selectValue, option
                     {label}
                 </Button>
             );
+        case 'download':
+            return (
+                <Button
+                    size="medium"
+                    variant={'outlined'}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        height: '45px',
+                    }}
+                    onClick={onClick}
+                >
+                    {label}
+                </Button>
+            );
+        case 'save':
+            return (
+                <Button
+                    size="medium"
+                    variant={'contained'}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        height: '45px',
+                    }}
+                    onClick={onClick}
+                >
+                    {label}
+                </Button>
+            );
+        case 'next':
+            return (
+                <Button
+                    size="medium"
+                    variant={'contained'}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        height: '45px',
+                    }}
+                    onClick={onClick}
+                >
+                    {label}
+                </Button>
+            );
+
         default: {
             let icon = null;
             let variant: "contained" | "outlined" = "contained";
