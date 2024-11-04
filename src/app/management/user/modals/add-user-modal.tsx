@@ -436,7 +436,10 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                     <DemoContainer
                                         components={['DatePicker', 'DatePicker']}
-                                        sx={{ width: '45%' }}
+                                        sx={{
+                                            width: '45%',
+                                            overflow: 'hidden'
+                                        }}
                                     >
                                         <MUIDatePicker
                                             sx={{

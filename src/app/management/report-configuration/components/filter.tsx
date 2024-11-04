@@ -169,7 +169,7 @@ export default function Filter({ onSubmitted }: FilterProps) {
                                             onSubmitted({ ...data, startDate: undefined });
                                         }
                                     }}
-                                    width="100%"
+                                    width="78%"
                                 />
                             </Stack>
                         </Grid2>
@@ -196,7 +196,7 @@ export default function Filter({ onSubmitted }: FilterProps) {
                                             onSubmitted({ ...data, finishDate: undefined });
                                         }
                                     }}
-                                    width="100%"
+                                    width="78%"
                                 />
                             </Stack>
                         </Grid2>

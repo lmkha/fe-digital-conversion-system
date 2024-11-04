@@ -1,14 +1,14 @@
 import { ReportStatus } from "@/api/report";
-import { UpdatedAtType } from "@/services/models/report-item";
+import { Level } from "@/core/types/level";
 
 export interface FilterData {
     status?: ReportStatus;
     departmentName?: string;
-    level?: 1 | 2 | 3 | 4;
+    level?: Level;
     startDate?: string;
     finishDate?: string;
     reportPeriod?: string;
-    updatedAt?: UpdatedAtType;
+    updatedAt?: string;
     userUpdateName?: string;
     year?: number;
 }

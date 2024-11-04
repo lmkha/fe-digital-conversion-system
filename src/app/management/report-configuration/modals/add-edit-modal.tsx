@@ -195,7 +195,8 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                                     startDate: newValue?.format('DD/MM/YYYY') || ''
                                 });
                             }}
-                            width="50%"
+                            containerWidth="100%"
+                            width="275px"
                         />
                         <MyDatePicker
                             label="Ngày kết thúc * "
@@ -206,7 +207,8 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                                     finishDate: newValue?.format('DD/MM/YYYY') || ''
                                 });
                             }}
-                            width="50%"
+                            containerWidth="100%"
+                            width="275px"
                         />
                     </Stack>
                     {/* Report type */}

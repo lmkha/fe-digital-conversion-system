@@ -7,27 +7,29 @@ import dayjs from "dayjs";
 interface DatePickerProps {
     label: string;
     width?: string;
+    containerWidth?: string;
     value: dayjs.Dayjs | null;
     onChange: (newValue: dayjs.Dayjs | null) => void;
 }
 
-export default function MyDatePicker({ label, width, value, onChange }: DatePickerProps) {
+export default function MyDatePicker({ label, width, containerWidth, value, onChange }: DatePickerProps) {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer
                 components={['DatePicker', 'DatePicker']}
                 sx={{
-                    width: width,
+                    width: containerWidth || '100%',
                     backgroundColor: 'white',
+                    overflow: 'hidden',
                 }}
             >
                 <DatePicker
                     sx={{
-                        width: '100%',
                         '.MuiInputBase-root': {
                             height: '40px',
                             fontSize: '14px',
-                            mt: -1
+                            width: width || '100%',
+                            mt: -1,
                         },
                         '.MuiFormLabel-root': {
                             top: '50%',
@@ -41,6 +43,11 @@ export default function MyDatePicker({ label, width, value, onChange }: DatePick
                             transform: 'translateY(0%)',
                             fontSize: '12px',
                             paddingLeft: '8px',
+                        },
+                        "-ms-overflow-style": "none",
+                        "scrollbar-width": "none",
+                        "&::-webkit-scrollbar": {
+                            display: "none",
                         },
                     }}
                     label={label}

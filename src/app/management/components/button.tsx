@@ -14,8 +14,6 @@ export interface ActionButtonProps {
 }
 
 export default function ActionButton({ type, label, onClick, selectValue, options, onSelectChange }: ActionButtonProps) {
-    console.log('Check select: ', selectValue);
-    console.log('Check options: ', options);
     let icon = null;
     if (type === 'add') {
         icon = <IoAddOutline className="text-2xl" />;
@@ -56,17 +54,19 @@ function MySelect({ label, value, options, onChange }: {
     onChange: (newValue: number) => void;
 }) {
     return (
-        <FormControl sx={{ width: '100px' }} size='small'>
+        <FormControl sx={{ width: '100px' }} size="small">
             <InputLabel id="demo-simple-select-label">{label}</InputLabel>
             <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
-                value={value}
-                label="Age"
+                value={value === 0 ? '' : value}
+                label={label}
                 onChange={(event) => onChange(event.target.value as number)}
             >
                 {options.map((option) => (
-                    <MenuItem key={option} value={option}>{option}</MenuItem>
+                    <MenuItem key={option} value={option}>
+                        {option === 0 ? "Năm" : option}
+                    </MenuItem>
                 ))}
             </Select>
         </FormControl>

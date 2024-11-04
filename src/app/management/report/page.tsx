@@ -15,7 +15,7 @@ export default function ReportPage() {
   const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
   const [deptFilterData, setDeptFilterData] = useState<DeptFilterData>();
   const [filterData, setFilterData] = useState<FilterData>({
-    year: new Date().getFullYear(),
+    year: 0,
   });
   const [reports, setReports] = useState<ReportItem[]>();
 
@@ -23,6 +23,7 @@ export default function ReportPage() {
     setHeaderTitle('Báo cáo an toàn vệ sinh lao động');
     const currentYear = new Date().getFullYear();
     const options = Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
+    options.unshift(0);
     setHeaderButtons([
       {
         type: 'select',
@@ -35,7 +36,7 @@ export default function ReportPage() {
         onClick: () => { }
       }
     ]);
-  }, [setHeaderButtons, setHeaderTitle]);
+  }, [setHeaderButtons, setHeaderTitle, filterData?.year]);
 
   useEffect(() => {
     if (deptFilterData?.deptId) {
@@ -48,20 +49,116 @@ export default function ReportPage() {
         startDate: filterData?.startDate,
         finishDate: filterData?.finishDate,
         userUpdatedName: filterData?.userUpdateName,
-        // year: filterData?.year,
-        // updatedAt: filterData?.updatedAt,
-
+        year: filterData?.year === 0 ? undefined : filterData?.year,
+        updatedAt: filterData?.updatedAt,
       }).then((result) => {
-        result.success && setReports(result.data?.reports);
+        if (result.success) {
+          setReports(result.data?.reports);
+          setFooterInfo({
+            ...footerInfo,
+            paginationInfo: result.data?.paginationInfo
+          });
+        } else {
+          setReports([]);
+          setFooterInfo({
+            ...footerInfo,
+            paginationInfo: {
+              ...footerInfo?.paginationInfo,
+              total: 0,
+              start: 0,
+              end: 0
+            }
+          });
+        }
       });
     }
   }, [deptFilterData?.deptId, filterData]);
 
   useEffect(() => {
-  }, [footerInfo?.paginationInfo?.pageNumber]);
+    if (deptFilterData?.deptId) {
+      findReportByFilter({
+        pageSize: footerInfo?.paginationInfo?.pageSize,
+        deptId: deptFilterData?.deptId,
+        reportPeriod: filterData?.reportPeriod,
+        status: filterData?.status,
+        deptName: filterData?.departmentName,
+        level: filterData?.level,
+        startDate: filterData?.startDate,
+        finishDate: filterData?.finishDate,
+        userUpdatedName: filterData?.userUpdateName,
+        year: filterData?.year === 0 ? undefined : filterData?.year,
+        updatedAt: filterData?.updatedAt,
+      }).then((result) => {
+        if (result.success) {
+          setReports(result.data?.reports);
+          setFooterInfo({
+            ...footerInfo,
+            paginationInfo: {
+              ...footerInfo?.paginationInfo,
+              total: result.data?.paginationInfo?.total,
+              start: result.data?.paginationInfo?.start,
+              end: result.data?.paginationInfo?.end,
+              pageNumber: result.data?.paginationInfo?.pageNumber
+            }
+          });
+        } else {
+          setReports([]);
+          setFooterInfo({
+            ...footerInfo,
+            paginationInfo: {
+              ...footerInfo?.paginationInfo,
+              total: 0,
+              start: 0,
+              end: 0
+            }
+          });
+        }
+      });
+    }
+  }, [footerInfo?.paginationInfo?.pageSize]);
 
   useEffect(() => {
-  }, [footerInfo?.paginationInfo?.pageSize]);
+    if (deptFilterData?.deptId) {
+      findReportByFilter({
+        pageNumber: footerInfo?.paginationInfo?.pageNumber,
+        pageSize: footerInfo?.paginationInfo?.pageSize,
+        deptId: deptFilterData?.deptId,
+        reportPeriod: filterData?.reportPeriod,
+        status: filterData?.status,
+        deptName: filterData?.departmentName,
+        level: filterData?.level,
+        startDate: filterData?.startDate,
+        finishDate: filterData?.finishDate,
+        userUpdatedName: filterData?.userUpdateName,
+        year: filterData?.year === 0 ? undefined : filterData?.year,
+        updatedAt: filterData?.updatedAt,
+      }).then((result) => {
+        if (result.success) {
+          setReports(result.data?.reports);
+          setFooterInfo({
+            ...footerInfo,
+            paginationInfo: {
+              ...footerInfo?.paginationInfo,
+              total: result.data?.paginationInfo?.total,
+              start: result.data?.paginationInfo?.start,
+              end: result.data?.paginationInfo?.end
+            }
+          });
+        } else {
+          setReports([]);
+          setFooterInfo({
+            ...footerInfo,
+            paginationInfo: {
+              ...footerInfo?.paginationInfo,
+              total: 0,
+              start: 0,
+              end: 0
+            }
+          });
+        }
+      });
+    }
+  }, [footerInfo?.paginationInfo?.pageNumber]);
 
   return (
     <>
@@ -76,7 +173,7 @@ export default function ReportPage() {
       />
 
       {reports?.length === 0 ? (
-        <Typography variant="body1">Không có dữ liệu</Typography>
+        <Typography variant="body1" textAlign={'center'}>Không có dữ liệu</Typography>
       ) : (
         <Box
           sx={{
