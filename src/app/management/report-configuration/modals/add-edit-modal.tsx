@@ -8,6 +8,8 @@ import ReportConfigItem from "@/services/models/report-config-item";
 import { useEffect, useState } from "react";
 import { useAppContext } from "@/contexts/app-context";
 import { createReportConfiguration, findReportConfigurationById, updateReportConfiguration } from "@/services/report-config";
+import { validateAddReportConfig } from "@/validators/add-report-config";
+import { validateEditReportConfig } from "@/validators/edit-report-config";
 
 interface AddEditReportModalProps {
     open: boolean;
@@ -21,7 +23,24 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
     const [submitData, setSubmitData] = useState<ReportConfigItem>({
         reportName: 'Báo cáo ATVSLĐ'
     });
+    const [validateResult, setValidateResult] = useState<{ field: string, message: string }[]>();
     const handleAddNew = () => {
+        const validateRes = validateAddReportConfig({
+            year: submitData.year?.toString() || '',
+            period: submitData.reportPeriod || '',
+            startDate: submitData.startDate || '',
+            finishDate: submitData.finishDate || ''
+        });
+        if (validateRes.length > 0) {
+            setValidateResult(validateRes);
+            setToastInfo && setToastInfo({
+                show: true,
+                message: validateRes[0].message,
+                severity: 'error'
+            });
+            return;
+        }
+
         createReportConfiguration({
             deptId: deptId,
             year: submitData.year || 0,
@@ -43,7 +62,20 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
     };
 
     const handleEdit = () => {
-        console.log(submitData);
+        const validateRes = validateEditReportConfig({
+            startDate: submitData.startDate || '',
+            finishDate: submitData.finishDate || ''
+        });
+        if (validateRes.length > 0) {
+            setValidateResult(validateRes);
+            setToastInfo && setToastInfo({
+                show: true,
+                message: validateRes[0].message,
+                severity: 'error'
+            });
+            return;
+        }
+
         updateReportConfiguration({
             deptId: deptId,
             reportId: reportId || '',
@@ -82,6 +114,15 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
             });
         }
     }, [reportId]);
+
+    useEffect(() => {
+        if (!open) {
+            setSubmitData({
+                reportName: 'Báo cáo ATVSLĐ'
+            });
+            setValidateResult([]);
+        }
+    }, [open]);
 
     return (
         <Modal
@@ -143,6 +184,7 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                     {/* Year, period */}
                     <Stack direction={'row'} spacing={4}>
                         <TextField
+                            error={validateResult?.some((item) => item.field === 'year')}
                             disabled={reportId ? true : false}
                             size="small"
                             label="Năm * "
@@ -158,6 +200,7 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                             sx={{ width: '50%' }}
                         />
                         <AutoComplete
+                            error={validateResult?.some((item) => item.field === 'period')}
                             disabled={reportId ? true : false}
                             label="Kỳ * "
                             value={{
@@ -187,7 +230,8 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                     {/* Start date, Finish date */}
                     <Stack direction={'row'} spacing={4}>
                         <MyDatePicker
-                            label="Ngày bắt đầu "
+                            error={validateResult && validateResult?.some((item) => item.field === 'startDate')}
+                            label="Ngày bắt đầu * "
                             value={submitData?.startDate ? dayjs(submitData.startDate) : null}
                             onChange={(newValue) => {
                                 submitData && setSubmitData({
@@ -199,7 +243,8 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                             width="275px"
                         />
                         <MyDatePicker
-                            label="Ngày kết thúc "
+                            error={validateResult && validateResult?.some((item) => item.field === 'finishDate')}
+                            label="Ngày kết thúc * "
                             value={submitData?.finishDate ? dayjs(submitData.finishDate) : null}
                             onChange={(newValue) => {
                                 submitData && setSubmitData({

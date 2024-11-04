@@ -23,7 +23,6 @@ export default function AutoComplete({ label, value, options, onChange, width = 
 
     return (
         <MUIAutoComplete
-            // error={error}
             disabled={disabled}
             size='small'
             value={value}
