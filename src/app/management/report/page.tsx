@@ -10,8 +10,10 @@ import ReportItem from "@/services/models/report-item";
 import { findReportByFilter } from "@/services/report";
 import { Box, Typography } from "@mui/material";
 import { useManagement } from "@/contexts/management-context";
+import { useRouter } from "next/navigation";
 
 export default function ReportPage() {
+  const router = useRouter();
   const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
   const [deptFilterData, setDeptFilterData] = useState<DeptFilterData>();
   const [filterData, setFilterData] = useState<FilterData>({
@@ -194,7 +196,9 @@ export default function ReportPage() {
               updatedAt={report.updatedAt}
               userUpdateName={report.userUpdateName}
               onView={(reportId) => { }}
-              onEdit={(reportId) => { }}
+              onEdit={(reportId) => {
+                router.push(`/management/report/edit/${reportId}`);
+              }}
             />
           ))}
         </Box>
