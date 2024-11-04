@@ -153,13 +153,13 @@ export default function Filter({ onSubmitted }: FilterProps) {
                                 />
                             </Stack>
                         </Grid2>
-                        {/* Created at */}
+                        {/* Updated at */}
                         <Grid2 size={3}>
                             <Stack spacing={1} sx={{
                                 justifyContent: 'center',
                                 alignItems: 'start',
                             }}>
-                                <Typography variant="body1" fontWeight={'bold'}>Thời gian tạo</Typography>
+                                <Typography variant="body1" fontWeight={'bold'}>Cập nhật lúc</Typography>
                                 <TextField
                                     size="small"
                                     sx={{ width: '100%', backgroundColor: 'white' }}
@@ -169,13 +169,13 @@ export default function Filter({ onSubmitted }: FilterProps) {
                     </Grid2>
 
 
-                    {/* Create By */}
+                    {/* Updated By */}
                     <Grid2 container size={2}>
                         <Stack spacing={1} sx={{
                             justifyContent: 'center',
                             alignItems: 'start',
                         }}>
-                            <Typography variant="body1" fontWeight={'bold'}>Người tạo</Typography>
+                            <Typography variant="body1" fontWeight={'bold'}>Cập nhật bởi</Typography>
                             <TextField
                                 size="small"
                                 sx={{ width: '100%', backgroundColor: 'white' }}

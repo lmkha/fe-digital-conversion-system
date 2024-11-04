@@ -21,6 +21,18 @@ export interface PermissionList {
         read: boolean;
         update: boolean;
         delete: boolean;
+    },
+    report: {
+        create: boolean;
+        read: boolean;
+        update: boolean;
+        delete: boolean;
+    },
+    reportConfig: {
+        create: boolean;
+        read: boolean;
+        update: boolean;
+        delete: boolean;
     }
 }
 
@@ -46,6 +58,18 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({ children
             delete: false,
         },
         role: {
+            create: false,
+            read: false,
+            update: false,
+            delete: false,
+        },
+        report: {
+            create: false,
+            read: false,
+            update: false,
+            delete: false,
+        },
+        reportConfig: {
             create: false,
             read: false,
             update: false,

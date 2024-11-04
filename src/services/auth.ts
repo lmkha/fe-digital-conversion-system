@@ -18,7 +18,7 @@ export const login = async (
 
         updateUserInfo(result.data.user)
 
-        const setPermissions = (type: string) => ({
+        const getPermission = (type: string) => ({
             create: result.data.listPermissions[type].create,
             read: result.data.listPermissions[type].read,
             update: result.data.listPermissions[type].update,
@@ -26,16 +26,20 @@ export const login = async (
         })
 
         updatePermissionList({
-            department: setPermissions('Department'),
-            user: setPermissions('User'),
-            role: setPermissions('Role')
+            department: getPermission('Department'),
+            user: getPermission('User'),
+            role: getPermission('Role'),
+            report: getPermission('Report'),
+            reportConfig: getPermission('ReportConfig'),
         })
         set("accessToken", result.data.access_token)
         set("userInfo", result.data.user)
         set("permissionList", {
-            department: setPermissions('Department'),
-            user: setPermissions('User'),
-            role: setPermissions('Role')
+            department: getPermission('Department'),
+            user: getPermission('User'),
+            role: getPermission('Role'),
+            report: getPermission('Report'),
+            reportConfig: getPermission('ReportConfig'),
         })
         return {
             success: true,
@@ -54,4 +58,5 @@ export const logout = (logout: () => void) => {
     logout()
     set("accessToken", "")
     set("userInfo", {})
+    set("permissionList", {})
 }

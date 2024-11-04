@@ -7,7 +7,7 @@ import Filter from "./components/filter";
 import { FilterData } from "./types";
 import ReportConfigurationComponent from "./components/report-configuration-item";
 import ReportConfigItem from "@/services/models/report-config-item";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useUserInfo } from "@/contexts/user-info-context";
 import { changeReportConfigurationStatus, findReportConfigurationByFilter } from "@/services/report-config";
 import { useAppContext } from "@/contexts/app-context";
@@ -159,23 +159,30 @@ export default function ReportConfigurationPage() {
             {reportConfigs?.length === 0 ? (
                 <Typography variant="body1">Không có dữ liệu</Typography>
             ) : (
-                reportConfigs?.map((reportConfig) => (
-                    <ReportConfigurationComponent
-                        key={reportConfig.reportId}
-                        reportId={reportConfig.reportId}
-                        year={reportConfig?.year?.toString()}
-                        reportName={reportConfig.reportName}
-                        reportPeriod={reportConfig.reportPeriod}
-                        startDate={reportConfig.startDate}
-                        finishDate={reportConfig.finishDate}
-                        status={reportConfig.status}
-                        onEdit={(reportId) => {
-                            setEditedItemId(reportId);
-                            setShowAddEditModal(true);
-                        }}
-                        onChangeStatus={(reportId) => handleChangeStatus(reportId)}
-                    />
-                ))
+                <Box
+                    sx={{
+                        maxHeight: 490,
+                        overflowY: 'auto',
+                    }}
+                >
+                    {reportConfigs?.map((reportConfig) => (
+                        <ReportConfigurationComponent
+                            key={reportConfig.reportId}
+                            reportId={reportConfig.reportId}
+                            year={reportConfig?.year?.toString()}
+                            reportName={reportConfig.reportName}
+                            reportPeriod={reportConfig.reportPeriod}
+                            startDate={reportConfig.startDate}
+                            finishDate={reportConfig.finishDate}
+                            status={reportConfig.status}
+                            onEdit={(reportId) => {
+                                setEditedItemId(reportId);
+                                setShowAddEditModal(true);
+                            }}
+                            onChangeStatus={(reportId) => handleChangeStatus(reportId)}
+                        />
+                    ))}
+                </Box>
             )}
 
             <AddEditReportModal

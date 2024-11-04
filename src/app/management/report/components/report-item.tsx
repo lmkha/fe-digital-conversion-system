@@ -1,23 +1,23 @@
 import { Divider, Grid2, IconButton, Stack, TextField, Typography } from "@mui/material";
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import CreateIcon from '@mui/icons-material/Create';
-import { CreateAtType } from "../types";
+import { UpdatedAtType } from "@/services/models/report-item";
 
 interface ReportItemProps {
     reportId?: string;
     status?: string;
     departmentName?: string;
-    level?: string;
+    level?: number;
     startDate?: string;
     finishDate?: string;
     reportingPeriod?: string;
-    createdAt?: CreateAtType;
-    createdBy?: string;
+    updatedAt?: UpdatedAtType;
+    userUpdateName?: string;
     onView?: (reportId: string) => void;
     onEdit?: (reportId: string) => void;
 }
 
-export default function ReportItem({ reportId, status, departmentName, level, startDate, finishDate, reportingPeriod, createdAt, createdBy, onView, onEdit }: ReportItemProps) {
+export default function ReportItem({ reportId, status, departmentName, level, startDate, finishDate, reportingPeriod, updatedAt, userUpdateName, onView, onEdit }: ReportItemProps) {
     return (
         <>
             <Stack
@@ -112,8 +112,8 @@ export default function ReportItem({ reportId, status, departmentName, level, st
                                 justifyContent: 'center',
                                 alignItems: 'start',
                             }}>
-                                <Typography variant="body1" >{createdAt?.date || '-'}</Typography>
-                                <Typography variant="body1" >{createdAt?.time || '-'}</Typography>
+                                <Typography variant="body1" >{updatedAt?.day || '-'}</Typography>
+                                <Typography variant="body1" >{updatedAt?.time || '-'}</Typography>
                             </Stack>
                         </Grid2>
                     </Grid2>
@@ -124,7 +124,7 @@ export default function ReportItem({ reportId, status, departmentName, level, st
                         alignItems: 'center',
                         display: 'flex',
                     }}>
-                        <Typography variant="body1">{createdBy}</Typography>
+                        <Typography variant="body1">{userUpdateName}</Typography>
                     </Grid2>
                 </Grid2>
             </Stack>

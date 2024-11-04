@@ -23,6 +23,9 @@ function HeaderActionPanel({ headerButtons }: { headerButtons: ActionButtonProps
                     type={button.type}
                     label={button.label}
                     onClick={button.onClick}
+                    selectValue={button.selectValue}
+                    options={button.options}
+                    onSelectChange={button.onSelectChange}
                 />
             ))}
         </div>

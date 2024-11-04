@@ -1,10 +1,19 @@
+export type UpdatedAtType = {
+    day: string;
+    time: string;
+}
+
 export default interface ReportItem {
-    reportId: string;
-    reportName: string;
-    year: number;
-    reportPeriod: string;
-    startDate: string;
-    finishDate: string;
-    status: boolean;
-    editAtOtherDept?: boolean;
+    reportId?: string;
+    reportConfigId?: string;
+    deptId?: string;
+    status?: string;
+    deptName?: string;
+    level?: number;
+    startDate?: string;
+    finishDate?: string;
+    reportPeriod?: string;
+    year?: number;
+    updatedAt?: UpdatedAtType;
+    userUpdateName?: string;
 }
