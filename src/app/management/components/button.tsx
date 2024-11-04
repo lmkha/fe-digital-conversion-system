@@ -14,24 +14,50 @@ export interface ActionButtonProps {
 }
 
 export default function ActionButton({ type, label, onClick, selectValue, options, onSelectChange }: ActionButtonProps) {
-    let icon = null;
-    if (type === 'add') {
-        icon = <IoAddOutline className="text-2xl" />;
-    } else if (type === 'import') {
-        icon = <PiExportBold className="text-2xl" />;
-    }
-    return (
-        <>
-            {type === 'select' ? (
+    switch (type) {
+        case 'select':
+            return (
                 <MySelect
                     label={label}
                     value={selectValue || 0}
                     options={options || []}
                     onChange={(newValue) => onSelectChange && onSelectChange(newValue)}
                 />
-            ) : (
-                <Button size="medium"
-                    variant={type === 'import' ? 'outlined' : 'contained'}
+            );
+        case 'cancel':
+            return (
+                <Button
+                    size="medium"
+                    onClick={onClick}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        height: '45px',
+                        color: 'gray',
+                    }}
+                >
+                    {label}
+                </Button>
+            );
+        default: {
+            let icon = null;
+            let variant: "contained" | "outlined" = "contained";
+
+            switch (type) {
+                case 'add':
+                    icon = <IoAddOutline className="text-2xl" />;
+                    break;
+                case 'import':
+                    icon = <PiExportBold className="text-2xl" />;
+                    variant = 'outlined';
+                    break;
+                // Add additional cases as needed
+            }
+
+            return (
+                <Button
+                    size="medium"
+                    variant={variant}
                     startIcon={icon}
                     sx={{
                         textTransform: 'none',
@@ -42,9 +68,9 @@ export default function ActionButton({ type, label, onClick, selectValue, option
                 >
                     {label}
                 </Button>
-            )}
-        </>
-    );
+            );
+        }
+    }
 }
 
 function MySelect({ label, value, options, onChange }: {

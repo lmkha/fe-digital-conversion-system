@@ -26,7 +26,8 @@ import FullScreenLoading from "@/app/management/components/loading";
 import { useManagement } from "@/contexts/management-context";
 
 export default function PreviewPage() {
-  const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
+  const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } =
+    useManagement();
   const router = useRouter();
   const { previewUserList, setPreviewUserList } = useManagementUser();
   const [page, setPage] = useState(0);
@@ -44,6 +45,7 @@ export default function PreviewPage() {
   const [listUserError, setListUserError] = useState<PreviewUserList>([]);
 
   const [isLoading, setIsLoading] = useState(false);
+  const [validate, setValidate] = useState(false);
 
   const handleChangePage = (event: unknown, newPage: number) => {
     console.log("change page");
@@ -72,6 +74,10 @@ export default function PreviewPage() {
     setOpenImportStatus(false);
   };
 
+  const setFalseValidate = () => {
+    setValidate(false);
+  };
+
   const handleConfirmSave = async () => {
     if (previewUserList) {
       setIsLoading(true);
@@ -95,10 +101,12 @@ export default function PreviewPage() {
 
   const validateUserImport = async () => {
     if (previewUserList) {
+      console.log("list check:", previewUserList);
       const result = await validateUser(previewUserList);
       if (result.success) {
         const newListUsers = result.data.users as PreviewUserList;
-        setPreviewUserList(newListUsers);
+        // setPreviewUserList(newListUsers);
+        setValidate(true);
         const errorCount = newListUsers.filter((user) => !user.success).length;
         setCountError(errorCount);
       }
@@ -114,16 +122,28 @@ export default function PreviewPage() {
   };
 
   useEffect(() => {
-    setHeaderTitle('Tạo tài khoản từ file');
+    setHeaderTitle("Tạo tài khoản từ file");
     setHeaderButtons([
       {
-        type: 'add',
-        label: 'Lưu',
+        type: "cancel",
+        label: "Hủy",
+        onClick: () => {
+          router.push("/management/user");
+        },
+      },
+      {
+        type: "add",
+        label: "Lưu",
         onClick: () => {
           handleOpenDialog();
-        }
-      }
+        },
+      },
     ]);
+    setFooterInfo({
+      ...footerInfo,
+      exportDataFooter: undefined,
+      paginationInfo: undefined
+    })
   }, [setHeaderButtons, setHeaderTitle]);
 
   useEffect(() => {
@@ -175,6 +195,8 @@ export default function PreviewPage() {
                           roles={roles}
                           previewUserList={previewUserList}
                           setPreviewUserList={setPreviewUserList}
+                          validate={validate}
+                          setFalseValidate={setFalseValidate}
                         />
                       );
                     })}

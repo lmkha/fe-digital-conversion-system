@@ -22,35 +22,37 @@ export default function Footer() {
                 </button>
             }
 
-            <div className="mr-2 flex gap-4">
-                <TablePagination
-                    component="div"
-                    count={footerInfo?.paginationInfo?.total ? footerInfo?.paginationInfo?.total : 0}
-                    page={footerInfo?.paginationInfo?.pageNumber ? footerInfo?.paginationInfo.pageNumber - 1 : 0}
-                    onPageChange={(event, newPage) => {
-                        footerInfo && setFooterInfo && setFooterInfo({
-                            ...footerInfo,
-                            paginationInfo: {
-                                ...footerInfo.paginationInfo,
-                                pageNumber: newPage + 1,
-                            }
-                        });
-                    }}
-                    rowsPerPage={footerInfo?.paginationInfo?.pageSize ? footerInfo?.paginationInfo.pageSize : 10}
-                    onRowsPerPageChange={(event) => {
-                        const selectedValue = parseInt(event.target.value);
-                        footerInfo && setFooterInfo && setFooterInfo({
-                            ...footerInfo,
-                            paginationInfo: {
-                                ...footerInfo.paginationInfo,
-                                pageSize: selectedValue,
-                            }
-                        });
-                    }}
-                    labelRowsPerPage=''
-                    rowsPerPageOptions={[5, 10, 20]}
-                />
-            </div>
+            {footerInfo?.paginationInfo && (
+                <div className="mr-2 flex gap-4">
+                    <TablePagination
+                        component="div"
+                        count={footerInfo?.paginationInfo?.total ? footerInfo?.paginationInfo?.total : 0}
+                        page={footerInfo?.paginationInfo?.pageNumber ? footerInfo?.paginationInfo.pageNumber - 1 : 0}
+                        onPageChange={(event, newPage) => {
+                            footerInfo && setFooterInfo && setFooterInfo({
+                                ...footerInfo,
+                                paginationInfo: {
+                                    ...footerInfo.paginationInfo,
+                                    pageNumber: newPage + 1,
+                                }
+                            });
+                        }}
+                        rowsPerPage={footerInfo?.paginationInfo?.pageSize ? footerInfo?.paginationInfo.pageSize : 10}
+                        onRowsPerPageChange={(event) => {
+                            const selectedValue = parseInt(event.target.value);
+                            footerInfo && setFooterInfo && setFooterInfo({
+                                ...footerInfo,
+                                paginationInfo: {
+                                    ...footerInfo.paginationInfo,
+                                    pageSize: selectedValue,
+                                }
+                            });
+                        }}
+                        labelRowsPerPage=''
+                        rowsPerPageOptions={[5, 10, 20]}
+                    />
+                </div>
+            )}
         </div>
     );
 }

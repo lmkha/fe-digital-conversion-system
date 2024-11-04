@@ -187,7 +187,7 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                     {/* Start date, Finish date */}
                     <Stack direction={'row'} spacing={4}>
                         <MyDatePicker
-                            label="Ngày bắt đầu * "
+                            label="Ngày bắt đầu "
                             value={submitData?.startDate ? dayjs(submitData.startDate) : null}
                             onChange={(newValue) => {
                                 submitData && setSubmitData({
@@ -199,7 +199,7 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                             width="275px"
                         />
                         <MyDatePicker
-                            label="Ngày kết thúc * "
+                            label="Ngày kết thúc "
                             value={submitData?.finishDate ? dayjs(submitData.finishDate) : null}
                             onChange={(newValue) => {
                                 submitData && setSubmitData({

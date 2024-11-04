@@ -14,6 +14,8 @@ interface PreviewUsersProps {
   roles: string[];
   previewUserList: PreviewUserList;
   setPreviewUserList: (previewUserList: PreviewUserList) => void;
+  validate: boolean;
+  setFalseValidate: () => void;
 }
 
 const UserPreview: React.FC<PreviewUsersProps> = ({
@@ -22,6 +24,8 @@ const UserPreview: React.FC<PreviewUsersProps> = ({
   roles,
   previewUserList,
   setPreviewUserList,
+  validate,
+  setFalseValidate,
 }) => {
   const [user, setUser] = useState<UserDescription>(usersData);
   const [errorFields, setErrorFields] = useState<ImportUserValidatedField[]>();
@@ -62,6 +66,17 @@ const UserPreview: React.FC<PreviewUsersProps> = ({
       setErrorFields([]);
     }
   };
+
+  useEffect(() => {
+    if (validate) {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      validateUser(user, previewUserList);
+      setFalseValidate();
+    }
+  }, [validate]);
 
   useEffect(() => {
     validateUser(user, previewUserList);
@@ -105,8 +120,8 @@ const UserPreview: React.FC<PreviewUsersProps> = ({
             errorFields?.includes("username")
               ? "Tên tài khoản không được để trống và không chứa dấu cách"
               : errorFields?.includes("exists-username")
-              ? "Tên tài khoản đã tồn tại"
-              : ""
+                ? "Tên tài khoản đã tồn tại"
+                : ""
           }
           onChange={(e) => handleInputChange("userName", e.target.value)}
           fullWidth
@@ -154,8 +169,8 @@ const UserPreview: React.FC<PreviewUsersProps> = ({
             errorFields?.includes("email")
               ? "email không đúng định dạng"
               : errorFields?.includes("exists-email")
-              ? "Email đã tồn tại"
-              : ""
+                ? "Email đã tồn tại"
+                : ""
           }
           onChange={(e) => handleInputChange("email", e.target.value)}
           fullWidth
