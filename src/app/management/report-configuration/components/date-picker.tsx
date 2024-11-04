@@ -16,25 +16,42 @@ export default function MyDatePicker({ label, width, value, onChange }: DatePick
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer
                 components={['DatePicker', 'DatePicker']}
-                sx={{ width: width }}
+                sx={{
+                    width: width,
+                    backgroundColor: 'white',
+                }}
             >
                 <DatePicker
                     sx={{
                         width: '100%',
                         '.MuiInputBase-root': {
                             height: '40px',
-                            fontSize: '14px'
+                            fontSize: '14px',
+                            mt: -1
                         },
                         '.MuiFormLabel-root': {
-                            lineHeight: '1.2',
-                            padding: 0,
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            fontSize: '16px',
+                            paddingLeft: '8px',
+                            transition: 'all 0.2s ease',
+                        },
+                        '& .Mui-focused .MuiFormLabel-root, & .MuiFormLabel-root.MuiInputLabel-shrink': {
+                            top: '-10px',
+                            transform: 'translateY(0%)',
+                            fontSize: '12px',
+                            paddingLeft: '8px',
                         },
                     }}
                     label={label}
                     format="DD/MM/YYYY"
                     value={value}
                     onChange={(newValue) => {
-                        onChange(newValue);
+                        if (newValue && newValue.isValid()) {
+                            onChange(newValue);
+                        } else {
+                            onChange(null);
+                        }
                     }}
                 />
             </DemoContainer>

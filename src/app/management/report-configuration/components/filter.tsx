@@ -1,19 +1,24 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { Box, Grid2, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { FilterData } from "../types";
 import AutoComplete from "../../user/components/autocomplete";
+import MyDatePicker from "./date-picker";
+import dayjs from "dayjs";
 
 interface FilterProps {
     onSubmitted: (filterData: FilterData) => void;
 }
 
 export default function Filter({ onSubmitted }: FilterProps) {
-    const [data, setData] = useState<FilterData>();
+    const [data, setData] = useState<FilterData>({
+        reportName: 'Báo cáo ATVSLĐ',
+    });
     const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    const changeData = (key: 'year' | 'reportName' | 'reportPeriod' | 'startDate' | 'finishDate' | 'status', value: string) => {
+    const changeData = (key: 'year' | 'reportPeriod' | 'startDate' | 'finishDate' | 'status', value: string) => {
         setData(prevData => {
             const newData = { ...prevData, [key]: value } as FilterData;
 
@@ -82,6 +87,10 @@ export default function Filter({ onSubmitted }: FilterProps) {
                                 <TextField
                                     size="small"
                                     sx={{ width: '100%', backgroundColor: 'white' }}
+                                    onChange={(e) => {
+                                        changeData('year', e.target.value);
+                                    }}
+                                    onKeyDown={handleKeyDown}
                                 />
                             </Stack>
                         </Grid2>
@@ -93,8 +102,9 @@ export default function Filter({ onSubmitted }: FilterProps) {
                             }}>
                                 <Typography variant="body1" fontWeight={'bold'}>Tên báo cáo</Typography>
                                 <AutoComplete
+                                    disabled={true}
                                     label=""
-                                    value={{ id: '', name: '' }}
+                                    value={{ id: data.reportName || '', name: data.reportName || '' }}
                                     options={[]}
                                     onChange={(value) => { }}
                                     width="100%"
@@ -114,9 +124,24 @@ export default function Filter({ onSubmitted }: FilterProps) {
                                 <Typography variant="body1" fontWeight={'bold'}>Kỳ báo cáo</Typography>
                                 <AutoComplete
                                     label=""
-                                    value={{ id: '', name: '' }}
-                                    options={[]}
-                                    onChange={(value) => { }}
+                                    value={{
+                                        id: data.reportPeriod || '',
+                                        name: data.reportPeriod || ''
+                                    }}
+                                    options={[
+                                        {
+                                            name: 'Cả năm',
+                                            id: 'Cả năm'
+                                        },
+                                        {
+                                            name: '6 tháng',
+                                            id: '6 tháng'
+                                        }
+                                    ]}
+                                    onChange={(value) => {
+                                        setData(prevData => ({ ...prevData, reportPeriod: value.id }));
+                                        onSubmitted({ ...data, reportPeriod: value.id });
+                                    }}
                                     width="100%"
                                 />
                             </Stack>
@@ -128,9 +153,23 @@ export default function Filter({ onSubmitted }: FilterProps) {
                                 alignItems: 'start',
                             }}>
                                 <Typography variant="body1" fontWeight={'bold'}>Thời gian bắt đầu</Typography>
-                                <TextField
-                                    size="small"
-                                    sx={{ width: '100%', backgroundColor: 'white' }}
+                                <MyDatePicker
+                                    label=""
+                                    value={data?.startDate ? dayjs(data.startDate, 'DD/MM/YYYY') : null}
+                                    onChange={(newValue) => {
+                                        if (newValue?.isValid()) {
+                                            const formattedDate = newValue.format('DD/MM/YYYY');
+                                            setData(prevData => ({
+                                                ...prevData,
+                                                startDate: formattedDate,
+                                            }));
+                                            onSubmitted({ ...data, startDate: formattedDate });
+                                        } else {
+                                            setData(prevData => ({ ...prevData, startDate: undefined }));
+                                            onSubmitted({ ...data, startDate: undefined });
+                                        }
+                                    }}
+                                    width="100%"
                                 />
                             </Stack>
                         </Grid2>
@@ -141,9 +180,23 @@ export default function Filter({ onSubmitted }: FilterProps) {
                                 alignItems: 'start',
                             }}>
                                 <Typography variant="body1" fontWeight={'bold'}>Thời gian kết thúc</Typography>
-                                <TextField
-                                    size="small"
-                                    sx={{ width: '100%', backgroundColor: 'white' }}
+                                <MyDatePicker
+                                    label=""
+                                    value={data?.finishDate ? dayjs(data.finishDate, 'DD/MM/YYYY') : null}
+                                    onChange={(newValue) => {
+                                        if (newValue?.isValid()) {
+                                            const formattedDate = newValue.format('DD/MM/YYYY');
+                                            setData(prevData => ({
+                                                ...prevData,
+                                                finishDate: formattedDate,
+                                            }));
+                                            onSubmitted({ ...data, finishDate: formattedDate });
+                                        } else {
+                                            setData(prevData => ({ ...prevData, finishDate: undefined }));
+                                            onSubmitted({ ...data, finishDate: undefined });
+                                        }
+                                    }}
+                                    width="100%"
                                 />
                             </Stack>
                         </Grid2>
@@ -156,9 +209,28 @@ export default function Filter({ onSubmitted }: FilterProps) {
                                 <Typography variant="body1" fontWeight={'bold'}>Trạng thái</Typography>
                                 <AutoComplete
                                     label=""
-                                    value={{ id: '', name: '' }}
-                                    options={[]}
-                                    onChange={(value) => { }}
+                                    value={{
+                                        id: data.status || '',
+                                        name: data.status === '1' ? 'Đã kích hoạt' : data.status === '0' ? 'Chưa kích hoạt' : ''
+                                    }}
+                                    options={[
+                                        {
+                                            name: 'Chưa kích hoạt',
+                                            id: '0'
+                                        },
+                                        {
+                                            name: 'Đã kích hoạt',
+                                            id: '1'
+                                        }
+                                    ]}
+                                    onChange={(value) => {
+                                        if (!value) {
+                                            setData(prevData => ({ ...prevData, status: undefined }));
+                                        } else {
+                                            setData(prevData => ({ ...prevData, status: value.id as '0' | '1' }));
+                                        }
+                                        onSubmitted({ ...data, status: value.id as '0' | '1' });
+                                    }}
                                     width="100%"
                                 />
                             </Stack>

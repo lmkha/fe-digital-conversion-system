@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Button, Divider, IconButton, Modal, Stack, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import AutoComplete from "../../user/components/autocomplete";
@@ -6,7 +7,7 @@ import MyDatePicker from "../components/date-picker";
 import ReportConfigItem from "@/services/models/report-config-item";
 import { useEffect, useState } from "react";
 import { useAppContext } from "@/contexts/app-context";
-import { createReportConfiguration } from "@/services/report-config";
+import { createReportConfiguration, findReportConfigurationById, updateReportConfiguration } from "@/services/report-config";
 
 interface AddEditReportModalProps {
     open: boolean;
@@ -21,7 +22,6 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
         reportName: 'Báo cáo ATVSLĐ'
     });
     const handleAddNew = () => {
-        console.log(submitData);
         createReportConfiguration({
             deptId: deptId,
             year: submitData.year || 0,
@@ -43,11 +43,43 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
     };
 
     const handleEdit = () => {
+        console.log(submitData);
+        updateReportConfiguration({
+            deptId: deptId,
+            reportId: reportId || '',
+            startDate: submitData.startDate || '',
+            finishDate: submitData.finishDate || '',
+            status: submitData.status ? 1 : 0
+        }).then((result) => {
+            setToastInfo && setToastInfo({
+                show: true,
+                message: result.message,
+                severity: result.success ? 'success' : 'error'
+            });
+            if (result.success) {
+                onClose();
+            }
+        });
     };
 
     useEffect(() => {
         if (reportId) {
             // Call API to get report detail
+            findReportConfigurationById({ reportId }).then((result) => {
+                if (result.success) {
+                    result.reportConfig && setSubmitData(result.reportConfig);
+                } else {
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        message: result.message,
+                        severity: 'error'
+                    });
+                }
+            });
+        } else {
+            setSubmitData({
+                reportName: 'Báo cáo ATVSLĐ'
+            });
         }
     }, [reportId]);
 
@@ -111,9 +143,10 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                     {/* Year, period */}
                     <Stack direction={'row'} spacing={4}>
                         <TextField
+                            disabled={reportId ? true : false}
                             size="small"
                             label="Năm * "
-                            value={submitData?.year}
+                            value={submitData?.year?.toString() || ''}
                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                 const inputValue = event.target.value;
                                 const parsedValue = parseInt(inputValue);
@@ -125,6 +158,7 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                             sx={{ width: '50%' }}
                         />
                         <AutoComplete
+                            disabled={reportId ? true : false}
                             label="Kỳ * "
                             value={{
                                 id: submitData?.reportPeriod || '',
@@ -158,7 +192,7 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                             onChange={(newValue) => {
                                 submitData && setSubmitData({
                                     ...submitData,
-                                    startDate: newValue?.format('DD-MM-YYYY') || ''
+                                    startDate: newValue?.format('DD/MM/YYYY') || ''
                                 });
                             }}
                             width="50%"
@@ -169,7 +203,7 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                             onChange={(newValue) => {
                                 submitData && setSubmitData({
                                     ...submitData,
-                                    finishDate: newValue?.format('DD-MM-YYYY') || ''
+                                    finishDate: newValue?.format('DD/MM/YYYY') || ''
                                 });
                             }}
                             width="50%"

@@ -69,7 +69,7 @@ export default function ReportConfigurationItem({ reportId, year, reportName, re
                         {/* Status */}
                         <Grid2 size={3}>
                             <Switch
-                                checked={false}
+                                checked={status}
                                 onChange={() => {
                                     onChangeStatus && onChangeStatus(reportId || '');
                                 }}

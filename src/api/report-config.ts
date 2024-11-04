@@ -104,6 +104,45 @@ class ReportConfigAPI extends Base {
             }
         }
     }
+
+    async findReportConfigurationById({ reportId }: { reportId: string }) {
+        try {
+            const response = await this.get("/report-config/find-by-id", {
+                reportId: reportId
+            })
+            return {
+                success: response.success,
+                message: response.message,
+                data: response.data
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+            }
+        }
+    }
+
+    async updateReportConfigurationStatus({ reportId, status, deptId }: { reportId: string, status: 0 | 1, deptId: string }) {
+        try {
+            const response = await this.post("/report-config/update-status", {
+                reportId: reportId,
+                status: status,
+                deptId: deptId
+            });
+            return {
+                success: response.success,
+                message: response.message,
+                data: response.data
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            }
+        }
+    }
 }
 
 const reportConfigAPI = new ReportConfigAPI();

@@ -109,3 +109,36 @@ export const findReportConfigurationByFilter = async ({ pageSize = 10, pageNumbe
         }
     }
 }
+
+export const findReportConfigurationById = async ({ reportId }: { reportId: string }) => {
+    const result = await reportConfigAPI.findReportConfigurationById({ reportId: reportId });
+    if (result.success) {
+        return {
+            success: true,
+            message: result.message,
+            reportConfig: {
+                reportId: result.data.reportId,
+                reportName: result.data.reportName,
+                year: result.data.year,
+                reportPeriod: result.data.reportPeriod,
+                startDate: result.data.startDate,
+                finishDate: result.data.finishDate,
+                status: result.data.status,
+            } as ReportConfigItem
+        }
+    } else {
+        return {
+            success: false,
+            message: result.message,
+        }
+    }
+}
+
+// Status parameter is the current status
+export const changeReportConfigurationStatus = async ({ reportId, status, deptId }: { reportId: string, status: boolean, deptId: string }) => {
+    const result = await reportConfigAPI.updateReportConfigurationStatus({ reportId: reportId, status: status ? 0 : 1, deptId: deptId });
+    return {
+        success: result.success,
+        message: result.message,
+    }
+}
