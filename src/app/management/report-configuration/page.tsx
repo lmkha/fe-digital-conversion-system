@@ -60,9 +60,9 @@ export default function Page() {
     }, [setHeaderButtons, setHeaderTitle]);
 
     useEffect(() => {
-        if (userInfo.dept.deptId) {
+        if (userInfo?.dept?.deptId) {
             findReportConfigurationByFilter({
-                deptId: userInfo.dept.deptId,
+                deptId: userInfo?.dept?.deptId,
                 year: parseInt(filterData?.year || '0') || undefined,
                 reportName: filterData?.reportName,
                 reportPeriod: filterData?.reportPeriod,
@@ -82,13 +82,13 @@ export default function Page() {
         if (refresh) {
             setRefresh(false);
         }
-    }, [userInfo.dept.deptId, refresh, filterData]);
+    }, [userInfo?.dept?.deptId, refresh, filterData]);
 
     useEffect(() => {
-        if (userInfo.dept.deptId) {
+        if (userInfo?.dept?.deptId) {
             findReportConfigurationByFilter({
                 pageSize: footerInfo?.paginationInfo?.pageSize,
-                deptId: userInfo.dept.deptId,
+                deptId: userInfo?.dept?.deptId,
                 year: parseInt(filterData?.year || '0') || undefined,
                 reportName: filterData?.reportName,
                 reportPeriod: filterData?.reportPeriod,
@@ -117,11 +117,11 @@ export default function Page() {
     }, [footerInfo?.paginationInfo?.pageSize]);
 
     useEffect(() => {
-        if (userInfo.dept.deptId) {
+        if (userInfo?.dept?.deptId) {
             findReportConfigurationByFilter({
                 pageNumber: footerInfo?.paginationInfo?.pageNumber,
                 pageSize: footerInfo?.paginationInfo?.pageSize,
-                deptId: userInfo.dept.deptId,
+                deptId: userInfo?.dept?.deptId,
                 year: parseInt(filterData?.year || '0') || undefined,
                 reportName: filterData?.reportName,
                 reportPeriod: filterData?.reportPeriod,
@@ -187,7 +187,7 @@ export default function Page() {
 
             <AddEditReportModal
                 open={showAddEditModal}
-                deptId={userInfo.dept.deptId || ''}
+                deptId={userInfo?.dept?.deptId || ''}
                 reportId={editedItemId}
                 onClose={() => {
                     setEditedItemId(null);
