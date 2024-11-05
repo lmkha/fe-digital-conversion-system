@@ -84,27 +84,11 @@ export default function ActionButton({ type, label, onClick, selectValue, option
                     {label}
                 </Button>
             );
-
-        default: {
-            let icon = null;
-            let variant: "contained" | "outlined" = "contained";
-
-            switch (type) {
-                case 'add':
-                    icon = <IoAddOutline className="text-2xl" />;
-                    break;
-                case 'import':
-                    icon = <PiExportBold className="text-2xl" />;
-                    variant = 'outlined';
-                    break;
-                // Add additional cases as needed
-            }
-
+        case 'import':
             return (
                 <Button
                     size="medium"
-                    variant={variant}
-                    startIcon={icon}
+                    variant={'outlined'}
                     sx={{
                         textTransform: 'none',
                         fontWeight: 'bold',
@@ -115,7 +99,21 @@ export default function ActionButton({ type, label, onClick, selectValue, option
                     {label}
                 </Button>
             );
-        }
+        case 'add':
+            return (
+                <Button
+                    size="medium"
+                    variant={'contained'}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        height: '45px',
+                    }}
+                    onClick={onClick}
+                >
+                    {label}
+                </Button>
+            );
     }
 }
 

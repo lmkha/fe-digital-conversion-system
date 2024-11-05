@@ -171,7 +171,11 @@ export default function ReportPage() {
       />
 
       <Filter
-        onSubmitted={(filterData) => setFilterData(filterData)}
+        onSubmitted={(newValue) => {
+          // Year is not in filterData, so we need to keep it
+          const year = filterData?.year;
+          setFilterData({ ...newValue, year: year })
+        }}
       />
 
       {reports?.length === 0 ? (

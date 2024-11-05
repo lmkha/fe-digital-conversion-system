@@ -232,11 +232,11 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                         <MyDatePicker
                             error={validateResult && validateResult?.some((item) => item.field === 'startDate')}
                             label="Ngày bắt đầu * "
-                            value={submitData?.startDate ? dayjs(submitData.startDate) : null}
+                            value={submitData?.startDate ? dayjs(submitData.startDate, "DD/MM/YYYY") : null}
                             onChange={(newValue) => {
                                 submitData && setSubmitData({
                                     ...submitData,
-                                    startDate: newValue?.format('DD/MM/YYYY') || ''
+                                    startDate: newValue?.format("DD/MM/YYYY") || ''
                                 });
                             }}
                             containerWidth="100%"
@@ -245,11 +245,11 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                         <MyDatePicker
                             error={validateResult && validateResult?.some((item) => item.field === 'finishDate')}
                             label="Ngày kết thúc * "
-                            value={submitData?.finishDate ? dayjs(submitData.finishDate) : null}
+                            value={submitData?.finishDate ? dayjs(submitData.finishDate, "DD/MM/YYYY") : null}
                             onChange={(newValue) => {
                                 submitData && setSubmitData({
                                     ...submitData,
-                                    finishDate: newValue?.format('DD/MM/YYYY') || ''
+                                    finishDate: newValue?.format("DD/MM/YYYY") || ''
                                 });
                             }}
                             containerWidth="100%"
