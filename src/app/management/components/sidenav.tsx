@@ -144,7 +144,7 @@ const MiddleSideNav = () => {
             </li>
           )}
 
-          {userInfo?.dept?.level === 1 && (
+          {userInfo?.dept?.level === 1 && permissionList.reportConfig.read && (
             <li key={'report-configuration'}>
               <Link
                 href={'/management/report-configuration'}
@@ -158,17 +158,19 @@ const MiddleSideNav = () => {
             </li>
           )}
 
-          <li key={'report'}>
-            <Link
-              href={'/management/report'}
-              className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report' ? "bg-blue-800" : ""
-                }`}
-              onClick={() => handleLinkClick('report')}
-            >
-              <LuDot />
-              Báo cáo
-            </Link>
-          </li>
+          {permissionList.report.read && (
+            <li key={'report'}>
+              <Link
+                href={'/management/report'}
+                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report' ? "bg-blue-800" : ""
+                  }`}
+                onClick={() => handleLinkClick('report')}
+              >
+                <LuDot />
+                Báo cáo
+              </Link>
+            </li>
+          )}
         </ul>
       )}
     </div>

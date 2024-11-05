@@ -2,6 +2,7 @@ import { Divider, Grid2, IconButton, Stack, TextField, Typography } from "@mui/m
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import CreateIcon from '@mui/icons-material/Create';
 import { UpdatedAtType } from "@/services/models/report-item";
+import { usePermission } from "@/contexts/permission-context";
 
 interface ReportItemProps {
     reportId?: string;
@@ -18,6 +19,8 @@ interface ReportItemProps {
 }
 
 export default function ReportItem({ reportId, status, departmentName, level, startDate, finishDate, reportingPeriod, updatedAt, userUpdateName, onView, onEdit }: ReportItemProps) {
+    const { permissionList } = usePermission();
+
     return (
         <>
             <Stack
@@ -44,11 +47,14 @@ export default function ReportItem({ reportId, status, departmentName, level, st
                                 }}>
                                     <VisibilityOutlinedIcon />
                                 </IconButton>
-                                <IconButton onClick={() => {
-                                    onEdit && onEdit(reportId || '');
-                                }}>
-                                    <CreateIcon />
-                                </IconButton>
+
+                                {permissionList?.report?.update && (
+                                    <IconButton onClick={() => {
+                                        onEdit && onEdit(reportId || '');
+                                    }}>
+                                        <CreateIcon />
+                                    </IconButton>
+                                )}
                             </Stack>
                         </Grid2>
                         {/* Status */}

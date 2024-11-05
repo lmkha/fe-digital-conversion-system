@@ -1,5 +1,6 @@
 import { Divider, Grid2, IconButton, Stack, Switch, Typography } from "@mui/material";
 import CreateIcon from '@mui/icons-material/Create';
+import { usePermission } from "@/contexts/permission-context";
 
 interface ReportConfigurationItemProps {
     reportId?: string;
@@ -14,6 +15,7 @@ interface ReportConfigurationItemProps {
 }
 
 export default function ReportConfigurationItem({ reportId, year, reportName, reportPeriod, startDate, finishDate, status, onEdit, onChangeStatus }: ReportConfigurationItemProps) {
+    const { permissionList } = usePermission();
     return (
         <>
             <Stack
@@ -33,11 +35,13 @@ export default function ReportConfigurationItem({ reportId, year, reportName, re
                     <Grid2 container size={6} sx={{ justifyContent: 'center', alignItems: 'center' }}>
                         {/* Action */}
                         <Grid2 size={2} justifyContent={'center'} alignItems={'center'} display={'flex'}>
-                            <IconButton onClick={() => {
-                                onEdit && onEdit(reportId || '');
-                            }}>
-                                <CreateIcon />
-                            </IconButton>
+                            {permissionList?.reportConfig?.update && (
+                                <IconButton onClick={() => {
+                                    onEdit && onEdit(reportId || '');
+                                }}>
+                                    <CreateIcon />
+                                </IconButton>
+                            )}
                         </Grid2>
                         {/* Year */}
                         <Grid2 size={3}>
@@ -68,12 +72,14 @@ export default function ReportConfigurationItem({ reportId, year, reportName, re
                         </Grid2>
                         {/* Status */}
                         <Grid2 size={3}>
-                            <Switch
-                                checked={status}
-                                onChange={() => {
-                                    onChangeStatus && onChangeStatus(reportId || '');
-                                }}
-                            />
+                            {permissionList?.reportConfig?.update && (
+                                <Switch
+                                    checked={status}
+                                    onChange={() => {
+                                        onChangeStatus && onChangeStatus(reportId || '');
+                                    }}
+                                />
+                            )}
                         </Grid2>
                     </Grid2>
                 </Grid2>

@@ -11,8 +11,10 @@ import { Box, Typography } from "@mui/material";
 import { useUserInfo } from "@/contexts/user-info-context";
 import { changeReportConfigurationStatus, findReportConfigurationByFilter } from "@/services/report-config";
 import { useAppContext } from "@/contexts/app-context";
+import { usePermission } from "@/contexts/permission-context";
 
 export default function Page() {
+    const { permissionList } = usePermission();
     const { setToastInfo } = useAppContext();
     const { userInfo } = useUserInfo();
     const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
@@ -47,17 +49,19 @@ export default function Page() {
 
     useEffect(() => {
         setHeaderTitle('Quản lý cấu hình báo cáo');
-        setHeaderButtons([
-            {
-                type: 'add',
-                label: 'Thêm báo cáo',
-                onClick: () => {
-                    setShowAddEditModal(true);
-                    setEditedItemId(null);
+        if (permissionList?.reportConfig?.create) {
+            setHeaderButtons([
+                {
+                    type: 'add',
+                    label: 'Thêm báo cáo',
+                    onClick: () => {
+                        setShowAddEditModal(true);
+                        setEditedItemId(null);
+                    }
                 }
-            }
-        ]);
-    }, [setHeaderButtons, setHeaderTitle]);
+            ]);
+        }
+    }, [setHeaderButtons, setHeaderTitle, permissionList?.reportConfig?.create]);
 
     useEffect(() => {
         if (userInfo?.dept?.deptId) {
