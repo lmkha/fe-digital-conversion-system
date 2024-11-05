@@ -1,12 +1,15 @@
 import { Grid2, TextField } from "@mui/material";
 
-export default function Row1(
-    {
-        label1
-    }: {
-        label1?: string;
-    }
-) {
+export interface Row1Data {
+    value1: string;
+}
+interface Row1Props {
+    label1?: string;
+    value?: Row1Data;
+    onChange?: (data: Row1Data) => void;
+}
+
+export default function Row1({ label1, value, onChange }: Row1Props) {
     return (
         <Grid2 container spacing={14}>
             <Grid2 size={4}>
@@ -14,6 +17,8 @@ export default function Row1(
                     size="small"
                     fullWidth
                     label={label1 || ""}
+                    value={value?.value1}
+                    onChange={(e) => onChange?.({ ...value, value1: e.target.value })}
                 />
             </Grid2>
 

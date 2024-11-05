@@ -1,12 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
-import { Box, Divider, Grid2, Stack, TextField, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import HorizontalLinearStepper from "./components/stepper";
 import { useManagement } from "@/contexts/management-context";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Section1 from "./sections/section1";
+import Section1, { Section1Data } from "./sections/section1";
 import Section2 from "./sections/section2";
 import Section3 from "./sections/section3";
 import Section4 from "./sections/section4";
@@ -18,10 +18,12 @@ import Section9 from "./sections/section9";
 import Section10 from "./sections/section10";
 import Section11 from "./sections/section11";
 import Section12 from "./sections/section12";
+import { ReportPageData } from "./types";
 
 export default function ReportDetail() {
     const router = useRouter();
-    const { setHeaderTitle, setHeaderButtons, setFooterInfo, footerInfo } = useManagement();
+    const { setHeaderTitle, setHeaderButtons, setFooterInfo } = useManagement();
+    const [pageData, setPageData] = useState<ReportPageData>();
     // ------------------------
     const [activeStep, setActiveStep] = useState(1);
     const handleNext = () => {
@@ -61,6 +63,10 @@ export default function ReportDetail() {
         ]);
     }, [setHeaderButtons, setHeaderTitle, activeStep]);
 
+    useEffect(() => {
+        if (pageData) console.log(pageData);
+    }, [pageData])
+
     return (
         <>
             <Stack direction={'column'}
@@ -77,18 +83,18 @@ export default function ReportDetail() {
                 }}>
                     <HorizontalLinearStepper activeStep={activeStep} />
                 </Box>
-                <Section1 />
-                <Section2 />
-                <Section3 />
-                <Section4 />
-                <Section5 />
-                <Section6 />
-                <Section7 />
-                <Section8 />
-                <Section9 />
-                <Section10 />
-                <Section11 />
-                <Section12 />
+                <Section1 data={pageData?.section1Data} onChange={(data) => setPageData({ ...pageData, section1Data: data })} />
+                <Section2 data={pageData?.section2Data} onChange={(data) => setPageData({ ...pageData, section2Data: data })} />
+                <Section3 data={pageData?.section3Data} onChange={(data) => setPageData({ ...pageData, section3Data: data })} />
+                <Section4 data={pageData?.section4Data} onChange={(data) => setPageData({ ...pageData, section4Data: data })} />
+                <Section5 data={pageData?.section5Data} onChange={(data) => setPageData({ ...pageData, section5Data: data })} />
+                <Section6 data={pageData?.section6Data} onChange={(data) => setPageData({ ...pageData, section6Data: data })} />
+                <Section7 data={pageData?.section7Data} onChange={(data) => setPageData({ ...pageData, section7Data: data })} />
+                <Section8 data={pageData?.section8Data} onChange={(data) => setPageData({ ...pageData, section8Data: data })} />
+                <Section9 data={pageData?.section9Data} onChange={(data) => setPageData({ ...pageData, section9Data: data })} />
+                <Section10 data={pageData?.section10Data} onChange={(data) => setPageData({ ...pageData, section10Data: data })} />
+                <Section11 data={pageData?.section11Data} onChange={(data) => setPageData({ ...pageData, section11Data: data })} />
+                <Section12 data={pageData?.section12Data} onChange={(data) => setPageData({ ...pageData, section12Data: data })} />
             </Stack>
         </>
     );

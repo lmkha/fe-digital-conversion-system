@@ -1,8 +1,15 @@
 import { Divider, Stack, Typography } from "@mui/material";
-import Row2 from "../components/row2";
+import Row2, { Row2Data } from "../components/row2";
 import Row3 from "../components/row3";
+export interface Section8Data {
+    row1?: Row2Data;
+}
+interface Section8Props {
+    data?: Section8Data;
+    onChange?: (data: Section8Data) => void;
+}
 
-export default function Section8() {
+export default function Section8({ data, onChange }: Section8Props) {
     return (
         <>
             <Stack direction={'row'} justifyContent={'space-between'}>
@@ -13,7 +20,12 @@ export default function Section8() {
                 }}>*** Lưu ý: Nhập số tiền theo đơn vị Triệu đồng</Typography>
             </Stack>
             <Stack direction={'column'} spacing={2} paddingBottom={2}>
-                <Row2 label1="Tổng số người" label2="Tổng chi phí quy định tại điểm 10 " />
+                <Row2
+                    label1="Tổng số người"
+                    label2="Tổng chi phí quy định tại điểm 10 "
+                    value={data?.row1}
+                    onChange={(value) => onChange?.({ ...data, row1: value })}
+                />
             </Stack>
             <Divider sx={{ marginBottom: 2 }} />
         </>

@@ -1,8 +1,17 @@
 import { Divider, Stack, Typography } from "@mui/material";
-import Row2 from "../components/row2";
-import Row3 from "../components/row3";
+import Row2, { Row2Data } from "../components/row2";
+import Row3, { Row3Data } from "../components/row3";
 
-export default function Section3() {
+export interface Section3Data {
+    row1?: Row3Data;
+    row2?: Row2Data;
+}
+interface Section3Props {
+    data?: Section3Data;
+    onChange?: (data: Section3Data) => void;
+}
+
+export default function Section3({ data, onChange }: Section3Props) {
     return (
         <>
             <Stack direction={'row'} justifyContent={'space-between'}>
@@ -13,8 +22,19 @@ export default function Section3() {
                 }}>*** Lưu ý: Nhập số tiền theo đơn vị Triệu đồng</Typography>
             </Stack>
             <Stack direction={'column'} spacing={2} paddingBottom={2}>
-                <Row3 label1="Tổng số người bị BNN tới thời điểm BC" label2="Số người mắc mới BNN" label3="Số ngày công nghỉ phép về BNN" />
-                <Row2 label1="Số người phải nghỉ trước tuổi hưu vì BNN " label2="Tổng chi phí  BNN phát sinh trong năm" />
+                <Row3
+                    label1="Tổng số người bị BNN tới thời điểm BC"
+                    label2="Số người mắc mới BNN"
+                    label3="Số ngày công nghỉ phép về BNN"
+                    value={data?.row1}
+                    onChange={(value) => onChange?.({ ...data, row1: value })}
+                />
+                <Row2
+                    label1="Số người phải nghỉ trước tuổi hưu vì BNN "
+                    label2="Tổng chi phí  BNN phát sinh trong năm"
+                    value={data?.row2}
+                    onChange={(value) => onChange?.({ ...data, row2: value })}
+                />
             </Stack>
             <Divider sx={{ marginBottom: 2 }} />
         </>
