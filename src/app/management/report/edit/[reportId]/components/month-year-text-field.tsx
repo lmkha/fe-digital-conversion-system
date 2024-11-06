@@ -1,6 +1,6 @@
 'use client';
 
-import { InputAdornment, TextField } from "@mui/material";
+import { Grid2, InputAdornment, TextField } from "@mui/material";
 import React, { useEffect, useRef } from 'react';
 import IMask from 'imask';
 import { IMaskInput } from 'react-imask';
@@ -20,20 +20,28 @@ export function MonthYearTextField({
     onChange
 }: MonthYearTextFieldProps) {
     return (
-        <TextField
-            size="small"
-            label={label1 || ""}
-            value={value?.value1}
-            onChange={(e) => onChange?.({ ...value, value1: e.target.value })}
-            name="textmask"
-            id="formatted-text-mask-input"
-            slotProps={{
-                input: {
-                    inputComponent: TextMaskCustom as any,
-                    endAdornment: <InputAdornment position="end">{endAdornmentText}</InputAdornment>
-                }
-            }}
-        />
+        <>
+            <Grid2 container spacing={14}>
+                <Grid2 size={4}>
+                    <TextField
+                        sx={{ width: '100%' }}
+                        size="small"
+                        label={label1 || ""}
+                        value={value?.value1}
+                        onChange={(e) => onChange?.({ ...value, value1: e.target.value })}
+                        name="textmask"
+                        id="formatted-text-mask-input"
+                        slotProps={{
+                            input: {
+                                inputComponent: TextMaskCustom as any,
+                                endAdornment: <InputAdornment position="end">{endAdornmentText}</InputAdornment>
+                            }
+                        }}
+                    />
+                </Grid2>
+            </Grid2>
+        </>
+
     );
 }
 
