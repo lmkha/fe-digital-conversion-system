@@ -12,7 +12,14 @@ interface Section5Props {
 }
 
 
-export default function Section5({ data, onChange }: Section5Props) {
+export default function Section5({
+    data = {
+        row1: { value1: "0/0", value2: "0/0", value3: "0/0" },
+        row2: { value1: "0/0", value2: "0/0", value3: "0/0" },
+        row3: { value1: "0/0", value2: "0/0", value3: "0.0" }
+    },
+    onChange
+}: Section5Props) {
     return (
         <>
             <Stack direction={'row'} justifyContent={'space-between'}>
@@ -41,6 +48,7 @@ export default function Section5({ data, onChange }: Section5Props) {
                     label1="Nhóm 5: SL huấn luyện/SL hiện có (người/người)"
                     label2="Nhóm 6: SL huấn luyện/SL hiện có (người/người)"
                     label3="Tổng chi phí huấn luyện "
+                    endAdornmentText3="Triệu đồng"
                     value={data?.row3}
                     onChange={(value) => onChange?.({ ...data, row3: value })}
                 />

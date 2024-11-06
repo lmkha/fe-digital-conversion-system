@@ -1,16 +1,39 @@
 'use client';
 
-import { Box, TextField } from "@mui/material";
+import { InputAdornment, TextField } from "@mui/material";
 import React from 'react';
 import IMask from 'imask';
 import { IMaskInput } from 'react-imask';
-import Stack from '@mui/material/Stack';
+import { Row1Data } from "./row1";
 
-export default function Page() {
+interface MonthYearTextFieldProps {
+    value?: Row1Data;
+    label1?: string;
+    endAdornmentText?: string;
+    onChange?: (data: Row1Data) => void;
+}
+
+export function MonthYearTextField({
+    value,
+    label1,
+    endAdornmentText,
+    onChange
+}: MonthYearTextFieldProps) {
     return (
-        <Box display={'flex'} justifyContent={'center'} alignItems={'center'} width={'100%'} height={'100vh'}>
-            <FormattedInputs />
-        </Box>
+        <TextField
+            size="small"
+            label={label1 || ""}
+            value={value?.value1}
+            onChange={(e) => onChange?.({ ...value, value1: e.target.value })}
+            name="textmask"
+            id="formatted-text-mask-input"
+            slotProps={{
+                input: {
+                    inputComponent: TextMaskCustom as any,
+                    endAdornment: <InputAdornment position="end">{endAdornmentText}</InputAdornment>
+                }
+            }}
+        />
     );
 }
 
@@ -47,34 +70,3 @@ const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
         );
     },
 );
-
-
-function FormattedInputs() {
-    const [values, setValues] = React.useState({
-        textmask: '06/9876',
-    });
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setValues({
-            ...values,
-            [event.target.name]: event.target.value,
-        });
-    };
-
-    return (
-        <Stack direction="row" spacing={2}>
-            <TextField
-                label="react-imask"
-                value={values.textmask}
-                onChange={handleChange}
-                name="textmask"
-                id="formatted-text-mask-input"
-                slotProps={{
-                    input: {
-                        inputComponent: TextMaskCustom as any,
-                    }
-                }}
-            />
-        </Stack>
-    );
-}

@@ -10,7 +10,13 @@ interface Section3Props {
     onChange?: (data: Section6Data) => void;
 }
 
-export default function Section6({ data, onChange }: Section3Props) {
+export default function Section6({
+    data = {
+        row1: { value1: "0", value2: "0", value3: "0" },
+        row2: { value1: "0", value2: "0", value3: "0" },
+    },
+    onChange
+}: Section3Props) {
     return (
         <>
             <Stack direction={'row'} justifyContent={'space-between'}>

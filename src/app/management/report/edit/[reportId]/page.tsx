@@ -2,7 +2,7 @@
 'use client';
 
 import { Box, Stack } from "@mui/material";
-import HorizontalLinearStepper from "./components/stepper";
+import Stepper from "./components/stepper";
 import { useManagement } from "@/contexts/management-context";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -19,28 +19,16 @@ import Section10 from "./sections/section10";
 import Section11 from "./sections/section11";
 import Section12 from "./sections/section12";
 import { ReportPageData } from "./types";
+import { useStepperState } from "@/hooks/use-stepper-state";
 
 export default function ReportDetail() {
-    const router = useRouter();
+    // const router = useRouter();
+    const stepperState = useStepperState();
     const { setHeaderTitle, setHeaderButtons, setFooterInfo } = useManagement();
     const [pageData, setPageData] = useState<ReportPageData>();
-    // ------------------------
-    const [activeStep, setActiveStep] = useState(1);
-    const handleNext = () => {
-        if (activeStep < 2) {
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        }
-    };
-
-    const handleBack = () => {
-        if (activeStep > 1) {
-            setActiveStep((prevActiveStep) => prevActiveStep - 1);
-        }
-    };
-    // ------------------------
 
     useEffect(() => {
-        setFooterInfo({});
+        setFooterInfo({})
     }, []);
 
     useEffect(() => {
@@ -49,23 +37,25 @@ export default function ReportDetail() {
             {
                 type: 'cancel',
                 onClick: () => {
-                    handleBack();
+                    stepperState.goBack();
                 },
                 label: 'Hủy'
             },
             {
                 type: 'next',
                 onClick: () => {
-                    handleNext();
+                    stepperState.goNext();
                 },
                 label: 'Bước tiếp theo'
             }
         ]);
-    }, [setHeaderButtons, setHeaderTitle, activeStep]);
+    }, [setHeaderButtons, setHeaderTitle, stepperState.activeStep]);
 
     useEffect(() => {
-        if (pageData) console.log(pageData);
-    }, [pageData])
+        if (pageData) {
+            console.log(pageData);
+        }
+    }, [pageData]);
 
     return (
         <>
@@ -81,7 +71,7 @@ export default function ReportDetail() {
                     width: '100%',
                     justifyContent: 'center',
                 }}>
-                    <HorizontalLinearStepper activeStep={activeStep} />
+                    <Stepper state={stepperState} />
                 </Box>
                 <Section1 data={pageData?.section1Data} onChange={(data) => setPageData({ ...pageData, section1Data: data })} />
                 <Section2 data={pageData?.section2Data} onChange={(data) => setPageData({ ...pageData, section2Data: data })} />

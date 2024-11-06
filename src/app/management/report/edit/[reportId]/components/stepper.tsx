@@ -4,10 +4,10 @@ import * as React from 'react';
 import Box from '@mui/material/Box';
 import { Divider, Grid2, Stack, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
+import { StepperState } from '@/hooks/use-stepper-state';
 
-const steps = ['Soạn báo cáo', 'Xác nhận thông tin'];
 
-export default function HorizontalLinearStepper({ activeStep }: { activeStep: number }) {
+export default function Stepper({ state }: { state: StepperState }) {
     return (
         <Box sx={{ width: '50%' }}>
             <Grid2 container spacing={2} width={'100%'} sx={{
@@ -23,8 +23,8 @@ export default function HorizontalLinearStepper({ activeStep }: { activeStep: nu
                                 justifyContent: 'center',
                                 width: 30,
                                 height: 30,
-                                color: activeStep === 1 ? 'white' : '#1890FF',
-                                backgroundColor: activeStep === 1 ? '#1890FF' : 'white',
+                                color: state.activeStep === 1 ? 'white' : '#1890FF',
+                                backgroundColor: state.activeStep === 1 ? '#1890FF' : 'white',
                                 border: '1px solid #1890FF',
                                 borderRadius: '50%',
                                 fontSize: '16px',
@@ -32,10 +32,10 @@ export default function HorizontalLinearStepper({ activeStep }: { activeStep: nu
                                 transition: 'all 0.4s ease-in-out',
                             }}
                         >
-                            {activeStep === 1 ? (
+                            {state.activeStep === 1 ? (
                                 1
                             ) : (
-                                <CheckIcon sx={{ transition: 'opacity 0.4s ease-in-out', opacity: activeStep === 1 ? 0 : 1 }} />
+                                <CheckIcon sx={{ transition: 'opacity 0.4s ease-in-out', opacity: state.activeStep === 1 ? 0 : 1 }} />
                             )}
                         </Box>
 
@@ -47,12 +47,12 @@ export default function HorizontalLinearStepper({ activeStep }: { activeStep: nu
                         sx={{
                             width: '100%',
                             height: '3px',
-                            backgroundColor: activeStep === 2 ? '#1890FF' : 'lightgrey',
+                            backgroundColor: state.activeStep === 2 ? '#1890FF' : 'lightgrey',
                             borderRadius: '3px',
                             transition: 'background-color 0.5s ease-in-out',
                             '&::before': {
                                 height: '3px',
-                                width: activeStep === 1 ? '100%' : '0%',
+                                width: state.activeStep === 1 ? '100%' : '0%',
                                 backgroundColor: '#1890FF',
                                 transition: 'width 0.5s ease-in-out',
                             }
@@ -70,9 +70,9 @@ export default function HorizontalLinearStepper({ activeStep }: { activeStep: nu
                                 justifyContent: 'center',
                                 width: 30,
                                 height: 30,
-                                color: activeStep === 2 ? 'white' : 'gray',
-                                backgroundColor: activeStep === 2 ? '#1890FF' : 'white',
-                                border: activeStep === 2 ? '1px solid #1890FF' : '1px solid gray',
+                                color: state.activeStep === 2 ? 'white' : 'gray',
+                                backgroundColor: state.activeStep === 2 ? '#1890FF' : 'white',
+                                border: state.activeStep === 2 ? '1px solid #1890FF' : '1px solid gray',
                                 borderRadius: '50%',
                                 fontSize: '16px',
                                 fontWeight: 'bold',

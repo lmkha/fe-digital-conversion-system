@@ -12,7 +12,14 @@ interface Section10Props {
     onChange?: (data: Section10Data) => void;
 }
 
-export default function Section10({ data, onChange }: Section10Props) {
+export default function Section10({
+    data = {
+        row1: { value1: "0.0", value2: "0.0", value3: "0.0" },
+        row2: { value1: "0.0", value2: "0.0", value3: "0.0" },
+        row3: { value1: "0.0" }
+    },
+    onChange
+}: Section10Props) {
     return (
         <>
             <Stack direction={'row'} justifyContent={'space-between'}>

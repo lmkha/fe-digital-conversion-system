@@ -11,7 +11,13 @@ interface Section3Props {
     onChange?: (data: Section3Data) => void;
 }
 
-export default function Section3({ data, onChange }: Section3Props) {
+export default function Section3({
+    data = {
+        row1: { value1: "0", value2: "0", value3: "0" },
+        row2: { value1: "0", value2: "0.0" },
+    },
+    onChange
+}: Section3Props) {
     return (
         <>
             <Stack direction={'row'} justifyContent={'space-between'}>
@@ -32,6 +38,7 @@ export default function Section3({ data, onChange }: Section3Props) {
                 <Row2
                     label1="Số người phải nghỉ trước tuổi hưu vì BNN "
                     label2="Tổng chi phí  BNN phát sinh trong năm"
+                    endAdornmentText2="Triệu đồng"
                     value={data?.row2}
                     onChange={(value) => onChange?.({ ...data, row2: value })}
                 />

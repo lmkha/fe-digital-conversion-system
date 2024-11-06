@@ -11,7 +11,13 @@ interface Section4Props {
     onChange?: (data: Section4Data) => void;
 }
 
-export default function Section4({ data, onChange }: Section4Props) {
+export default function Section4({
+    data = {
+        row1: { value1: "0", value2: "0", value3: "0" },
+        row2: { value1: "0", value2: "0" },
+    },
+    onChange
+}: Section4Props) {
     return (
         <>
             <Stack direction={'row'} justifyContent={'space-between'}>
