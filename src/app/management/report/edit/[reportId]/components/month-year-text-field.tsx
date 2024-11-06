@@ -1,7 +1,7 @@
 'use client';
 
 import { InputAdornment, TextField } from "@mui/material";
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import IMask from 'imask';
 import { IMaskInput } from 'react-imask';
 import { Row1Data } from "./row1";
@@ -40,11 +40,31 @@ export function MonthYearTextField({
 interface CustomProps {
     onChange: (event: { target: { name: string; value: string } }) => void;
     name: string;
+    value: string;
 }
 
 const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
     function TextMaskCustom(props, ref) {
-        const { onChange, ...other } = props;
+        const { onChange, value, ...other } = props;
+        const defaultValueRef = useRef(value);
+
+        useEffect(() => {
+            defaultValueRef.current = value;
+        }, [value]);
+
+        const handleAccept = (value: string) => {
+            // Check MM/YYYY format
+            const regex = /^(0[1-9]|1[0-2])\/\d{4}$/;
+
+            // Only update if the value is in MM/YYYY format
+            if (regex.test(value)) {
+                // Only update if the value is different from the default value
+                if (value !== defaultValueRef.current) {
+                    onChange({ target: { name: props.name, value } });
+                }
+            }
+        };
+
         return (
             <IMaskInput
                 {...other}
@@ -63,8 +83,9 @@ const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
                         maxLength: 4,
                     }
                 }}
+                defaultValue={value}
                 inputRef={ref}
-                onAccept={(value: any) => onChange({ target: { name: props.name, value } })}
+                onAccept={handleAccept}
                 overwrite
             />
         );

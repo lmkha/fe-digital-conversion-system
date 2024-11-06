@@ -1,6 +1,5 @@
 import { Divider, Stack, Typography } from "@mui/material";
 import Row2, { Row2Data } from "../components/row2";
-import Row3 from "../components/row3";
 export interface Section8Data {
     row1?: Row2Data;
 }
