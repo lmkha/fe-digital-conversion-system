@@ -1,11 +1,9 @@
 'use client';
 import * as React from 'react';
-import { PiExportBold } from "react-icons/pi";
-import { IoAddOutline } from "react-icons/io5";
 import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 export interface ActionButtonProps {
-    type: 'add' | 'import' | 'save' | 'select' | 'next' | 'cancel' | 'download';
+    type: 'add' | 'import' | 'save' | 'select' | 'next' | 'back' | 'cancel' | 'download';
     label: string;
     onClick: () => void;
     selectValue?: number;
@@ -80,6 +78,21 @@ export default function ActionButton({ type, label, onClick, selectValue, option
                         height: '45px',
                     }}
                     onClick={onClick}
+                >
+                    {label}
+                </Button>
+            );
+        case 'back':
+            return (
+                <Button
+                    size="medium"
+                    onClick={onClick}
+                    sx={{
+                        textTransform: 'none',
+                        fontWeight: 'bold',
+                        height: '45px',
+                        color: 'gray',
+                    }}
                 >
                     {label}
                 </Button>
