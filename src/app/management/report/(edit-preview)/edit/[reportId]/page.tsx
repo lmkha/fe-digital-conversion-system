@@ -57,18 +57,18 @@ export default function ReportDetail() {
 
     return (
         <>
-            <Section1 data={pageData?.section1Data} onChange={(data) => setPageData({ ...pageData, section1Data: data })} />
-            <Section2 data={pageData?.section2Data} onChange={(data) => setPageData({ ...pageData, section2Data: data })} />
-            <Section3 data={pageData?.section3Data} onChange={(data) => setPageData({ ...pageData, section3Data: data })} />
-            <Section4 data={pageData?.section4Data} onChange={(data) => setPageData({ ...pageData, section4Data: data })} />
-            <Section5 data={pageData?.section5Data} onChange={(data) => setPageData({ ...pageData, section5Data: data })} />
-            <Section6 data={pageData?.section6Data} onChange={(data) => setPageData({ ...pageData, section6Data: data })} />
-            <Section7 data={pageData?.section7Data} onChange={(data) => setPageData({ ...pageData, section7Data: data })} />
-            <Section8 data={pageData?.section8Data} onChange={(data) => setPageData({ ...pageData, section8Data: data })} />
-            <Section9 data={pageData?.section9Data} onChange={(data) => setPageData({ ...pageData, section9Data: data })} />
-            <Section10 data={pageData?.section10Data} onChange={(data) => setPageData({ ...pageData, section10Data: data })} />
-            <Section11 data={pageData?.section11Data} onChange={(data) => setPageData({ ...pageData, section11Data: data })} />
-            <Section12 data={pageData?.section12Data} onChange={(data) => setPageData({ ...pageData, section12Data: data })} />
+            <Section1 onChange={(data) => setPageData({ ...pageData, section1Data: data })} />
+            <Section2 onChange={(data) => setPageData({ ...pageData, section2Data: data })} />
+            <Section3 onChange={(data) => setPageData({ ...pageData, section3Data: data })} />
+            <Section4 onChange={(data) => setPageData({ ...pageData, section4Data: data })} />
+            <Section5 onChange={(data) => setPageData({ ...pageData, section5Data: data })} />
+            <Section6 onChange={(data) => setPageData({ ...pageData, section6Data: data })} />
+            <Section7 onChange={(data) => setPageData({ ...pageData, section7Data: data })} />
+            <Section8 onChange={(data) => setPageData({ ...pageData, section8Data: data })} />
+            <Section9 onChange={(data) => setPageData({ ...pageData, section9Data: data })} />
+            <Section10 onChange={(data) => setPageData({ ...pageData, section10Data: data })} />
+            <Section11 onChange={(data) => setPageData({ ...pageData, section11Data: data })} />
+            <Section12 onChange={(data) => setPageData({ ...pageData, section12Data: data })} />
         </>
     );
 };

@@ -1,40 +1,49 @@
+'use client';
+
 import { Divider, Stack, Typography } from "@mui/material";
-import Row3, { Row3Data } from "../components/row3";
+import TripleTextFieldGroup, { TripleTextFieldGroupData } from "../components/triple-tf-group";
+import { useState } from "react";
 export interface Section6Data {
-    row1?: Row3Data;
-    row2?: Row3Data;
+    row1?: TripleTextFieldGroupData;
+    row2?: TripleTextFieldGroupData;
 }
 interface Section3Props {
-    data?: Section6Data;
     onChange?: (data: Section6Data) => void;
 }
 
 export default function Section6({
-    data = {
-        row1: { value1: "0", value2: "0", value3: "0" },
-        row2: { value1: "0", value2: "0", value3: "0" },
-    },
     onChange
 }: Section3Props) {
+    const [data, setData] = useState<Section6Data>();
     return (
         <>
             <Stack direction={'row'} justifyContent={'space-between'}>
                 <Typography fontWeight={'bold'} paddingBottom={2}>6. Máy, thiết bị có yêu cầu nghiêm ngặt về ATVSLĐ</Typography>
             </Stack>
             <Stack direction={'column'} spacing={2} paddingBottom={2}>
-                <Row3
+                <TripleTextFieldGroup
                     label1="Tổng số"
                     label2="Máy có yêu cầu nghiêm ngặt ATVSLĐ đang sử dụng"
                     label3="Số đã được kiểm định"
-                    value={data?.row1}
-                    onChange={(value) => onChange?.({ ...data, row1: value })}
+                    defaultValue1="0"
+                    defaultValue2="0"
+                    defaultValue3="0"
+                    onChange={(value) => {
+                        onChange?.({ ...data, row1: value });
+                        setData({ ...data, row1: value });
+                    }}
                 />
-                <Row3
+                <TripleTextFieldGroup
                     label1="Số chưa được kiểm định"
                     label2="Số đã được khai báo"
                     label3="Số chưa được khai báo"
-                    value={data?.row2}
-                    onChange={(value) => onChange?.({ ...data, row2: value })}
+                    defaultValue1="0"
+                    defaultValue2="0"
+                    defaultValue3="0"
+                    onChange={(value) => {
+                        onChange?.({ ...data, row2: value });
+                        setData({ ...data, row2: value });
+                    }}
                 />
             </Stack>
             <Divider sx={{ marginBottom: 2 }} />

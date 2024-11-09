@@ -1,34 +1,47 @@
 'use client';
 
 import { Grid2, InputAdornment, TextField } from "@mui/material";
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import IMask from 'imask';
 import { IMaskInput } from 'react-imask';
-import { Row1Data } from "./row1";
+import { SingleTextFieldData } from "./single-tf-group";
 
 interface MonthYearTextFieldProps {
-    value?: Row1Data;
     label1?: string;
+    defaultValue1?: string;
     endAdornmentText?: string;
-    onChange?: (data: Row1Data) => void;
+    onChange?: (data: SingleTextFieldData) => void;
 }
 
 export function MonthYearTextField({
-    value,
     label1,
+    defaultValue1,
     endAdornmentText,
     onChange
 }: MonthYearTextFieldProps) {
+    const [value, setValue] = useState(defaultValue1);
+    useEffect(() => {
+        setValue(defaultValue1 || ""); // Cập nhật giá trị khi defaultValue1 thay đổi
+    }, [defaultValue1]);
+
+    const handleChange = (newValue: string) => {
+        setValue(newValue); // Cập nhật giá trị khi người dùng nhập
+        onChange?.({ value1: newValue }); // Truyền giá trị mới lên component cha
+    };
+
     return (
         <>
             <Grid2 container spacing={14}>
                 <Grid2 size={4}>
                     <TextField
+                        value={value}
                         sx={{ width: '100%' }}
                         size="small"
                         label={label1 || ""}
-                        value={value?.value1}
-                        onChange={(e) => onChange?.({ ...value, value1: e.target.value })}
+                        onChange={(e) => {
+                            onChange?.({ value1: e.target.value });
+                            handleChange(e.target.value);
+                        }}
                         name="textmask"
                         id="formatted-text-mask-input"
                         slotProps={{
@@ -91,7 +104,8 @@ const TextMaskCustom = React.forwardRef<HTMLInputElement, CustomProps>(
                         maxLength: 4,
                     }
                 }}
-                defaultValue={value}
+                // defaultValue={value}
+                value={value}
                 inputRef={ref}
                 onAccept={handleAccept}
                 overwrite
