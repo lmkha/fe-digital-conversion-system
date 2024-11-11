@@ -148,24 +148,20 @@ class ReportDetailAPI extends Base {
 
     async downloadReportDetailAsWord({ reportId }: { reportId: string }) {
         try {
-            // Thực hiện yêu cầu GET với axiosInstance
             const response = await axiosInstance.get('/report-detail/download-word', {
                 params: { reportId: reportId },
                 responseType: 'blob'
             });
 
-            // Tạo URL cho dữ liệu blob
             const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }));
 
-            // Tạo một thẻ link tạm thời để kích hoạt tải xuống
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'report_detail.docx'); // Đặt tên tệp mong muốn
+            link.setAttribute('download', 'report_detail.docx');
             document.body.appendChild(link);
-            link.click(); // Kích hoạt tải xuống
-            document.body.removeChild(link); // Xóa thẻ link sau khi tải xong
+            link.click();
+            document.body.removeChild(link);
 
-            // Thu hồi URL object để giải phóng bộ nhớ sau một thời gian ngắn
             setTimeout(() => window.URL.revokeObjectURL(url), 100);
 
             return { success: true };
@@ -179,6 +175,24 @@ class ReportDetailAPI extends Base {
         }
     }
 
+    async getReportDetailByHistoryId(reportHistoryId: string) {
+        try {
+            const response = await this.get('/report-history/find-by-id', {
+                reportHistoryId: reportHistoryId
+            });
+            return {
+                success: response.success,
+                message: response.message,
+                data: response.data
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            }
+        }
+    }
 }
 
 const reportDetailAPI = new ReportDetailAPI();

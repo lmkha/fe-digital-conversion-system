@@ -19,9 +19,11 @@ import Section12 from "./sections/section12";
 import { ReportPageData } from "./types";
 import { useEditPreviewReportDetailContext } from "@/contexts/edit-preview-report-detail-context";
 import { useParams } from "next/navigation";
-import { findReportDetailById } from "@/services/report-detail";
+import { findReportDetailById, getReportDetailByHistoryId } from "@/services/report-detail";
 import { useAppContext } from "@/contexts/app-context";
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
+import HistoryButton from "./components/history-button";
+import HistoryModal from "./components/histoty-modal";
 
 export default function ReportDetail() {
     const { setToastInfo } = useAppContext();
@@ -30,6 +32,9 @@ export default function ReportDetail() {
     const { setHeaderTitle, setHeaderButtons, setFooterInfo } = useManagement();
     const { goNext, setReportId, reportDetail, setReportDetail } = useEditPreviewReportDetailContext();
     const [pageData, setPageData] = useState<ReportPageData>();
+    const [openHistoryModal, setOpenHistoryModal] = useState(false);
+    const [historyPageData, setHistoryPageData] = useState<ReportPageData>();
+    const [dataRender, setDataRender] = useState<ReportPageData>();
 
     // Clear footer in this page
     useEffect(() => {
@@ -84,25 +89,58 @@ export default function ReportDetail() {
     useEffect(() => {
         if (pageData) {
             setReportDetail && setReportDetail(pageData);
+            setDataRender(pageData);
         }
     }, [pageData]);
 
+    useEffect(() => {
+        if (historyPageData) {
+            setDataRender(historyPageData);
+        }
+    }, [historyPageData]);
+
     return (
         <>
-            {pageData ? (
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginBottom: '10px',
+            }}>
+                <HistoryButton label="Lịch sử" onClick={() => { setOpenHistoryModal(true) }} />
+            </Box>
+            <HistoryModal
+                reportId={reportId}
+                open={openHistoryModal}
+                onClose={() => setOpenHistoryModal(false)}
+                onViewReportHistory={(reportId) => {
+                    getReportDetailByHistoryId(reportId).then((response) => {
+                        if (response.success) {
+                            setHistoryPageData(response.reportDetail);
+                        } else {
+                            setToastInfo && setToastInfo({
+                                show: true,
+                                message: response.message || 'Có lỗi xảy ra khi lấy dữ liệu lịch sử',
+                                severity: 'error'
+                            });
+                        }
+                    });
+                }}
+            />
+
+            {dataRender ? (
                 <>
-                    <Section1 inputData={pageData?.section1Data} onChange={(data) => setPageData({ ...pageData, section1Data: data })} />
-                    <Section2 inputData={pageData?.section2Data} onChange={(data) => setPageData({ ...pageData, section2Data: data })} />
-                    <Section3 inputData={pageData?.section3Data} onChange={(data) => setPageData({ ...pageData, section3Data: data })} />
-                    <Section4 inputData={pageData?.section4Data} onChange={(data) => setPageData({ ...pageData, section4Data: data })} />
-                    <Section5 inputData={pageData?.section5Data} onChange={(data) => setPageData({ ...pageData, section5Data: data })} />
-                    <Section6 inputData={pageData?.section6Data} onChange={(data) => setPageData({ ...pageData, section6Data: data })} />
-                    <Section7 inputData={pageData?.section7Data} onChange={(data) => setPageData({ ...pageData, section7Data: data })} />
-                    <Section8 inputData={pageData?.section8Data} onChange={(data) => setPageData({ ...pageData, section8Data: data })} />
-                    <Section9 inputData={pageData?.section9Data} onChange={(data) => setPageData({ ...pageData, section9Data: data })} />
-                    <Section10 inputData={pageData?.section10Data} onChange={(data) => setPageData({ ...pageData, section10Data: data })} />
-                    <Section11 inputData={pageData?.section11Data} onChange={(data) => setPageData({ ...pageData, section11Data: data })} />
-                    <Section12 inputData={pageData?.section12Data} onChange={(data) => setPageData({ ...pageData, section12Data: data })} />
+                    <Section1 inputData={dataRender?.section1Data} onChange={(data) => setDataRender({ ...dataRender, section1Data: data })} />
+                    <Section2 inputData={dataRender?.section2Data} onChange={(data) => setDataRender({ ...dataRender, section2Data: data })} />
+                    <Section3 inputData={dataRender?.section3Data} onChange={(data) => setDataRender({ ...dataRender, section3Data: data })} />
+                    <Section4 inputData={dataRender?.section4Data} onChange={(data) => setDataRender({ ...dataRender, section4Data: data })} />
+                    <Section5 inputData={dataRender?.section5Data} onChange={(data) => setDataRender({ ...dataRender, section5Data: data })} />
+                    <Section6 inputData={dataRender?.section6Data} onChange={(data) => setDataRender({ ...dataRender, section6Data: data })} />
+                    <Section7 inputData={dataRender?.section7Data} onChange={(data) => setDataRender({ ...dataRender, section7Data: data })} />
+                    <Section8 inputData={dataRender?.section8Data} onChange={(data) => setDataRender({ ...dataRender, section8Data: data })} />
+                    <Section9 inputData={dataRender?.section9Data} onChange={(data) => setDataRender({ ...dataRender, section9Data: data })} />
+                    <Section10 inputData={dataRender?.section10Data} onChange={(data) => setDataRender({ ...dataRender, section10Data: data })} />
+                    <Section11 inputData={dataRender?.section11Data} onChange={(data) => setDataRender({ ...dataRender, section11Data: data })} />
+                    <Section12 inputData={dataRender?.section12Data} onChange={(data) => setDataRender({ ...dataRender, section12Data: data })} />
                 </>
             ) : (
                 <Typography sx={{ textAlign: 'center' }} variant="body1">Đang tải dữ liệu...</Typography>

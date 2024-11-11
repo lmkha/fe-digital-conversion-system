@@ -36,6 +36,7 @@ export default function DoubleTextFieldGroup({
         <Grid2 container spacing={14}>
             <Grid2 size={4}>
                 <TextField
+                    key={defaultValue1}
                     error={helperText1 ? true : false}
                     helperText={helperText1}
                     defaultValue={defaultValue1}
@@ -53,6 +54,7 @@ export default function DoubleTextFieldGroup({
 
             <Grid2 size={4}>
                 <TextField
+                    key={defaultValue2}
                     error={helperText2 ? true : false}
                     helperText={helperText2}
                     defaultValue={defaultValue2}

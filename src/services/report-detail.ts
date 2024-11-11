@@ -310,3 +310,19 @@ export const downloadReportDetailAsWord = async ({ reportId }: { reportId: strin
     const result = await reportDetailAPI.downloadReportDetailAsWord({ reportId: reportId });
     return result;
 }
+
+export const getReportDetailByHistoryId = async (historyId: string): Promise<{
+    success: boolean;
+    message?: string;
+    reportDetail?: ReportPageData;
+}> => {
+    const result = await reportDetailAPI.getReportDetailByHistoryId(historyId).then((response) => {
+        const model = transformReportDetailAPIModelToUIModel(response.data);
+        return {
+            success: response.success,
+            message: response.message,
+            reportDetail: model
+        }
+    });
+    return result;
+};

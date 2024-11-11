@@ -1,7 +1,7 @@
 'use client';
 
 import { Grid2, InputAdornment, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 export interface TripleTextFieldGroupData {
     value1: string;
     value2: string;
@@ -39,19 +39,23 @@ export default function TripleTextFieldGroup({
     helperText3,
     onChange
 }: TripleTextFieldGroupProps) {
-    const [data] = useState<TripleTextFieldGroupData>();
+    const [data, setData] = useState<TripleTextFieldGroupData>();
 
     return (
         <Grid2 container spacing={14}>
             <Grid2 size={4}>
                 <TextField
+                    key={defaultValue1}
                     error={helperText1 ? true : false}
                     helperText={helperText1}
                     defaultValue={defaultValue1}
                     size="small"
                     fullWidth
                     label={label1 || ""}
-                    onChange={(e) => onChange?.({ ...data, value1: e.target.value } as TripleTextFieldGroupData)}
+                    onChange={(e) => {
+                        setData({ ...data, value1: e.target.value } as TripleTextFieldGroupData);
+                        onChange?.({ ...data, value1: e.target.value } as TripleTextFieldGroupData)
+                    }}
                     slotProps={{
                         input: {
                             endAdornment: <InputAdornment position="end">{endAdornmentText1}</InputAdornment>,
@@ -62,13 +66,16 @@ export default function TripleTextFieldGroup({
 
             <Grid2 size={4}>
                 <TextField
+                    key={defaultValue2}
                     error={helperText2 ? true : false}
                     helperText={helperText2}
                     defaultValue={defaultValue2}
                     size="small"
                     fullWidth
                     label={label2 || ""}
-                    onChange={(e) => onChange?.({ ...data, value2: e.target.value } as TripleTextFieldGroupData)}
+                    onChange={(e) => {
+                        onChange?.({ ...data, value2: e.target.value } as TripleTextFieldGroupData)
+                    }}
                     slotProps={{
                         input: {
                             endAdornment: <InputAdornment position="end">{endAdornmentText2}</InputAdornment>,
@@ -79,13 +86,16 @@ export default function TripleTextFieldGroup({
 
             <Grid2 size={4}>
                 <TextField
+                    key={defaultValue3}
                     error={helperText3 ? true : false}
                     helperText={helperText3}
                     defaultValue={defaultValue3}
                     size="small"
                     fullWidth
                     label={label3 || ""}
-                    onChange={(e) => onChange?.({ ...data, value3: e.target.value } as TripleTextFieldGroupData)}
+                    onChange={(e) => {
+                        onChange?.({ ...data, value3: e.target.value } as TripleTextFieldGroupData)
+                    }}
                     slotProps={{
                         input: {
                             endAdornment: <InputAdornment position="end">{endAdornmentText3}</InputAdornment>,

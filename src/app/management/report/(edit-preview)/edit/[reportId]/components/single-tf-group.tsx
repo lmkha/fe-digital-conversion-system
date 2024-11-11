@@ -24,6 +24,7 @@ export default function SingleTextField({
         <Grid2 container spacing={14}>
             <Grid2 size={4}>
                 <TextField
+                    key={defaultValue}
                     error={helperText1 ? true : false}
                     helperText={helperText1}
                     defaultValue={defaultValue}
