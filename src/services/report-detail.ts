@@ -157,8 +157,11 @@ const transformReportDetailAPIModelToUIModel = (apiModel: OutputReportDetailAPIM
     }
 };
 
-const transformUIModelToReportDetailAPIModel = ({ reportId, uiModel }: { reportId: string, uiModel: ReportPageData }):
-    InputReportDetailAPIModel => {
+const parseNumber = (value: string): number => {
+    return Number(value); // Chuyển đổi về kiểu number
+};
+
+const transformUIModelToReportDetailAPIModel = ({ reportId, uiModel }: { reportId: string, uiModel: ReportPageData }): InputReportDetailAPIModel => {
     function parseDate(dateString: string): string {
         const [month, year] = dateString.split("/");
         return `${year}-${month}`;
@@ -166,31 +169,31 @@ const transformUIModelToReportDetailAPIModel = ({ reportId, uiModel }: { reportI
 
     return {
         reportId: reportId,
-        totalWorkers: parseInt(uiModel.section1Data?.row1?.value1 ?? "0", 10),
-        safetyWorkers: parseInt(uiModel.section1Data?.row1?.value2 ?? "0", 10),
-        healthWorkers: parseInt(uiModel.section1Data?.row1?.value3 ?? "0", 10),
-        femaleWorkers: parseInt(uiModel.section1Data?.row2?.value1 ?? "0", 10),
-        hazardousWorkers: parseInt(uiModel.section1Data?.row2?.value2 ?? "0", 10),
-        underageWorkers: parseInt(uiModel.section1Data?.row2?.value3 ?? "0", 10),
-        under15Workers: parseInt(uiModel.section1Data?.row3?.value1 ?? "0", 10),
-        disabledWorkers: parseInt(uiModel.section1Data?.row3?.value2 ?? "0", 10),
-        agedWorkers: parseInt(uiModel.section1Data?.row3?.value3 ?? "0", 10),
-        totalAccidents: parseInt(uiModel.section2Data?.row1?.value1 ?? "0", 10),
-        numFatalAccidents: parseInt(uiModel.section2Data?.row1?.value2 ?? "0", 10),
-        numAccidentWorkers: parseInt(uiModel.section2Data?.row1?.value3 ?? "0", 10),
-        numWorkersDie: parseInt(uiModel.section2Data?.row2?.value1 ?? "0", 10),
-        totalAccidentCosts: parseInt(uiModel.section2Data?.row2?.value2 ?? "0", 10),
-        accidentDaysLost: parseInt(uiModel.section2Data?.row2?.value3 ?? "0", 10),
-        totalOccupationalDiseaseCases: parseInt(uiModel.section3Data?.row1?.value1 ?? "0", 10),
-        newOccupationalDiseaseCases: parseInt(uiModel.section3Data?.row1?.value2 ?? "0", 10),
-        occupationalDiseaseLeaveDays: parseInt(uiModel.section3Data?.row1?.value3 ?? "0", 10),
-        earlyRetirementDueToDisease: parseInt(uiModel.section3Data?.row2?.value1 ?? "0", 10),
-        totalOccupationalDiseaseCosts: parseInt(uiModel.section3Data?.row2?.value2 ?? "0", 10),
-        healthType1: parseInt(uiModel.section4Data?.row1?.value1 ?? "0", 10),
-        healthType2: parseInt(uiModel.section4Data?.row1?.value2 ?? "0", 10),
-        healthType3: parseInt(uiModel.section4Data?.row1?.value3 ?? "0", 10),
-        healthType4: parseInt(uiModel.section4Data?.row2?.value1 ?? "0", 10),
-        healthType5: parseInt(uiModel.section4Data?.row2?.value2 ?? "0", 10),
+        totalWorkers: parseNumber(uiModel.section1Data?.row1?.value1 ?? "0"),
+        safetyWorkers: parseNumber(uiModel.section1Data?.row1?.value2 ?? "0"),
+        healthWorkers: parseNumber(uiModel.section1Data?.row1?.value3 ?? "0"),
+        femaleWorkers: parseNumber(uiModel.section1Data?.row2?.value1 ?? "0"),
+        hazardousWorkers: parseNumber(uiModel.section1Data?.row2?.value2 ?? "0"),
+        underageWorkers: parseNumber(uiModel.section1Data?.row2?.value3 ?? "0"),
+        under15Workers: parseNumber(uiModel.section1Data?.row3?.value1 ?? "0"),
+        disabledWorkers: parseNumber(uiModel.section1Data?.row3?.value2 ?? "0"),
+        agedWorkers: parseNumber(uiModel.section1Data?.row3?.value3 ?? "0"),
+        totalAccidents: parseNumber(uiModel.section2Data?.row1?.value1 ?? "0"),
+        numFatalAccidents: parseNumber(uiModel.section2Data?.row1?.value2 ?? "0"),
+        numAccidentWorkers: parseNumber(uiModel.section2Data?.row1?.value3 ?? "0"),
+        numWorkersDie: parseNumber(uiModel.section2Data?.row2?.value1 ?? "0"),
+        totalAccidentCosts: parseNumber(uiModel.section2Data?.row2?.value2 ?? "0"),
+        accidentDaysLost: parseNumber(uiModel.section2Data?.row2?.value3 ?? "0"),
+        totalOccupationalDiseaseCases: parseNumber(uiModel.section3Data?.row1?.value1 ?? "0"),
+        newOccupationalDiseaseCases: parseNumber(uiModel.section3Data?.row1?.value2 ?? "0"),
+        occupationalDiseaseLeaveDays: parseNumber(uiModel.section3Data?.row1?.value3 ?? "0"),
+        earlyRetirementDueToDisease: parseNumber(uiModel.section3Data?.row2?.value1 ?? "0"),
+        totalOccupationalDiseaseCosts: parseNumber(uiModel.section3Data?.row2?.value2 ?? "0"),
+        healthType1: parseNumber(uiModel.section4Data?.row1?.value1 ?? "0"),
+        healthType2: parseNumber(uiModel.section4Data?.row1?.value2 ?? "0"),
+        healthType3: parseNumber(uiModel.section4Data?.row1?.value3 ?? "0"),
+        healthType4: parseNumber(uiModel.section4Data?.row2?.value1 ?? "0"),
+        healthType5: parseNumber(uiModel.section4Data?.row2?.value2 ?? "0"),
         training1: uiModel.section5Data?.row1?.value1 ?? "",
         training2: uiModel.section5Data?.row1?.value2 ?? "",
         training3: uiModel.section5Data?.row1?.value3 ?? "",
@@ -199,20 +202,20 @@ const transformUIModelToReportDetailAPIModel = ({ reportId, uiModel }: { reportI
         training6: uiModel.section5Data?.row3?.value2 ?? "",
         selfTraining: uiModel.section5Data?.row2?.value1 ?? "",
         outsourcedTraining: uiModel.section5Data?.row2?.value2 ?? "",
-        traningCost: parseInt(uiModel.section5Data?.row3?.value3 ?? "0", 10),
-        totalSafetyEquipment: parseInt(uiModel.section6Data?.row1?.value1 ?? "0", 10),
-        activeSafetyEquipmentCount: parseInt(uiModel.section6Data?.row1?.value2 ?? "0", 10),
-        checkedEquipment: parseInt(uiModel.section6Data?.row1?.value3 ?? "0", 10),
-        uncheckedEquipment: parseInt(uiModel.section6Data?.row2?.value1 ?? "0", 10),
-        reportedSafetyEquipment: parseInt(uiModel.section6Data?.row2?.value2 ?? "0", 10),
-        unreportedSafetyEquipment: parseInt(uiModel.section6Data?.row2?.value3 ?? "0", 10),
-        totalOvertimeWorkers: parseInt(uiModel.section7Data?.row1?.value1 ?? "0", 10),
-        totalOvertime: parseInt(uiModel.section7Data?.row1?.value2 ?? "0", 10),
-        maxOvertimeInMonth: parseInt(uiModel.section7Data?.row1?.value3 ?? "0", 10),
-        numAllowanceWorkers: parseInt(uiModel.section8Data?.row1?.value1 ?? "0", 10),
-        allowanceCost: parseInt(uiModel.section8Data?.row1?.value2 ?? "0", 10),
-        observationSamples: parseInt(uiModel.section9Data?.row1?.value1 ?? "0", 10),
-        nonStandardSamples: parseInt(uiModel.section9Data?.row1?.value2 ?? "0", 10),
+        traningCost: parseNumber(uiModel.section5Data?.row3?.value3 ?? "0"),
+        totalSafetyEquipment: parseNumber(uiModel.section6Data?.row1?.value1 ?? "0"),
+        activeSafetyEquipmentCount: parseNumber(uiModel.section6Data?.row1?.value2 ?? "0"),
+        checkedEquipment: parseNumber(uiModel.section6Data?.row1?.value3 ?? "0"),
+        uncheckedEquipment: parseNumber(uiModel.section6Data?.row2?.value1 ?? "0"),
+        reportedSafetyEquipment: parseNumber(uiModel.section6Data?.row2?.value2 ?? "0"),
+        unreportedSafetyEquipment: parseNumber(uiModel.section6Data?.row2?.value3 ?? "0"),
+        totalOvertimeWorkers: parseNumber(uiModel.section7Data?.row1?.value1 ?? "0"),
+        totalOvertime: parseNumber(uiModel.section7Data?.row1?.value2 ?? "0"),
+        maxOvertimeInMonth: parseNumber(uiModel.section7Data?.row1?.value3 ?? "0"),
+        numAllowanceWorkers: parseNumber(uiModel.section8Data?.row1?.value1 ?? "0"),
+        allowanceCost: parseNumber(uiModel.section8Data?.row1?.value2 ?? "0"),
+        observationSamples: parseNumber(uiModel.section9Data?.row1?.value1 ?? "0"),
+        nonStandardSamples: parseNumber(uiModel.section9Data?.row1?.value2 ?? "0"),
         nonTemperatureStandardSamples: uiModel.section9Data?.row2?.value1 ?? "",
         nonHumidityStandardSamples: uiModel.section9Data?.row2?.value2 ?? "",
         nonWindStandardSamples: uiModel.section9Data?.row2?.value3 ?? "",
@@ -224,13 +227,13 @@ const transformUIModelToReportDetailAPIModel = ({ reportId, uiModel }: { reportI
         nonRadioactiveStandardSamples: uiModel.section9Data?.row4?.value3 ?? "",
         nonElectricStandardSamples: uiModel.section9Data?.row5?.value1 ?? "",
         nonOtherStandardSamples: uiModel.section9Data?.row5?.value2 ?? "",
-        safetyCosts: parseInt(uiModel.section10Data?.row1?.value1 ?? "0", 10),
-        hygieneCost: parseInt(uiModel.section10Data?.row1?.value2 ?? "0", 10),
-        equipmentCost: parseInt(uiModel.section10Data?.row1?.value3 ?? "0", 10),
-        healthCost: parseInt(uiModel.section10Data?.row2?.value1 ?? "0", 10),
-        trainingCost: parseInt(uiModel.section10Data?.row2?.value2 ?? "0", 10),
-        riskCost: parseInt(uiModel.section10Data?.row2?.value3 ?? "0", 10),
-        otherCost: parseInt(uiModel.section10Data?.row3?.value1 ?? "0", 10),
+        safetyCosts: parseNumber(uiModel.section10Data?.row1?.value1 ?? "0"),
+        hygieneCost: parseNumber(uiModel.section10Data?.row1?.value2 ?? "0"),
+        equipmentCost: parseNumber(uiModel.section10Data?.row1?.value3 ?? "0"),
+        healthCost: parseNumber(uiModel.section10Data?.row2?.value1 ?? "0"),
+        trainingCost: parseNumber(uiModel.section10Data?.row2?.value2 ?? "0"),
+        riskCost: parseNumber(uiModel.section10Data?.row2?.value3 ?? "0"),
+        otherCost: parseNumber(uiModel.section10Data?.row3?.value1 ?? "0"),
         oshaProviderName: uiModel.section11Data?.row1?.value1 ?? "",
         healthProviderName: uiModel.section11Data?.row2?.value1 ?? "",
         date: parseDate(uiModel.section12Data?.row1?.value1 ?? "")
@@ -270,25 +273,6 @@ export const updateReportDetail = async ({ reportId, uiModel }: { reportId: stri
     return result;
 }
 
-// export const getReportDetailPreviewPDF = async ({ reportId, uiModel }: { reportId: string, uiModel: ReportPageData }): Promise<{
-//     success: boolean;
-//     message?: string;
-//     pdfFileUrl?: string;
-// }> => {
-//     const model = transformUIModelToReportDetailAPIModel({
-//         reportId: reportId,
-//         uiModel: uiModel
-//     });
-//     const result = await reportDetailAPI.getPreviewReportDetail(model).then((response) => {
-//         return {
-//             success: response.success,
-//             message: response.message,
-//             pdfFileUrl: response.data?.url
-//         }
-//     });
-//     return result;
-// }
-
 export const getReportDetailPreviewPDF = async ({ reportId, uiModel }: { reportId: string, uiModel: ReportPageData }): Promise<{
     success: boolean;
     message?: string;
@@ -323,4 +307,9 @@ export const getReportDetailPreviewPDF = async ({ reportId, uiModel }: { reportI
             message: error?.response?.data?.message || 'An error occurred while fetching the PDF'
         };
     }
+}
+
+export const downloadReportDetailAsWord = async ({ reportId }: { reportId: string }) => {
+    const result = await reportDetailAPI.downloadReportDetailAsWord({ reportId: reportId });
+    return result;
 }

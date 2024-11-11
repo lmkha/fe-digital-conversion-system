@@ -31,6 +31,7 @@ export default function Section8({
                     label2="Tổng chi phí quy định tại điểm 10 "
                     defaultValue1={inputData?.row1?.value1 || '0'}
                     defaultValue2={inputData?.row1?.value2 || '0.0'}
+                    endAdornmentText2="Triệu đồng"
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });

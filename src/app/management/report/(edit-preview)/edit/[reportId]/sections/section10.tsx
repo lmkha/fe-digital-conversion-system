@@ -32,6 +32,9 @@ export default function Section10({
                     defaultValue1={inputData?.row1?.value1 || '0.0'}
                     defaultValue2={inputData?.row1?.value2 || '0.0'}
                     defaultValue3={inputData?.row1?.value3 || '0.0'}
+                    endAdornmentText1="Triệu đồng"
+                    endAdornmentText2="Triệu đồng"
+                    endAdornmentText3="Triệu đồng"
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });
@@ -44,6 +47,9 @@ export default function Section10({
                     defaultValue1={inputData?.row2?.value1 || '0.0'}
                     defaultValue2={inputData?.row2?.value2 || '0.0'}
                     defaultValue3={inputData?.row2?.value3 || '0.0'}
+                    endAdornmentText1="Triệu đồng"
+                    endAdornmentText2="Triệu đồng"
+                    endAdornmentText3="Triệu đồng"
                     onChange={(value) => {
                         onChange?.({ ...data, row2: value });
                         setData({ ...data, row2: value });
@@ -52,6 +58,7 @@ export default function Section10({
                 <SingleTextField
                     label1="Chi khác "
                     defaultValue={inputData?.row3?.value1 || '0.0'}
+                    endAdornmentText="Triệu đồng"
                     onChange={(value) => {
                         onChange?.({ ...data, row3: value });
                         setData({ ...data, row3: value });

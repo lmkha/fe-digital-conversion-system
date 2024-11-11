@@ -118,47 +118,6 @@ class ReportDetailAPI extends Base {
         }
     }
 
-    // async getPreviewReportDetail(data: InputReportDetailAPIModel) {
-    //     try {
-    //         // Make the request with axios, specifying that the response should be a blob
-    //         const response = await axiosInstance.post('/report-detail/preview-report', data, { responseType: 'blob' });
-
-    //         // Check if the response is actually a PDF (optional, but good practice)
-    //         const contentType = response.headers['content-type'];
-    //         if (!contentType || !contentType.includes('pdf')) {
-    //             throw new Error('The response is not a valid PDF');
-    //         }
-
-    //         // Create a URL for the blob data
-    //         const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-
-    //         // Create a link element to trigger the download
-    //         const link = document.createElement('a');
-    //         link.href = url;
-    //         link.download = 'report.pdf'; // You can customize the filename here
-    //         document.body.appendChild(link);
-    //         link.click(); // Trigger the download
-
-    //         // Clean up the link element and URL object after the download
-    //         document.body.removeChild(link);
-    //         window.URL.revokeObjectURL(url);
-
-    //         return {
-    //             success: true,
-    //             data: {
-    //                 url: url
-    //             }
-    //         };
-    //     } catch (err: any) {
-    //         console.error('Error fetching or downloading PDF:', err);
-    //         return {
-    //             success: false,
-    //             message: err.response?.data?.message || 'An error occurred',
-    //             code: err.response?.data?.code
-    //         };
-    //     }
-    // }
-
     async getPreviewReportDetail(data: InputReportDetailAPIModel) {
         try {
             // Gửi yêu cầu với axios, định dạng kết quả là blob
@@ -189,23 +148,24 @@ class ReportDetailAPI extends Base {
 
     async downloadReportDetailAsWord({ reportId }: { reportId: string }) {
         try {
-            const response = await this.get('/report-detail/download-word',
-                { reportId: reportId },
-                { responseType: 'blob' }
-            );
+            // Thực hiện yêu cầu GET với axiosInstance
+            const response = await axiosInstance.get('/report-detail/download-word', {
+                params: { reportId: reportId },
+                responseType: 'blob'
+            });
 
-            // Create a URL for the blob data
+            // Tạo URL cho dữ liệu blob
             const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' }));
 
-            // Create a temporary anchor element to trigger the download
+            // Tạo một thẻ link tạm thời để kích hoạt tải xuống
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', 'report_detail.docx'); // Set desired file name
+            link.setAttribute('download', 'report_detail.docx'); // Đặt tên tệp mong muốn
             document.body.appendChild(link);
-            link.click(); // Trigger download
-            document.body.removeChild(link); // Remove the link element
+            link.click(); // Kích hoạt tải xuống
+            document.body.removeChild(link); // Xóa thẻ link sau khi tải xong
 
-            // Optionally, revoke the object URL after some time to free memory
+            // Thu hồi URL object để giải phóng bộ nhớ sau một thời gian ngắn
             setTimeout(() => window.URL.revokeObjectURL(url), 100);
 
             return { success: true };
@@ -218,6 +178,7 @@ class ReportDetailAPI extends Base {
             };
         }
     }
+
 }
 
 const reportDetailAPI = new ReportDetailAPI();

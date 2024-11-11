@@ -5,29 +5,56 @@ import { useEditPreviewReportDetailContext } from "@/contexts/edit-preview-repor
 import { useManagement } from "@/contexts/management-context";
 import { useRouter } from "next/navigation";
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import { getReportDetailPreviewPDF } from "@/services/report-detail";
+import { downloadReportDetailAsWord, getReportDetailPreviewPDF, updateReportDetail } from "@/services/report-detail";
 import { useEffect, useState } from 'react';
-import PdfViewer from './components/pdf-preview'; // Your PdfViewer component
+import PdfViewer from './components/pdf-preview';
 import { Typography } from "@mui/material";
+import { useAppContext } from "@/contexts/app-context";
 
 export default function ReportDetailPreview() {
+    const { setToastInfo } = useAppContext();
     const { setHeaderTitle, setHeaderButtons } = useManagement();
     const router = useRouter();
     const { goBack, reportId, reportDetail } = useEditPreviewReportDetailContext();
-    const [pdfData, setPdfData] = useState<Uint8Array | null>(null); // Store PDF data as ArrayBuffer
+    const [pdfData, setPdfData] = useState<Uint8Array | null>(null);
+
+    const fetchPdfData = async () => {
+        if (reportId && reportDetail) {
+            const response = await getReportDetailPreviewPDF({ reportId: reportId, uiModel: reportDetail });
+            if (response.success && response.fileData) {
+                setPdfData(new Uint8Array(response.fileData));
+            }
+        }
+    };
+
+    const handleDownload = () => {
+        if (reportId) {
+            downloadReportDetailAsWord({ reportId: reportId }).then(result => {
+                setToastInfo && setToastInfo({
+                    show: true,
+                    message: result.success ? 'Tải xuống thành công' : result.message || 'Có lỗi xảy ra',
+                    severity: result.success ? 'success' : 'error'
+                });
+            });
+        }
+    };
+
+    const handleSave = () => {
+        if (reportId && reportDetail) {
+            updateReportDetail({ reportId: reportId, uiModel: reportDetail }).then(result => {
+                setToastInfo && setToastInfo({
+                    show: true,
+                    message: result.message || 'Có lỗi xảy ra',
+                    severity: result.success ? 'success' : 'error'
+                });
+                if (result.success) {
+                    router.push('/management/report');
+                }
+            });
+        }
+    };
 
     useEffect(() => {
-        const fetchPdfData = async () => {
-            if (reportId && reportDetail) {
-                const response = await getReportDetailPreviewPDF({
-                    reportId: reportId,
-                    uiModel: reportDetail
-                });
-                if (response.success && response.fileData) {
-                    setPdfData(new Uint8Array(response.fileData)); // Store the binary data
-                }
-            }
-        };
         fetchPdfData();
     }, [reportId, reportDetail]);
 
@@ -44,16 +71,16 @@ export default function ReportDetailPreview() {
             },
             {
                 type: 'download',
-                onClick: () => { /* Add download logic here */ },
+                onClick: () => { handleDownload() },
                 label: 'Tải xuống'
             },
             {
                 type: 'save',
-                onClick: () => { /* Add save logic here */ },
+                onClick: () => { handleSave() },
                 label: 'Lưu'
             }
         ]);
-    }, [setHeaderButtons, setHeaderTitle]);
+    }, [setHeaderButtons, setHeaderTitle, reportId, reportDetail]);
 
     return (
         <>
