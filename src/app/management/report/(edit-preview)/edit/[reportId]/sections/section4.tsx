@@ -10,10 +10,12 @@ export interface Section4Data {
     row2?: DoubleTextFieldGroupData;
 }
 interface Section4Props {
+    inputData?: Section4Data;
     onChange?: (data: Section4Data) => void;
 }
 
 export default function Section4({
+    inputData,
     onChange
 }: Section4Props) {
     const [data, setData] = useState<Section4Data>();
@@ -31,9 +33,9 @@ export default function Section4({
                     label1="Loại I (Người)"
                     label2="Loại II (Người)"
                     label3="Loại III (Người)"
-                    defaultValue1="0"
-                    defaultValue2="0"
-                    defaultValue3="0"
+                    defaultValue1={inputData?.row1?.value1 || '0'}
+                    defaultValue2={inputData?.row1?.value2 || '0'}
+                    defaultValue3={inputData?.row1?.value3 || '0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });
@@ -42,8 +44,8 @@ export default function Section4({
                 <DoubleTextFieldGroup
                     label1="Loại IV (Người)"
                     label2="Loại V (Người)"
-                    defaultValue1="0"
-                    defaultValue2="0"
+                    defaultValue1={inputData?.row2?.value1 || '0'}
+                    defaultValue2={inputData?.row2?.value2 || '0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row2: value });
                         setData({ ...data, row2: value });

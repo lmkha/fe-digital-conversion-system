@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { Divider, Stack, Typography } from "@mui/material";
 import TripleTextFieldGroup, { TripleTextFieldGroupData } from "../components/triple-tf-group";
-import { useState } from "react";
-import { isNumber } from "@/validators/report-detail";
+import { useEffect, useState } from "react";
+import { isNonNegativeInteger, isNumber } from "@/validators/report-detail";
 
 export interface Section1Data {
     row1?: TripleTextFieldGroupData;
@@ -24,14 +25,27 @@ interface Section1HelpText {
 }
 
 interface Section1Props {
+    inputData?: Section1Data;
     onChange?: (data: Section1Data) => void;
 }
 
 export default function Section1({
+    inputData,
     onChange
 }: Section1Props) {
-    const [data, setData] = useState<Section1Data>();
+    const [data, setData] = useState<Section1Data | undefined>(inputData);
     const [helpText, setHelpText] = useState<Section1HelpText>();
+
+    const isSection1HelperTextEmpty = (section?: Section1HelpText): boolean => {
+        return section ? Object.values(section).every((row) => {
+            return Object.values(row).every((text) => text === '' || text === undefined);
+        }) : true;
+    };
+
+    // Only call onChange when all helper text is filled(no error)
+    useEffect(() => {
+        isSection1HelperTextEmpty(helpText) && data && onChange?.(data);
+    }, [data]);
 
     return (
         <>
@@ -43,31 +57,13 @@ export default function Section1({
                     label1="Tổng số lao động"
                     label2="Người làm công tác ATVSLĐ"
                     label3="Người làm công tác y tế"
-                    defaultValue1="0"
-                    defaultValue2="0"
-                    defaultValue3="0"
+                    defaultValue1={inputData?.row1?.value1 || '0'}
+                    defaultValue2={inputData?.row1?.value2 || '0'}
+                    defaultValue3={inputData?.row1?.value3 || '0'}
                     helperText1={helpText?.row1?.helperText1}
                     helperText2={helpText?.row1?.helperText2}
                     helperText3={helpText?.row1?.helperText3}
                     onChange={(value) => {
-                        if (!isNumber(value.value1)) {
-                            setHelpText({
-                                ...helpText,
-                                row1: {
-                                    ...helpText?.row1,
-                                    helperText1: 'Vui lòng nhập số'
-                                }
-                            });
-                            return;
-                        }
-                        setHelpText({
-                            ...helpText,
-                            row1: {
-                                ...helpText?.row1,
-                                helperText1: undefined
-                            }
-                        });
-                        onChange?.({ ...data, row1: value })
                         setData({ ...data, row1: value });
                     }}
                 />
@@ -75,11 +71,13 @@ export default function Section1({
                     label1="Lao động nữ"
                     label2="Lao động làm việc trong điều kiện độc hại"
                     label3="Lao động là người chưa thành niên"
-                    defaultValue1="0"
-                    defaultValue2="0"
-                    defaultValue3="0"
+                    defaultValue1={inputData?.row2?.value1 || '0'}
+                    defaultValue2={inputData?.row2?.value2 || '0'}
+                    defaultValue3={inputData?.row2?.value3 || '0'}
+                    helperText1={helpText?.row2?.helperText1}
+                    helperText2={helpText?.row2?.helperText2}
+                    helperText3={helpText?.row2?.helperText3}
                     onChange={(value) => {
-                        onChange?.({ ...data, row2: value })
                         setData({ ...data, row2: value });
                     }}
                 />
@@ -87,11 +85,13 @@ export default function Section1({
                     label1="Lao động dưới 15 tuổi"
                     label2="Lao động người khuyết tật"
                     label3="Lao động người cao tuổi"
-                    defaultValue1="0"
-                    defaultValue2="0"
-                    defaultValue3="0"
+                    defaultValue1={inputData?.row3?.value1 || '0'}
+                    defaultValue2={inputData?.row3?.value2 || '0'}
+                    defaultValue3={inputData?.row3?.value3 || '0'}
+                    helperText1={helpText?.row3?.helperText1}
+                    helperText2={helpText?.row3?.helperText2}
+                    helperText3={helpText?.row3?.helperText3}
                     onChange={(value) => {
-                        onChange?.({ ...data, row3: value })
                         setData({ ...data, row3: value });
                     }}
                 />

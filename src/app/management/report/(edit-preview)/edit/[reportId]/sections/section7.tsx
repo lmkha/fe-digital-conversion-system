@@ -7,10 +7,12 @@ export interface Section7Data {
     row1?: TripleTextFieldGroupData;
 }
 interface Section7Props {
+    inputData?: Section7Data;
     onChange?: (data: Section7Data) => void;
 }
 
 export default function Section7({
+    inputData,
     onChange
 }: Section7Props) {
     const [data, setData] = useState<Section7Data>();
@@ -28,9 +30,9 @@ export default function Section7({
                     label1="Tổng số người làm thêm trong năm (người)"
                     label2="Tổng số giờ làm thêm trong năm (người)"
                     label3="Số giờ làm thêm cao nhất trong 1 tháng (người)"
-                    defaultValue1="0"
-                    defaultValue2="0"
-                    defaultValue3="0"
+                    defaultValue1={inputData?.row1?.value1 || '0'}
+                    defaultValue2={inputData?.row1?.value2 || '0'}
+                    defaultValue3={inputData?.row1?.value3 || '0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });

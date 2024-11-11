@@ -10,10 +10,12 @@ export interface Section3Data {
     row2?: DoubleTextFieldGroupData;
 }
 interface Section3Props {
+    inputData?: Section3Data;
     onChange?: (data: Section3Data) => void;
 }
 
 export default function Section3({
+    inputData,
     onChange
 }: Section3Props) {
     const [data, setData] = useState<Section3Data>();
@@ -31,9 +33,9 @@ export default function Section3({
                     label1="Tổng số người bị BNN tới thời điểm BC"
                     label2="Số người mắc mới BNN"
                     label3="Số ngày công nghỉ phép về BNN"
-                    defaultValue1="0"
-                    defaultValue2="0"
-                    defaultValue3="0"
+                    defaultValue1={inputData?.row1?.value1 || '0'}
+                    defaultValue2={inputData?.row1?.value2 || '0'}
+                    defaultValue3={inputData?.row1?.value3 || '0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });
@@ -42,8 +44,8 @@ export default function Section3({
                 <DoubleTextFieldGroup
                     label1="Số người phải nghỉ trước tuổi hưu vì BNN "
                     label2="Tổng chi phí  BNN phát sinh trong năm"
-                    defaultValue1="0"
-                    defaultValue2="0.0"
+                    defaultValue1={inputData?.row2?.value1 || '0'}
+                    defaultValue2={inputData?.row2?.value2 || '0.0'}
                     endAdornmentText2="Triệu đồng"
                     onChange={(value) => {
                         onChange?.({ ...data, row2: value });

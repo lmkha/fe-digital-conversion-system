@@ -12,10 +12,12 @@ export interface Section9Data {
     row5?: DoubleTextFieldGroupData;
 }
 interface Section9Props {
+    inputData?: Section9Data;
     onChange?: (data: Section9Data) => void;
 }
 
 export default function Section9({
+    inputData,
     onChange
 }: Section9Props) {
     const [data, setData] = useState<Section9Data>();
@@ -28,8 +30,8 @@ export default function Section9({
                 <DoubleTextFieldGroup
                     label1="Số mẫu quan trắc môi trường lao động (Mẫu)"
                     label2="Số mẫu không đạt tiêu chuẩn(Mẫu) "
-                    defaultValue1="0"
-                    defaultValue2="0"
+                    defaultValue1={inputData?.row1?.value1 || '0'}
+                    defaultValue2={inputData?.row1?.value2 || '0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });
@@ -39,9 +41,9 @@ export default function Section9({
                     label1="Mẫu nhiệt độ không đạt (Mẫu /Mẫu )"
                     label2="Mẫu độ ẩm không đạt (Mẫu/Mẫu)"
                     label3="Mẫu tốc độ gió không đạt (Mẫu/Mãu)"
-                    defaultValue1="0/0"
-                    defaultValue2="0/0"
-                    defaultValue3="0/0"
+                    defaultValue1={inputData?.row2?.value1 || '0/0'}
+                    defaultValue2={inputData?.row2?.value2 || '0/0'}
+                    defaultValue3={inputData?.row2?.value3 || '0/0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row2: value });
                         setData({ ...data, row2: value });
@@ -51,9 +53,9 @@ export default function Section9({
                     label1="Mẫu ánh sáng không đạt (Mẫu/Mẫu)"
                     label2="Mẫu tiếng ồn không đạt (Mẫu/Mẫu)"
                     label3="Mẫu bụi không đạt (Mẫu/Mẫu)"
-                    defaultValue1="0/0"
-                    defaultValue2="0/0"
-                    defaultValue3="0/0"
+                    defaultValue1={inputData?.row3?.value1 || '0/0'}
+                    defaultValue2={inputData?.row3?.value2 || '0/0'}
+                    defaultValue3={inputData?.row3?.value3 || '0/0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row3: value });
                         setData({ ...data, row3: value });
@@ -63,9 +65,9 @@ export default function Section9({
                     label1="Mẫu rung không đạt (Mẫu/Mẫu)"
                     label2="Mẫu hơi khí độc không đạt (Mẫu/Mẫu)"
                     label3="Mẫu phóng xạ không đạt (Mẫu/Mẫu)"
-                    defaultValue1="0/0"
-                    defaultValue2="0/0"
-                    defaultValue3="0/0"
+                    defaultValue1={inputData?.row4?.value1 || '0/0'}
+                    defaultValue2={inputData?.row4?.value2 || '0/0'}
+                    defaultValue3={inputData?.row4?.value3 || '0/0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row4: value });
                         setData({ ...data, row4: value });
@@ -74,8 +76,8 @@ export default function Section9({
                 <DoubleTextFieldGroup
                     label1="Mẫu điện từ trường không đạt (Mẫu/Mẫu)"
                     label2="Mẫu khác không đạt (Mẫu/Mẫu)"
-                    defaultValue1="0/0"
-                    defaultValue2="0/0"
+                    defaultValue1={inputData?.row5?.value1 || '0/0'}
+                    defaultValue2={inputData?.row5?.value2 || '0/0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row5: value });
                         setData({ ...data, row5: value });

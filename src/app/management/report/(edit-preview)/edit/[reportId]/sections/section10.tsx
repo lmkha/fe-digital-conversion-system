@@ -10,10 +10,12 @@ export interface Section10Data {
     row3?: SingleTextFieldData;
 }
 interface Section10Props {
+    inputData?: Section10Data;
     onChange?: (data: Section10Data) => void;
 }
 
 export default function Section10({
+    inputData,
     onChange
 }: Section10Props) {
     const [data, setData] = useState<Section10Data>();
@@ -27,9 +29,9 @@ export default function Section10({
                     label1="Các biện pháp kỹ thuật an toàn "
                     label2="Các biện pháp kỹ thuật vệ sinh "
                     label3="Trang bị phương tiện bảo vệ cá nhân "
-                    defaultValue1="0.0"
-                    defaultValue2="0.0"
-                    defaultValue3="0.0"
+                    defaultValue1={inputData?.row1?.value1 || '0.0'}
+                    defaultValue2={inputData?.row1?.value2 || '0.0'}
+                    defaultValue3={inputData?.row1?.value3 || '0.0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });
@@ -39,9 +41,9 @@ export default function Section10({
                     label1="Chăm sóc sức khỏe người lao động "
                     label2="Tuyên truyền huấn luyện "
                     label3="Đánh giá nguy cơ rủi tro về ATVSLĐ "
-                    defaultValue1="0.0"
-                    defaultValue2="0.0"
-                    defaultValue3="0.0"
+                    defaultValue1={inputData?.row2?.value1 || '0.0'}
+                    defaultValue2={inputData?.row2?.value2 || '0.0'}
+                    defaultValue3={inputData?.row2?.value3 || '0.0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row2: value });
                         setData({ ...data, row2: value });
@@ -49,7 +51,7 @@ export default function Section10({
                 />
                 <SingleTextField
                     label1="Chi khác "
-                    defaultValue="0.0"
+                    defaultValue={inputData?.row3?.value1 || '0.0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row3: value });
                         setData({ ...data, row3: value });

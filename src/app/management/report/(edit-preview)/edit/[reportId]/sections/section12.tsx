@@ -7,10 +7,12 @@ export interface Section12Data {
     row1?: SingleTextFieldData;
 }
 interface Section12Props {
+    inputData?: Section12Data;
     onChange?: (data: Section12Data) => void;
 }
 
 export default function Section12({
+    inputData,
     onChange
 
 }: Section12Props) {
@@ -23,7 +25,7 @@ export default function Section12({
             <Stack direction={'column'} spacing={2} paddingBottom={2}>
                 <MonthYearTextField
                     label1="Tháng/ Năm"
-                    defaultValue1={dayjs().format('MM/YYYY')}
+                    defaultValue1={inputData?.row1?.value1 || dayjs().format('MM/YYYY')}
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });

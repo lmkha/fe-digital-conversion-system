@@ -9,11 +9,13 @@ export interface Section5Data {
     row3?: TripleTextFieldGroupData;
 }
 interface Section5Props {
+    inputData?: Section5Data;
     onChange?: (data: Section5Data) => void;
 }
 
 
 export default function Section5({
+    inputData,
     onChange
 }: Section5Props) {
     const [data, setData] = useState<Section5Data>();
@@ -31,9 +33,9 @@ export default function Section5({
                     label1="Nhóm 1: SL huấn luyện/SL hiện có "
                     label2="Nhóm 2: SL huấn luyện/SL hiện có (người/người)"
                     label3="Nhóm 3: SL huấn luyện/SL hiện có (người/người)"
-                    defaultValue1="0/0"
-                    defaultValue2="0/0"
-                    defaultValue3="0/0"
+                    defaultValue1={inputData?.row1?.value1 || '0/0'}
+                    defaultValue2={inputData?.row1?.value2 || '0/0'}
+                    defaultValue3={inputData?.row1?.value3 || '0/0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });
@@ -43,9 +45,9 @@ export default function Section5({
                     label1="Trong đó: Tự huấn luyện"
                     label2="Thuê tổ chức cung cấp dịch vụ huấn luyện"
                     label3="Nhóm 4: SL huấn luyện/SL hiện có (người/người)"
-                    defaultValue1="0/0"
-                    defaultValue2="0/0"
-                    defaultValue3="0/0"
+                    defaultValue1={inputData?.row2?.value1 || '0/0'}
+                    defaultValue2={inputData?.row2?.value2 || '0/0'}
+                    defaultValue3={inputData?.row2?.value3 || '0/0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row2: value });
                         setData({ ...data, row2: value });
@@ -55,9 +57,9 @@ export default function Section5({
                     label1="Nhóm 5: SL huấn luyện/SL hiện có (người/người)"
                     label2="Nhóm 6: SL huấn luyện/SL hiện có (người/người)"
                     label3="Tổng chi phí huấn luyện "
-                    defaultValue1="0/0"
-                    defaultValue2="0/0"
-                    defaultValue3="0.0"
+                    defaultValue1={inputData?.row3?.value1 || '0/0'}
+                    defaultValue2={inputData?.row3?.value2 || '0/0'}
+                    defaultValue3={inputData?.row3?.value3 || '0.0'}
                     endAdornmentText3="Triệu đồng"
                     onChange={(value) => {
                         onChange?.({ ...data, row3: value });

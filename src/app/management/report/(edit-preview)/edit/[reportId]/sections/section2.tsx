@@ -10,10 +10,12 @@ export interface Section2Data {
 }
 
 interface Section2Props {
+    inputData?: Section2Data;
     onChange?: (data: Section2Data) => void;
 }
 
 export default function Section2({
+    inputData,
     onChange
 }: Section2Props) {
     const [data, setData] = useState<Section2Data>();
@@ -31,9 +33,9 @@ export default function Section2({
                     label1="Tổng số vụ TNLĐ"
                     label2="Số vụ có người chết"
                     label3="Số người bị TNLĐ"
-                    defaultValue1="0"
-                    defaultValue2="0"
-                    defaultValue3="0"
+                    defaultValue1={inputData?.row1?.value1 || '0'}
+                    defaultValue2={inputData?.row1?.value2 || '0'}
+                    defaultValue3={inputData?.row1?.value3 || '0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });
@@ -43,9 +45,9 @@ export default function Section2({
                     label1="Số người chết vì TNLĐ"
                     label2="Tổng chi phí cho TNLĐ"
                     label3="Số ngày công vì TNLĐ"
-                    defaultValue1="0"
-                    defaultValue2="0"
-                    defaultValue3="0"
+                    defaultValue1={inputData?.row2?.value1 || '0'}
+                    defaultValue2={inputData?.row2?.value2 || '0'}
+                    defaultValue3={inputData?.row2?.value3 || '0'}
                     onChange={(value) => {
                         onChange?.({ ...data, row2: value });
                         setData({ ...data, row2: value });

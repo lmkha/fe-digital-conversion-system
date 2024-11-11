@@ -8,10 +8,12 @@ export interface Section11Data {
     row2?: SingleTextFieldData;
 }
 interface Section11Props {
+    inputData?: Section11Data;
     onChange?: (data: Section11Data) => void;
 }
 
 export default function Section11({
+    inputData,
     onChange
 }: Section11Props) {
     const [data, setData] = useState<Section11Data>();
@@ -25,6 +27,7 @@ export default function Section11({
                     size="small"
                     fullWidth
                     label="Tên tổ chức dịch vụ ATVSLĐ được thuê"
+                    defaultValue={inputData?.row1?.value1}
                     onChange={(value) => {
                         onChange?.({
                             ...data,
@@ -44,6 +47,7 @@ export default function Section11({
                     size="small"
                     fullWidth
                     label="Tên tổ chức dịch vụ về y tế được thuê "
+                    defaultValue={inputData?.row2?.value1}
                     onChange={(value) => {
                         onChange?.({
                             ...data,
