@@ -11,6 +11,9 @@ interface GoBackCurrentVersionProps {
 export default function GoBackCurrentVersion({ label, onClick }: GoBackCurrentVersionProps) {
     return (
         <Button
+            sx={{
+                textTransform: 'none',
+            }}
             variant="outlined"
             color="primary"
             startIcon={<FlipCameraAndroidIcon />}

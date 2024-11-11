@@ -11,6 +11,9 @@ interface HistoryButtonProps {
 export default function HistoryButton({ label, onClick }: HistoryButtonProps) {
     return (
         <Button
+            sx={{
+                textTransform: 'none',
+            }}
             variant="outlined"
             color="primary"
             startIcon={<RestoreIcon />}

@@ -11,6 +11,10 @@ interface EditPreviewReportDetailContextType {
     setReportId?: (reportId: string) => void;
     reportDetail?: ReportPageData;
     setReportDetail?: (reportDetail: ReportPageData) => void;
+    historyPageData?: ReportPageData;
+    setHistoryPageData?: (historyPageData: ReportPageData) => void;
+    currentVersionData?: ReportPageData;
+    setCurrentVersionData?: (currentVersion: ReportPageData) => void;
 }
 
 const EditPreviewReportDetailContext = createContext<EditPreviewReportDetailContextType | undefined>(undefined);
@@ -19,6 +23,8 @@ export const EditPreviewReportDetailProvider: React.FC<{ children: ReactNode }> 
     const [activeStep, setActiveStep] = useState(1);
     const [reportId, setReportId] = useState<string | undefined>(undefined);
     const [reportDetail, setReportDetail] = useState<ReportPageData | undefined>(undefined);
+    const [historyPageData, setHistoryPageData] = useState<ReportPageData | undefined>(undefined);
+    const [currentVersion, setCurrentVersion] = useState<ReportPageData | undefined>(undefined);
 
     const goNext = () => {
         if (activeStep < 2) {
@@ -40,7 +46,11 @@ export const EditPreviewReportDetailProvider: React.FC<{ children: ReactNode }> 
             reportId,
             setReportId,
             reportDetail,
-            setReportDetail
+            setReportDetail,
+            historyPageData,
+            setHistoryPageData,
+            currentVersionData: currentVersion,
+            setCurrentVersionData: setCurrentVersion
         }}>
             {children}
         </EditPreviewReportDetailContext.Provider>

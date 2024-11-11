@@ -31,7 +31,7 @@ export default function ReportDetail() {
     const { reportId } = useParams<{ reportId: string }>();
     const router = useRouter();
     const { setHeaderTitle, setHeaderButtons, setFooterInfo } = useManagement();
-    const { goNext, setReportId, reportDetail, setReportDetail } = useEditPreviewReportDetailContext();
+    const { goNext, setReportId, reportDetail, setReportDetail, currentVersionData, setCurrentVersionData } = useEditPreviewReportDetailContext();
     const [pageData, setPageData] = useState<ReportPageData>();
     const [openHistoryModal, setOpenHistoryModal] = useState(false);
     const [historyPageData, setHistoryPageData] = useState<ReportPageData>();
@@ -46,7 +46,7 @@ export default function ReportDetail() {
     useEffect(() => {
         if (reportId) {
             if (reportDetail) {
-                setPageData(reportDetail)
+                setPageData(currentVersionData);
             }
             else {
                 setReportId && setReportId(reportId);
@@ -89,6 +89,8 @@ export default function ReportDetail() {
 
     useEffect(() => {
         if (pageData) {
+            console.log('update currentpage', pageData);
+            setCurrentVersionData && setCurrentVersionData(pageData);
             setDataRender(pageData);
         }
     }, [pageData]);
@@ -117,7 +119,14 @@ export default function ReportDetail() {
                         label="Phiên bản hiện tại"
                         onClick={() => {
                             setHistoryPageData(undefined);
-                            setDataRender(pageData);
+                            if (!pageData) {
+                                // Nếu từ preview trở về và ngay lập tức bấm vào phiên bản hiện tại, sẽ không có dữ liệu, phải lấy từ context
+                                console.log('set data from context', currentVersionData);
+                                setPageData(currentVersionData);
+                            } else {
+                                console.log('set data from page', pageData);
+                                setDataRender(pageData);
+                            }
                         }}
                     />
                     <HistoryButton label="Lịch sử" onClick={() => { setOpenHistoryModal(true) }} />
@@ -130,6 +139,12 @@ export default function ReportDetail() {
                 onViewReportHistory={(reportId) => {
                     getReportDetailByHistoryId(reportId).then((response) => {
                         if (response.success) {
+                            // Nếu như đang ở phiên bản cũ, không có gì xảy ra. Nếu đang ở phiên bản hiện tại và muốn chuyển qua
+                            // phiên bản mới thì phải lưu lại dữ liệu hiện tại cho phiên bản cũ
+                            if (!historyPageData) {
+                                console.log('set data before change', dataRender);
+                                setPageData(dataRender);
+                            }
                             setHistoryPageData(response.reportDetail);
                         } else {
                             setToastInfo && setToastInfo({

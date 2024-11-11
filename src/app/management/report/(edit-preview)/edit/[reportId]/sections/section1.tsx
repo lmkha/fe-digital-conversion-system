@@ -42,10 +42,6 @@ export default function Section1({
         }) : true;
     };
 
-    useEffect(() => {
-        console.log('Section1 inputData:', inputData);
-    }, [inputData]);
-
     // Only call onChange when all helper text is filled(no error)
     useEffect(() => {
         isSection1HelperTextEmpty(helpText) && data && onChange?.(data);
