@@ -25,3 +25,18 @@ export interface ReportPageData {
     section11Data?: Section11Data;
     section12Data?: Section12Data;
 }
+
+export interface TripleHelpText {
+    helperText1?: string;
+    helperText2?: string;
+    helperText3?: string;
+}
+
+export interface DoubleHelpText {
+    helperText1?: string;
+    helperText2?: string;
+}
+
+export interface SingleHelpText {
+    helperText1?: string;
+}

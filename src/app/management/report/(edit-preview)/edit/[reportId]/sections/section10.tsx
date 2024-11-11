@@ -3,12 +3,21 @@
 import { Divider, Stack, Typography } from "@mui/material";
 import TripleTextFieldGroup, { TripleTextFieldGroupData } from "../components/triple-tf-group";
 import SingleTextField, { SingleTextFieldData } from "../components/single-tf-group";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { SingleHelpText, TripleHelpText } from "../types";
+import { isNonNegativeNumber } from "@/validators/report-detail";
 export interface Section10Data {
     row1?: TripleTextFieldGroupData;
     row2?: TripleTextFieldGroupData;
     row3?: SingleTextFieldData;
 }
+
+interface Section10HelpText {
+    row1?: TripleHelpText;
+    row2?: TripleHelpText;
+    row3?: SingleHelpText;
+}
+
 interface Section10Props {
     inputData?: Section10Data;
     onChange?: (data: Section10Data) => void;
@@ -18,7 +27,22 @@ export default function Section10({
     inputData,
     onChange
 }: Section10Props) {
-    const [data, setData] = useState<Section10Data>();
+    const [data, setData] = useState<Section10Data | undefined>(inputData);
+    const [helpText, setHelpText] = useState<Section10HelpText>();
+
+    const isSection10HelperTextEmpty = (section?: Section10HelpText): boolean => {
+        return section ? Object.values(section).every((row) => {
+            return Object.values(row).every((text) => text === '' || text === undefined);
+        }) : true;
+    };
+
+    useEffect(() => {
+        if (isSection10HelperTextEmpty(helpText) && data) {
+            onChange?.(data);
+        } else {
+            onChange?.({});
+        }
+    }, [data]);
     return (
         <>
             <Stack direction={'row'} justifyContent={'space-between'}>
@@ -35,9 +59,26 @@ export default function Section10({
                     endAdornmentText1="Triệu đồng"
                     endAdornmentText2="Triệu đồng"
                     endAdornmentText3="Triệu đồng"
+                    helperText1={helpText?.row1?.helperText1}
+                    helperText2={helpText?.row1?.helperText2}
+                    helperText3={helpText?.row1?.helperText3}
                     onChange={(value) => {
-                        onChange?.({ ...data, row1: value });
                         setData({ ...data, row1: value });
+                        if (!isNonNegativeNumber(value.value1)) {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText1: 'Nhập số thập phân không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText1: undefined } }));
+                        }
+                        if (!isNonNegativeNumber(value.value2)) {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText2: 'Nhập số thập phân không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText2: undefined } }));
+                        }
+                        if (!isNonNegativeNumber(value.value3)) {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText3: 'Nhập số thập phân không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText3: undefined } }));
+                        }
                     }}
                 />
                 <TripleTextFieldGroup
@@ -50,18 +91,40 @@ export default function Section10({
                     endAdornmentText1="Triệu đồng"
                     endAdornmentText2="Triệu đồng"
                     endAdornmentText3="Triệu đồng"
+                    helperText1={helpText?.row2?.helperText1}
+                    helperText2={helpText?.row2?.helperText2}
+                    helperText3={helpText?.row2?.helperText3}
                     onChange={(value) => {
-                        onChange?.({ ...data, row2: value });
                         setData({ ...data, row2: value });
+                        if (!isNonNegativeNumber(value.value1)) {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText1: 'Nhập số thập phân không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText1: undefined } }));
+                        }
+                        if (!isNonNegativeNumber(value.value2)) {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText2: 'Nhập số thập phân không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText2: undefined } }));
+                        }
+                        if (!isNonNegativeNumber(value.value3)) {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText3: 'Nhập số thập phân không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText3: undefined } }));
+                        }
                     }}
                 />
                 <SingleTextField
                     label1="Chi khác "
                     defaultValue={inputData?.row3?.value1 || '0.0'}
                     endAdornmentText="Triệu đồng"
+                    helperText1={helpText?.row3?.helperText1}
                     onChange={(value) => {
-                        onChange?.({ ...data, row3: value });
                         setData({ ...data, row3: value });
+                        if (!isNonNegativeNumber(value.value1)) {
+                            setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText1: 'Nhập số thập phân không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText1: undefined } }));
+                        }
                     }}
                 />
             </Stack>

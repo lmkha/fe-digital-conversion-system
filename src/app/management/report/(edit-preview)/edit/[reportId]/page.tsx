@@ -37,6 +37,43 @@ export default function ReportDetail() {
     const [historyPageData, setHistoryPageData] = useState<ReportPageData>();
     const [dataRender, setDataRender] = useState<ReportPageData>();
 
+
+    function getEmptySectionsIndices(data: ReportPageData): string[] {
+        return Object.entries(data)
+            .map(([key, value], index) => {
+                if (value === undefined || Object.keys(value).length === 0) {
+                    return key.replace(/[^0-9]/g, '');
+                }
+                return null;
+            })
+            .filter((index) => index !== null) as string[];
+    }
+
+
+    const checkDataBeforeGoNext = () => {
+        if (dataRender) {
+            const checkValue = getEmptySectionsIndices(dataRender);
+            if (checkValue.length > 0) {
+                if (checkValue.length === 1) {
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        message: `Vui lòng nhập đúng thông tin ở mục ${checkValue[0]}`,
+                        severity: 'error'
+                    });
+
+                } else {
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        message: `Vui lòng nhập đúng thông tin ở các phần ${checkValue.join(', ')}`,
+                        severity: 'error'
+                    });
+                }
+                return false;
+            }
+            return true;
+        }
+    };
+
     // Clear footer in this page
     useEffect(() => {
         setFooterInfo({})
@@ -46,7 +83,8 @@ export default function ReportDetail() {
     useEffect(() => {
         if (reportId) {
             if (reportDetail) {
-                setPageData(currentVersionData);
+                setPageData(reportDetail);
+                setDataRender(reportDetail);
             }
             else {
                 setReportId && setReportId(reportId);
@@ -79,17 +117,17 @@ export default function ReportDetail() {
             {
                 type: 'next',
                 onClick: () => {
+                    if (!checkDataBeforeGoNext()) return;
                     router.push('/management/report/preview');
                     goNext();
                 },
                 label: 'Bước tiếp theo'
             }
         ]);
-    }, [setHeaderButtons, setHeaderTitle]);
+    }, [setHeaderButtons, setHeaderTitle, dataRender]);
 
     useEffect(() => {
         if (pageData) {
-            console.log('update currentpage', pageData);
             setCurrentVersionData && setCurrentVersionData(pageData);
             setDataRender(pageData);
         }
@@ -120,11 +158,8 @@ export default function ReportDetail() {
                         onClick={() => {
                             setHistoryPageData(undefined);
                             if (!pageData) {
-                                // Nếu từ preview trở về và ngay lập tức bấm vào phiên bản hiện tại, sẽ không có dữ liệu, phải lấy từ context
-                                console.log('set data from context', currentVersionData);
                                 setPageData(currentVersionData);
                             } else {
-                                console.log('set data from page', pageData);
                                 setDataRender(pageData);
                             }
                         }}
@@ -139,10 +174,7 @@ export default function ReportDetail() {
                 onViewReportHistory={(reportId) => {
                     getReportDetailByHistoryId(reportId).then((response) => {
                         if (response.success) {
-                            // Nếu như đang ở phiên bản cũ, không có gì xảy ra. Nếu đang ở phiên bản hiện tại và muốn chuyển qua
-                            // phiên bản mới thì phải lưu lại dữ liệu hiện tại cho phiên bản cũ
                             if (!historyPageData) {
-                                console.log('set data before change', dataRender);
                                 setPageData(dataRender);
                             }
                             setHistoryPageData(response.reportDetail);

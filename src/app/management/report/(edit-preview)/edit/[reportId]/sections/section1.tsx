@@ -5,17 +5,13 @@ import { Divider, Stack, Typography } from "@mui/material";
 import TripleTextFieldGroup, { TripleTextFieldGroupData } from "../components/triple-tf-group";
 import { useEffect, useState } from "react";
 import { isNonNegativeInteger, isNumber } from "@/validators/report-detail";
+import { TripleHelpText } from "../types";
+import { convertStringToInteger } from "@/core/logic/convert";
 
 export interface Section1Data {
     row1?: TripleTextFieldGroupData;
     row2?: TripleTextFieldGroupData;
     row3?: TripleTextFieldGroupData;
-}
-
-interface TripleHelpText {
-    helperText1?: string;
-    helperText2?: string;
-    helperText3?: string;
 }
 
 interface Section1HelpText {
@@ -44,8 +40,13 @@ export default function Section1({
 
     // Only call onChange when all helper text is filled(no error)
     useEffect(() => {
-        isSection1HelperTextEmpty(helpText) && data && onChange?.(data);
+        if (isSection1HelperTextEmpty(helpText) && data) {
+            onChange?.(data);
+        } else {
+            onChange?.({});
+        }
     }, [data]);
+
 
     return (
         <>
@@ -65,6 +66,36 @@ export default function Section1({
                     helperText3={helpText?.row1?.helperText3}
                     onChange={(value) => {
                         setData({ ...data, row1: value });
+                        if (!isNonNegativeInteger(value.value1)) {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText1: 'Nhập số nguyên không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText1: undefined } }));
+                        }
+                        if (!isNonNegativeInteger(value.value2)) {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText2: 'Nhập số nguyên không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText2: undefined } }));
+                        }
+                        if (!isNonNegativeInteger(value.value3)) {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText3: 'Nhập số nguyên không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText3: undefined } }));
+                        }
+
+                        if (isNonNegativeInteger(value.value1) && isNonNegativeInteger(value.value2)) {
+                            if (convertStringToInteger(value.value2) > convertStringToInteger(value.value1)) {
+                                setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText2: 'Không được vượt quá tổng số lao động' } }));
+                            } else {
+                                setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText2: undefined } }));
+                            }
+                        }
+                        if (isNonNegativeInteger(value.value1) && isNonNegativeInteger(value.value3)) {
+                            if (convertStringToInteger(value.value3) > convertStringToInteger(value.value3)) {
+                                setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText3: 'Không được vượt quá tổng số lao động' } }));
+                            } else {
+                                setHelpText((prev) => ({ ...prev, row1: { ...prev?.row1, helperText3: undefined } }));
+                            }
+                        }
                     }}
                 />
                 <TripleTextFieldGroup
@@ -79,6 +110,42 @@ export default function Section1({
                     helperText3={helpText?.row2?.helperText3}
                     onChange={(value) => {
                         setData({ ...data, row2: value });
+                        if (!isNonNegativeInteger(value.value1)) {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText1: 'Nhập số nguyên không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText1: undefined } }));
+                        }
+                        if (!isNonNegativeInteger(value.value2)) {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText2: 'Nhập số nguyên không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText2: undefined } }));
+                        }
+                        if (!isNonNegativeInteger(value.value3)) {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText3: 'Nhập số nguyên không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText3: undefined } }));
+                        }
+                        if (isNonNegativeInteger(data?.row1?.value1) && isNonNegativeInteger(value.value1)) {
+                            if (data?.row1?.value1 && convertStringToInteger(value.value1) > convertStringToInteger(data?.row1?.value1)) {
+                                setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText1: 'Không được vượt quá tổng số lao động' } }));
+                            } else {
+                                setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText1: undefined } }));
+                            }
+                        }
+                        if (isNonNegativeInteger(data?.row1?.value1) && isNonNegativeInteger(value.value2)) {
+                            if (data?.row1?.value1 && convertStringToInteger(value.value2) > convertStringToInteger(data?.row1?.value1)) {
+                                setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText2: 'Không được vượt quá tổng số lao động' } }));
+                            } else {
+                                setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText2: undefined } }));
+                            }
+                        }
+                        if (isNonNegativeInteger(data?.row1?.value1) && isNonNegativeInteger(value.value3)) {
+                            if (data?.row1?.value1 && convertStringToInteger(value.value3) > convertStringToInteger(data?.row1?.value1)) {
+                                setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText3: 'Không được vượt quá tổng số lao động' } }));
+                            } else {
+                                setHelpText((prev) => ({ ...prev, row2: { ...prev?.row2, helperText3: undefined } }));
+                            }
+                        }
                     }}
                 />
                 <TripleTextFieldGroup
@@ -93,6 +160,42 @@ export default function Section1({
                     helperText3={helpText?.row3?.helperText3}
                     onChange={(value) => {
                         setData({ ...data, row3: value });
+                        if (!isNonNegativeInteger(value.value1)) {
+                            setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText1: 'Nhập số nguyên không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText1: undefined } }));
+                        }
+                        if (!isNonNegativeInteger(value.value2)) {
+                            setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText2: 'Nhập số nguyên không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText2: undefined } }));
+                        }
+                        if (!isNonNegativeInteger(value.value3)) {
+                            setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText3: 'Nhập số nguyên không âm' } }));
+                        } else {
+                            setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText3: undefined } }));
+                        }
+                        if (isNonNegativeInteger(data?.row1?.value1) && isNonNegativeInteger(value.value1)) {
+                            if (data?.row1?.value1 && convertStringToInteger(value.value1) > convertStringToInteger(data?.row1?.value1)) {
+                                setHelpText((prev) => ({ ...prev, row3: { ...prev?.row2, helperText1: 'Không được vượt quá tổng số lao động' } }));
+                            } else {
+                                setHelpText((prev) => ({ ...prev, row3: { ...prev?.row2, helperText1: undefined } }));
+                            }
+                        }
+                        if (isNonNegativeInteger(data?.row1?.value1) && isNonNegativeInteger(value.value2)) {
+                            if (data?.row1?.value1 && convertStringToInteger(value.value2) > convertStringToInteger(data?.row1?.value1)) {
+                                setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText2: 'Không được vượt quá tổng số lao động' } }));
+                            } else {
+                                setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText2: undefined } }));
+                            }
+                        }
+                        if (isNonNegativeInteger(data?.row1?.value1) && isNonNegativeInteger(value.value3)) {
+                            if (data?.row1?.value1 && convertStringToInteger(value.value3) > convertStringToInteger(data?.row1?.value1)) {
+                                setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText3: 'Không được vượt quá tổng số lao động' } }));
+                            } else {
+                                setHelpText((prev) => ({ ...prev, row3: { ...prev?.row3, helperText3: undefined } }));
+                            }
+                        }
                     }}
                 />
             </Stack>
