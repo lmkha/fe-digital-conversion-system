@@ -19,7 +19,9 @@ export default function SingleTextField({
     helperText1,
     onChange
 }: SingleTextFieldProps) {
-    const [data] = useState<SingleTextFieldData>();
+    const [data, setData] = useState<SingleTextFieldData>({
+        value1: defaultValue || ""
+    });
     return (
         <Grid2 container spacing={14}>
             <Grid2 size={4}>
@@ -31,7 +33,10 @@ export default function SingleTextField({
                     size="small"
                     fullWidth
                     label={label1 || ""}
-                    onChange={(e) => onChange?.({ ...data, value1: e.target.value } as SingleTextFieldData)}
+                    onChange={(e) => {
+                        setData({ ...data, value1: e.target.value });
+                        onChange?.({ ...data, value1: e.target.value } as SingleTextFieldData)
+                    }}
                     slotProps={{
                         input: {
                             endAdornment: <InputAdornment position="end">{endAdornmentText}</InputAdornment>,

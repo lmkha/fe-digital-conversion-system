@@ -31,7 +31,10 @@ export default function DoubleTextFieldGroup({
     helperText2,
     onChange
 }: DoubleTextFieldGroupProps) {
-    const [data] = useState<DoubleTextFieldGroupData>();
+    const [data, setData] = useState<DoubleTextFieldGroupData>({
+        value1: defaultValue1 || "",
+        value2: defaultValue2 || ""
+    });
     return (
         <Grid2 container spacing={14}>
             <Grid2 size={4}>
@@ -43,7 +46,10 @@ export default function DoubleTextFieldGroup({
                     size="small"
                     fullWidth
                     label={label1 || ""}
-                    onChange={(e) => onChange?.({ ...data, value1: e.target.value } as DoubleTextFieldGroupData)}
+                    onChange={(e) => {
+                        setData({ ...data, value1: e.target.value });
+                        onChange?.({ ...data, value1: e.target.value } as DoubleTextFieldGroupData)
+                    }}
                     slotProps={{
                         input: {
                             endAdornment: <InputAdornment position="end">{endAdornmentText1}</InputAdornment>,
@@ -61,7 +67,10 @@ export default function DoubleTextFieldGroup({
                     size="small"
                     fullWidth
                     label={label2 || ""}
-                    onChange={(e) => onChange?.({ ...data, value2: e.target.value } as DoubleTextFieldGroupData)}
+                    onChange={(e) => {
+                        setData({ ...data, value2: e.target.value });
+                        onChange?.({ ...data, value2: e.target.value } as DoubleTextFieldGroupData)
+                    }}
                     slotProps={{
                         input: {
                             endAdornment: <InputAdornment position="end">{endAdornmentText2}</InputAdornment>,

@@ -39,7 +39,11 @@ export default function TripleTextFieldGroup({
     helperText3,
     onChange
 }: TripleTextFieldGroupProps) {
-    const [data, setData] = useState<TripleTextFieldGroupData>();
+    const [data, setData] = useState<TripleTextFieldGroupData>({
+        value1: defaultValue1 || "",
+        value2: defaultValue2 || "",
+        value3: defaultValue3 || ""
+    });
 
     return (
         <Grid2 container spacing={14}>
@@ -53,7 +57,7 @@ export default function TripleTextFieldGroup({
                     fullWidth
                     label={label1 || ""}
                     onChange={(e) => {
-                        setData({ ...data, value1: e.target.value } as TripleTextFieldGroupData);
+                        setData({ ...data, value1: e.target.value });
                         onChange?.({ ...data, value1: e.target.value } as TripleTextFieldGroupData)
                     }}
                     slotProps={{
@@ -74,6 +78,7 @@ export default function TripleTextFieldGroup({
                     fullWidth
                     label={label2 || ""}
                     onChange={(e) => {
+                        setData({ ...data, value2: e.target.value });
                         onChange?.({ ...data, value2: e.target.value } as TripleTextFieldGroupData)
                     }}
                     slotProps={{
@@ -94,6 +99,7 @@ export default function TripleTextFieldGroup({
                     fullWidth
                     label={label3 || ""}
                     onChange={(e) => {
+                        setData({ ...data, value3: e.target.value });
                         onChange?.({ ...data, value3: e.target.value } as TripleTextFieldGroupData)
                     }}
                     slotProps={{
