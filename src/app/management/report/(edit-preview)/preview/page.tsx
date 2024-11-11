@@ -8,8 +8,10 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import { downloadReportDetailAsWord, getReportDetailPreviewPDF, updateReportDetail } from "@/services/report-detail";
 import { useEffect, useState } from 'react';
 import PdfViewer from './components/pdf-preview';
-import { Typography } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useAppContext } from "@/contexts/app-context";
+import HistoryButton from "./components/history-button";
+import HistoryModal from "./components/histoty-modal";
 
 export default function ReportDetailPreview() {
     const { setToastInfo } = useAppContext();
@@ -17,6 +19,7 @@ export default function ReportDetailPreview() {
     const router = useRouter();
     const { goBack, reportId, reportDetail } = useEditPreviewReportDetailContext();
     const [pdfData, setPdfData] = useState<Uint8Array | null>(null);
+    const [openHistoryModal, setOpenHistoryModal] = useState(false);
 
     const fetchPdfData = async () => {
         if (reportId && reportDetail) {
@@ -84,11 +87,20 @@ export default function ReportDetailPreview() {
 
     return (
         <>
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                marginBottom: '10px',
+            }}>
+                <HistoryButton label="Lịch sử" onClick={() => { setOpenHistoryModal(true) }} />
+            </Box>
             {pdfData ? (
                 <PdfViewer fileData={pdfData} />
             ) : (
                 <Typography sx={{ textAlign: 'center' }} variant="body1">Đang tải dữ liệu...</Typography>
             )}
+
+            <HistoryModal open={openHistoryModal} onClose={() => setOpenHistoryModal(false)} />
         </>
     );
 }

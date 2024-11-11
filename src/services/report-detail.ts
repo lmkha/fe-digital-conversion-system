@@ -279,13 +279,11 @@ export const getReportDetailPreviewPDF = async ({ reportId, uiModel }: { reportI
     fileData?: ArrayBuffer;
 }> => {
     try {
-        // Biến đổi dữ liệu UI model thành API model
         const model = transformUIModelToReportDetailAPIModel({
             reportId: reportId,
             uiModel: uiModel
         });
 
-        // Gọi API để lấy dữ liệu PDF dưới dạng ArrayBuffer (dữ liệu nhị phân)
         const response = await reportDetailAPI.getPreviewReportDetail(model);
 
         if (!response.success) {
@@ -295,7 +293,6 @@ export const getReportDetailPreviewPDF = async ({ reportId, uiModel }: { reportI
             };
         }
 
-        // Trả về dữ liệu PDF dưới dạng ArrayBuffer
         return {
             success: true,
             fileData: response.data?.fileData
