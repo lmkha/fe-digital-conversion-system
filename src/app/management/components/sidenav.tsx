@@ -14,6 +14,11 @@ import { logout as serviceLogout } from "@/services/auth";
 import { CldImage } from 'next-cloudinary';
 import { usePermission } from '@/contexts/permission-context';
 import { useUserInfo } from "@/contexts/user-info-context";
+import * as React from 'react';
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
+import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
+import { useRouter } from "next/navigation";
 
 export default function SideNav() {
   return (
@@ -178,6 +183,7 @@ const MiddleSideNav = () => {
 }
 
 const BottomSideNav = () => {
+  const router = useRouter();
   const { logout, isLoggedIn } = useAuth();
   const [avatar, setAvatar] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
@@ -190,31 +196,56 @@ const BottomSideNav = () => {
       }
     }
   }, [isLoggedIn]);
+
   return (
-    <button
-      className="flex items-center justify-between text-white border-y-2 border-white mb-1 mx-4 hover:bg-blue-950"
-      onClick={() => serviceLogout(logout)}
-    >
-      <div className="flex items-center gap-2 py-2">
-        {/* Avatar */}
-        <CldImage
-          width="50"
-          height="50"
-          src={avatar ? avatar : ""}
-          alt="No avt"
-          style={{
-            borderRadius: "50%",
-            objectFit: "cover",
-            width: "50px",
-            height: "50px",
-            border: "1px solid black",
-          }}
-        />
-        {/* Username */}
-        <h1>{fullName}</h1>
-        {/* Action button icon */}
-      </div>
-      <GrNext />
-    </button>
+    <PopupState variant="popover" popupId="demo-popup-menu">
+      {(popupState) => (
+        <React.Fragment>
+          <button
+            className="flex items-center justify-between text-white border-y-2 border-white mb-1 mx-4 hover:bg-blue-950"
+            // onClick={() => serviceLogout(logout)}
+            onClick={() => {
+              popupState.open();
+            }}
+          >
+            <div className="flex items-center gap-2 py-2">
+              {/* Avatar */}
+              <CldImage
+                width="50"
+                height="50"
+                src={avatar ? avatar : ""}
+                alt="No avt"
+                style={{
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  width: "50px",
+                  height: "50px",
+                  border: "1px solid black",
+                }}
+              />
+              {/* Username */}
+              <h1>{fullName}</h1>
+              {/* Action button icon */}
+            </div>
+            <GrNext />
+          </button>
+          <Menu
+            {...bindMenu(popupState)}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            transformOrigin={{
+              vertical: 'top',
+              horizontal: 'right',
+            }}
+          >
+            <MenuItem onClick={() => { router.push('/management/profile') }}>Trang cá nhân</MenuItem>
+            <MenuItem onClick={() => serviceLogout(logout)}>Đăng xuất</MenuItem>
+          </Menu>
+
+        </React.Fragment>
+      )}
+    </PopupState>
   );
 };

@@ -37,10 +37,10 @@ export default function Section5({
   const isSection5HelperTextEmpty = (section?: Section5HelpText): boolean => {
     return section
       ? Object.values(section).every((row) => {
-          return Object.values(row).every(
-            (text) => text === "" || text === undefined
-          );
-        })
+        return Object.values(row).every(
+          (text) => text === "" || text === undefined
+        );
+      })
       : true;
   };
 
@@ -86,7 +86,7 @@ export default function Section5({
             if (!isPositiveFraction(value.value1)) {
               setHelpText((prev) => ({
                 ...prev,
-                row1: { ...prev?.row1, helperText1: "Nhập phân số không âm" },
+                row1: { ...prev?.row1, helperText1: "Nhập sai định dạng" },
               }));
             } else {
               setHelpText((prev) => ({
@@ -97,7 +97,7 @@ export default function Section5({
             if (!isPositiveFraction(value.value2)) {
               setHelpText((prev) => ({
                 ...prev,
-                row1: { ...prev?.row1, helperText2: "Nhập phân số không âm" },
+                row1: { ...prev?.row1, helperText2: "Nhập sai định dạng" },
               }));
             } else {
               setHelpText((prev) => ({
@@ -108,7 +108,7 @@ export default function Section5({
             if (!isPositiveFraction(value.value3)) {
               setHelpText((prev) => ({
                 ...prev,
-                row1: { ...prev?.row1, helperText3: "Nhập phân số không âm" },
+                row1: { ...prev?.row1, helperText3: "Nhập sai định dạng" },
               }));
             } else {
               setHelpText((prev) => ({
@@ -136,7 +136,7 @@ export default function Section5({
             if (!isPositiveFraction(value.value1)) {
               setHelpText((prev) => ({
                 ...prev,
-                row2: { ...prev?.row2, helperText1: "Nhập phân số không âm" },
+                row2: { ...prev?.row2, helperText1: "Nhập sai định dạng" },
               }));
             } else {
               setHelpText((prev) => ({
@@ -147,7 +147,7 @@ export default function Section5({
             if (!isPositiveFraction(value.value2)) {
               setHelpText((prev) => ({
                 ...prev,
-                row2: { ...prev?.row2, helperText2: "Nhập phân số không âm" },
+                row2: { ...prev?.row2, helperText2: "Nhập sai định dạng" },
               }));
             } else {
               setHelpText((prev) => ({
@@ -158,7 +158,7 @@ export default function Section5({
             if (!isPositiveFraction(value.value3)) {
               setHelpText((prev) => ({
                 ...prev,
-                row2: { ...prev?.row2, helperText3: "Nhập phân số không âm" },
+                row2: { ...prev?.row2, helperText3: "Nhập sai định dạng" },
               }));
             } else {
               setHelpText((prev) => ({
@@ -187,7 +187,7 @@ export default function Section5({
             if (!isPositiveFraction(value.value1)) {
               setHelpText((prev) => ({
                 ...prev,
-                row3: { ...prev?.row3, helperText1: "Nhập phân số không âm" },
+                row3: { ...prev?.row3, helperText1: "Nhập sai định dạng" },
               }));
             } else {
               setHelpText((prev) => ({
@@ -198,7 +198,7 @@ export default function Section5({
             if (!isPositiveFraction(value.value2)) {
               setHelpText((prev) => ({
                 ...prev,
-                row3: { ...prev?.row3, helperText2: "Nhập phân số không âm" },
+                row3: { ...prev?.row3, helperText2: "Nhập sai định dạng" },
               }));
             } else {
               setHelpText((prev) => ({

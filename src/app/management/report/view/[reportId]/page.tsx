@@ -126,7 +126,7 @@ export default function ReportDetailPreview() {
     );
 }
 
-export function BasicSelect({ onChange }: { onChange: (newValue: string) => void }) {
+const BasicSelect: React.FC<{ onChange: (newValue: string) => void }> = ({ onChange }) => {
     const [status, setStatus] = useState('');
 
     const handleChange = (event: SelectChangeEvent) => {

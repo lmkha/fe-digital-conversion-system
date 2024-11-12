@@ -52,15 +52,19 @@ export default function ReportDetailPreview() {
     };
 
     const handleSubmit = () => {
-        if (reportId) {
-            submitReportDetail({ reportId: reportId }).then(result => {
-                setToastInfo && setToastInfo({
-                    show: true,
-                    message: result.message || 'Có lỗi xảy ra',
-                    severity: result.success ? 'success' : 'error'
-                });
-                if (result.success) {
-                    router.push('/management/report');
+        if (reportId && reportDetail) {
+            updateReportDetail({ reportId: reportId, uiModel: reportDetail }).then(result1 => {
+                if (result1.success) {
+                    submitReportDetail({ reportId: reportId }).then(result2 => {
+                        setToastInfo && setToastInfo({
+                            show: true,
+                            message: result2.message || 'Có lỗi xảy ra',
+                            severity: result2.success ? 'success' : 'error'
+                        });
+                        if (result2.success) {
+                            router.push('/management/report');
+                        }
+                    });
                 }
             });
         }
