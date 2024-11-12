@@ -5,7 +5,7 @@ import { useEditPreviewReportDetailContext } from "@/contexts/edit-preview-repor
 import { useManagement } from "@/contexts/management-context";
 import { useRouter } from "next/navigation";
 import '@react-pdf-viewer/core/lib/styles/index.css';
-import { downloadReportDetailAsWord, getReportDetailPreviewPDF, updateReportDetail } from "@/services/report-detail";
+import { downloadReportDetailAsWord, getReportDetailPreviewPDF, submitReportDetail, updateReportDetail } from "@/services/report-detail";
 import { useEffect, useState } from 'react';
 import PdfViewer from './components/pdf-preview';
 import { useAppContext } from "@/contexts/app-context";
@@ -47,12 +47,24 @@ export default function ReportDetailPreview() {
                     message: result.message || 'Có lỗi xảy ra',
                     severity: result.success ? 'success' : 'error'
                 });
+            });
+        }
+    };
+
+    const handleSubmit = () => {
+        if (reportId) {
+            submitReportDetail({ reportId: reportId }).then(result => {
+                setToastInfo && setToastInfo({
+                    show: true,
+                    message: result.message || 'Có lỗi xảy ra',
+                    severity: result.success ? 'success' : 'error'
+                });
                 if (result.success) {
                     router.push('/management/report');
                 }
             });
         }
-    };
+    }
 
     useEffect(() => {
         fetchPdfData();
@@ -75,9 +87,14 @@ export default function ReportDetailPreview() {
                 label: 'Tải xuống'
             },
             {
-                type: 'save',
+                type: 'download',
                 onClick: () => { handleSave() },
                 label: 'Lưu'
+            },
+            {
+                type: 'save',
+                onClick: () => { handleSubmit() },
+                label: 'Nộp báo cáo'
             }
         ]);
     }, [setHeaderButtons, setHeaderTitle, reportId, reportDetail]);

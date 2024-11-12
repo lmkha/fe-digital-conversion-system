@@ -49,7 +49,7 @@ export default function ReportItem({ reportId, status, departmentName, level, st
                                 </IconButton>
 
                                 {permissionList?.report?.update && (
-                                    <IconButton onClick={() => {
+                                    <IconButton disabled={status != 'Nhập liệu'} onClick={() => {
                                         onEdit && onEdit(reportId || '');
                                     }}>
                                         <CreateIcon />

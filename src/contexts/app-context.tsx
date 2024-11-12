@@ -6,15 +6,18 @@ import React, { createContext, useContext, useState, ReactNode } from 'react';
 interface AppContextType {
     toastInfo?: ToastInfo;
     setToastInfo?: (toastInfo: ToastInfo) => void;
+    reportStatus?: string;
+    setReportStatus: (status: string) => void;
 }
 
 const appContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [toastInfo, setToastInfo] = useState<ToastInfo>();
+    const [reportStatus, setReportStatus] = useState<string | undefined>();
 
     return (
-        <appContext.Provider value={{ toastInfo, setToastInfo }}>
+        <appContext.Provider value={{ toastInfo, setToastInfo, reportStatus, setReportStatus }}>
             {children}
         </appContext.Provider>
     );

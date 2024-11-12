@@ -11,6 +11,7 @@ import { findReportByFilter } from "@/services/report";
 import { Box, Typography } from "@mui/material";
 import { useManagement } from "@/contexts/management-context";
 import { useRouter } from "next/navigation";
+import { getListYears } from "@/services/report-config";
 
 export default function ReportPage() {
   const router = useRouter();
@@ -23,21 +24,23 @@ export default function ReportPage() {
 
   useEffect(() => {
     setHeaderTitle('Báo cáo an toàn vệ sinh lao động');
-    const currentYear = new Date().getFullYear();
-    const options = Array.from({ length: 21 }, (_, i) => currentYear - 10 + i);
-    options.unshift(0);
-    setHeaderButtons([
-      {
-        type: 'select',
-        label: 'Năm',
-        selectValue: filterData?.year,
-        options: options,
-        onSelectChange: (newValue) => {
-          setFilterData({ ...filterData, year: newValue });
-        },
-        onClick: () => { }
+    getListYears().then((result) => {
+      if (result.success) {
+        setHeaderButtons([
+          {
+            type: 'select',
+            label: 'Năm',
+            selectValue: filterData?.year,
+            options: result.years,
+            onSelectChange: (newValue) => {
+              setFilterData({ ...filterData, year: newValue });
+            },
+            onClick: () => { }
+          }
+        ]);
       }
-    ]);
+
+    });
   }, [setHeaderButtons, setHeaderTitle, filterData?.year]);
 
   useEffect(() => {

@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 'use client';
 
 import { useManagement } from "@/contexts/management-context";
@@ -7,16 +6,24 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import { downloadReportDetailAsWord, findReportDetailById, getReportDetailPreviewPDF } from "@/services/report-detail";
 import { useEffect, useState } from 'react';
 import { useAppContext } from "@/contexts/app-context";
-import { Stack, Typography } from "@mui/material";
+import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography } from "@mui/material";
 import PdfViewer from "../../(edit-preview)/preview/components/pdf-preview";
 import { useParams } from "next/navigation";
+import { useUserInfo } from "@/contexts/user-info-context";
+import { getReportStatusByReportId, updateReportStatus } from "@/services/report";
+import { ReportStatus } from "@/api/report";
+import ConfirmDialog from "./modals/temp";
 
 export default function ReportDetailPreview() {
+    const { userInfo } = useUserInfo();
     const { reportId } = useParams<{ reportId: string }>();
     const { setToastInfo } = useAppContext();
     const { setHeaderTitle, setHeaderButtons, setFooterInfo } = useManagement();
     const router = useRouter();
     const [pdfData, setPdfData] = useState<Uint8Array | null>(null);
+    const [openChangeStatusModal, setOpenChangeStatusModal] = useState(false);
+    const [reviewSelectValue, setReviewSelectValue] = useState<string>('');
+    const [status, setStatus] = useState<string>();
 
     const handleDownload = () => {
         if (reportId) {
@@ -44,6 +51,12 @@ export default function ReportDetailPreview() {
                 })
             }
         });
+
+        reportId && getReportStatusByReportId(reportId).then(result => {
+            if (result.success) {
+                setStatus(result.status);
+            }
+        });
     }, [reportId]);
 
     useEffect(() => {
@@ -54,12 +67,12 @@ export default function ReportDetailPreview() {
                 onClick: () => {
                     router.back();
                 },
-                label: 'Quay lại'
+                label: 'Quay lại',
             },
             {
                 type: 'download',
                 onClick: () => { handleDownload() },
-                label: 'Tải xuống'
+                label: 'Tải xuống',
             },
         ]);
     }, [setHeaderButtons, setHeaderTitle]);
@@ -67,6 +80,7 @@ export default function ReportDetailPreview() {
     return (
         <>
             <Stack
+                spacing={2}
                 direction={'column'}
                 sx={{
                     maxHeight: '85vh',
@@ -74,6 +88,14 @@ export default function ReportDetailPreview() {
                     pr: 1
                 }}
             >
+                {userInfo?.dept.level == 1 && status == 'Chờ duyệt' && (
+                    <BasicSelect onChange={(newValue) => {
+                        setReviewSelectValue(newValue);
+                        if (newValue) {
+                            setOpenChangeStatusModal(true);
+                        }
+                    }} />
+                )}
                 {pdfData ? (
                     <PdfViewer fileData={pdfData} />
                 ) : (
@@ -81,6 +103,55 @@ export default function ReportDetailPreview() {
                 )}
             </Stack>
 
+            <ConfirmDialog
+                open={openChangeStatusModal}
+                onClose={() => setOpenChangeStatusModal(false)}
+                onConfirm={(value) => {
+                    if (value == true) {
+                        updateReportStatus({ reportId: reportId, status: reviewSelectValue as ReportStatus }).then(result => {
+                            setToastInfo && setToastInfo({
+                                show: true,
+                                message: result.success ? 'Cập nhật trạng thái thành công' : result.message || 'Có lỗi xảy ra',
+                                severity: result.success ? 'success' : 'error'
+                            });
+                        });
+                    } else {
+                        setReviewSelectValue('');
+                    }
+                    setOpenChangeStatusModal(false);
+                }}
+            />
         </>
+    );
+}
+
+export function BasicSelect({ onChange }: { onChange: (newValue: string) => void }) {
+    const [status, setStatus] = useState('');
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setStatus(event.target.value as string);
+        onChange(event.target.value as string);
+    };
+
+    return (
+        <Box sx={{
+            paddingTop: '10px',
+        }}>
+            <FormControl sx={{
+                width: '100px',
+            }} size='small'>
+                <InputLabel id="demo-simple-select-label"><Typography>Duyệt</Typography></InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={status}
+                    label="Age"
+                    onChange={handleChange}
+                >
+                    <MenuItem value={'Đã duyệt'}>Duyệt</MenuItem>
+                    <MenuItem value={'Đã từ chối'}>Từ chối</MenuItem>
+                </Select>
+            </FormControl>
+        </Box>
     );
 }

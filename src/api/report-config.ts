@@ -143,6 +143,22 @@ class ReportConfigAPI extends Base {
             }
         }
     }
+
+    async getListYears() {
+        try {
+            const response = await this.get('/report-config/get-list-years');
+            return {
+                success: response.success,
+                message: response.message,
+                data: response.data
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+            }
+        }
+    }
 }
 
 const reportConfigAPI = new ReportConfigAPI();

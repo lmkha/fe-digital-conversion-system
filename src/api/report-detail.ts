@@ -194,6 +194,23 @@ class ReportDetailAPI extends Base {
             }
         }
     }
+
+    async submitReportDetail({ reportId }: { reportId: string }) {
+        try {
+            const response = await this.patch(`/report/submit-report?reportId=${reportId}`, {});
+            return {
+                success: response.success,
+                message: response.message,
+                data: response.data
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            }
+        }
+    }
 }
 
 const reportDetailAPI = new ReportDetailAPI();

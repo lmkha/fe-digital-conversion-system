@@ -1,6 +1,6 @@
 'use client';
 import * as React from 'react';
-import { Button, FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 export interface ActionButtonProps {
     type: 'add' | 'import' | 'save' | 'select' | 'next' | 'back' | 'cancel' | 'download';
@@ -9,9 +9,19 @@ export interface ActionButtonProps {
     selectValue?: number;
     options?: number[];
     onSelectChange?: (newValue: number) => void;
+    reviewSelectValue?: string;
+    reviewSelectOptions?: string[];
+    reviewSelectChange?: (newValue: string) => void;
 }
 
-export default function ActionButton({ type, label, onClick, selectValue, options, onSelectChange }: ActionButtonProps) {
+export default function ActionButton({
+    type,
+    label,
+    onClick,
+    selectValue,
+    options,
+    onSelectChange,
+}: ActionButtonProps) {
     switch (type) {
         case 'select':
             return (
@@ -19,7 +29,7 @@ export default function ActionButton({ type, label, onClick, selectValue, option
                     label={label}
                     value={selectValue || 0}
                     options={options || []}
-                    onChange={(newValue) => onSelectChange && onSelectChange(newValue)}
+                    onChange={onSelectChange}
                 />
             );
         case 'cancel':
@@ -134,7 +144,7 @@ function MySelect({ label, value, options, onChange }: {
     label: string;
     value: number;
     options: number[];
-    onChange: (newValue: number) => void;
+    onChange?: (newValue: number) => void;
 }) {
     return (
         <FormControl sx={{ width: '100px' }} size="small">
@@ -144,7 +154,7 @@ function MySelect({ label, value, options, onChange }: {
                 id="demo-simple-select"
                 value={value === 0 ? '' : value}
                 label={label}
-                onChange={(event) => onChange(event.target.value as number)}
+                onChange={(event) => onChange && onChange(event.target.value as number)}
             >
                 {options.map((option) => (
                     <MenuItem key={option} value={option}>

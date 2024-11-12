@@ -142,3 +142,18 @@ export const changeReportConfigurationStatus = async ({ reportId, status, deptId
         message: result.message,
     }
 }
+
+export const getListYears = async (): Promise<{
+    success: boolean;
+    years?: number[];
+    message?: string;
+}> => {
+    const result = await reportConfigAPI.getListYears().then((response) => {
+        return {
+            success: response.success,
+            years: response.data,
+            message: response.message
+        }
+    });
+    return result;
+}

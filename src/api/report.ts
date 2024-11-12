@@ -65,6 +65,39 @@ class ReportAPI extends Base {
             }
         }
     }
+
+    async updateStatus({ reportId, status }: { reportId: string, status: ReportStatus }) {
+        try {
+            const response = await this.patch(`/report/update-status?reportId=${reportId}&status=${status}`, {});
+            return {
+                success: response.success,
+                message: response.message
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            }
+        }
+    }
+
+    async getReportStatusByReportId(reportId: string) {
+        try {
+            const response = await this.get(`/report/find-status-by-id?reportId=${reportId}`);
+            return {
+                success: response.success,
+                message: response.message,
+                data: response.data
+            }
+        } catch (err: any) {
+            return {
+                success: false,
+                message: err.response.data.message,
+                code: err.response.data.code
+            }
+        }
+    }
 }
 
 const reportAPI = new ReportAPI();

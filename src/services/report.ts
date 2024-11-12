@@ -1,4 +1,4 @@
-import reportAPI, { ReportFilterAPIParams } from "@/api/report";
+import reportAPI, { ReportFilterAPIParams, ReportStatus } from "@/api/report";
 import PaginationInfo from "@/core/types/pagination-info";
 import ReportItem from "./models/report-item";
 
@@ -82,5 +82,30 @@ export const findReportByFilter = async ({
             success: false,
             message: result.message
         }
+    }
+};
+
+export const updateReportStatus = async ({ reportId, status }: { reportId: string, status: ReportStatus }): Promise<{
+    success: boolean;
+    message: string;
+}> => {
+    const result = await reportAPI.updateStatus({ reportId, status });
+    return {
+        success: result.success,
+        message: result.message
+    };
+};
+
+
+export const getReportStatusByReportId = async (reportId: string): Promise<{
+    success: boolean;
+    message: string;
+    status?: ReportStatus;
+}> => {
+    const result = await reportAPI.getReportStatusByReportId(reportId);
+    return {
+        success: result.success,
+        message: result.message,
+        status: result.data
     }
 };

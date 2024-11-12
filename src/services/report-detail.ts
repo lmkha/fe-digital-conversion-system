@@ -328,3 +328,11 @@ export const getReportDetailByHistoryId = async ({ reportId, reportHistoryId }: 
     });
     return result;
 };
+
+export const submitReportDetail = async ({ reportId }: { reportId: string }): Promise<{
+    success: boolean;
+    message: string;
+}> => {
+    const result = await reportDetailAPI.submitReportDetail({ reportId: reportId });
+    return result;
+}
