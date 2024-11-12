@@ -356,16 +356,16 @@ export const importUsers = async (users: PreviewUserList) => {
       countError: result?.data?.countError,
       errorUsers: result?.data?.userError.map(
         (errorUser: any) =>
-          ({
-            userName: errorUser.userName,
-            fullName: errorUser.fullName,
-            email: errorUser.email,
-            jobTitle: errorUser.jobTitle,
-            role: errorUser.role,
-            description: errorUser.description,
-            success: errorUser.success,
-            deptId: errorUser.deptId,
-          } as UserDescription)
+        ({
+          userName: errorUser.userName,
+          fullName: errorUser.fullName,
+          email: errorUser.email,
+          jobTitle: errorUser.jobTitle,
+          role: errorUser.role,
+          description: errorUser.description,
+          success: errorUser.success,
+          deptId: errorUser.deptId,
+        } as UserDescription)
       ) as PreviewUserList,
     },
   };
@@ -379,9 +379,9 @@ export const previewUser = async (file: File, deptId: string) => {
     data: {
       users: result?.data?.map(
         (user: any) =>
-          ({
-            ...user,
-          } as UserDescription)
+        ({
+          ...user,
+        } as UserDescription)
       ) as UserDescription[],
     },
   };
@@ -395,9 +395,9 @@ export const validateUser = async (users: PreviewUserList) => {
     data: {
       users: result?.data?.map(
         (user: any) =>
-          ({
-            ...user,
-          } as UserDescription)
+        ({
+          ...user,
+        } as UserDescription)
       ) as UserDescription[],
     },
   };

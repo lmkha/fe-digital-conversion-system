@@ -23,9 +23,13 @@ import { useUserInfo } from '@/contexts/user-info-context';
 import { EditUserValidatedField, editUserValidator } from "@/validators/edit-user";
 import AutoComplete from "../user/components/autocomplete";
 import ImagePickerForEditModal from "../user/components/image-picker-edit";
+import { updateUserProfile } from "@/services/profile";
+import { useAppContext } from "@/contexts/app-context";
+import { useManagement } from "@/contexts/management-context";
 
 export default function Page() {
     const { setUserInfo, userInfo } = useUserInfo();
+    const { setToastInfo } = useAppContext();
     // Address ------------------------------------------------------------------
     const [provinceList, setProvinceList] = useState<Province[]>([]);
     const [districtList, setDistrictList] = useState<District[]>([]);
@@ -108,6 +112,8 @@ export default function Page() {
         status: '1',
         avatar: ''
     });
+    const { setHeaderTitle, setHeaderButtons, setFooterInfo } = useManagement();
+
     const [isFirstTime, setIsFirstTime] = useState(true);
     const [isLoading, setIsLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -135,45 +141,58 @@ export default function Page() {
 
             // Avatar không thay đổi
             if (imageUploadInfo.file === null) {
-                result = await updateUser(
-                    userInfo?.userId || '',
-                    submitData.email,
-                    submitData.name,
-                    submitData.phone,
-                    submitData.ward.id,
-                    submitData.district.id,
-                    submitData.province.id,
-                    submitData.gender.id,
-                    submitData.dob.format('MM/DD/YYYY'),
-                    submitData.status,
-                    submitData.role.id,
-                    submitData.jobTitle,
-                    userInfo?.dept?.deptId || '',
-                    submitData.addressDetail,
-                    submitData.avatar
-                );
+                const result = await updateUserProfile({
+                    userId: userInfo?.userId || '',
+                    fullName: submitData.name,
+                    email: submitData.email || null,
+                    phone: submitData.phone || null,
+                    wardId: submitData.ward?.id || null,
+                    districtId: submitData.district?.id || null,
+                    provinceId: submitData.province?.id || null,
+                    gender: submitData.gender?.id || null,
+                    dateOfBirth: submitData.dob ? submitData.dob.format('MM/DD/YYYY') : null,
+                    status: submitData.status || null,
+                    jobTitle: submitData.jobTitle || '',
+                    deptId: userInfo?.dept?.deptId || '',
+                    address: submitData.addressDetail || null,
+                    avatar: 'https://res.cloudinary.com/dfx1kzavc/image/upload/v1729527211/avatars/yx6h61wlbwxfscuqzjpk.jpg'
+                }).then((res) => {
+                    console.log(`Check res: ${res}`)
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        message: res.message,
+                        severity: res.success ? 'success' : 'error'
+                    });
+                });
             } else {
                 // Avatar thay đổi
-                result = await uploadAvatarAndUpdateUser(
-                    userInfo?.userId || '',
-                    submitData.email,
-                    submitData.name,
-                    submitData.phone,
-                    submitData.ward.id,
-                    submitData.district.id,
-                    submitData.province.id,
-                    submitData.gender.id,
-                    submitData.dob.format('MM/DD/YYYY'),
-                    submitData.status,
-                    submitData.role.id,
-                    submitData.jobTitle,
-                    userInfo?.dept?.deptId || '',
-                    submitData.addressDetail,
-                    imageUploadInfo.file
-                );
+                result = await updateUserProfile({
+                    userId: userInfo?.userId || '',
+                    fullName: submitData.name,
+                    email: submitData.email || null,
+                    phone: submitData.phone || null,
+                    wardId: submitData.ward?.id || null,
+                    districtId: submitData.district?.id || null,
+                    provinceId: submitData.province?.id || null,
+                    gender: submitData.gender?.id || null,
+                    dateOfBirth: submitData.dob ? submitData.dob.format('MM/DD/YYYY') : null,
+                    status: submitData.status || null,
+                    jobTitle: submitData.jobTitle || '',
+                    deptId: userInfo?.dept?.deptId || '',
+                    address: submitData.addressDetail || null,
+                    avatar: 'https://res.cloudinary.com/dfx1kzavc/image/upload/v1729527211/avatars/yx6h61wlbwxfscuqzjpk.jpg'
+                }).then((res) => {
+                    console.log(`Check res: ${res}`)
+                    setToastInfo && setToastInfo({
+                        show: true,
+                        message: res.message,
+                        severity: res.success ? 'success' : 'error'
+                    });
+                });
             }
         } catch (error) {
         } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -183,6 +202,8 @@ export default function Page() {
         getProvinces().then((res) => {
             setProvinceList(res);
         });
+        setFooterInfo && setFooterInfo({});
+        setHeaderButtons && setHeaderButtons([]);
     }, []);
     useEffect(() => {
         if (userInfo?.userId) {
@@ -449,6 +470,15 @@ export default function Page() {
 
                                     {/* province */}
                                     <Stack direction={'row'} justifyContent={'space-between'} spacing={4}>
+                                        <AutoComplete
+                                            disabled={true}
+                                            label="Vai trò *"
+                                            value={submitData.role}
+                                            options={[]}
+                                            onChange={(value) => {
+                                            }}
+                                            width="55%"
+                                        />
                                         <AutoComplete
                                             label="Tỉnh / Thành phố "
                                             value={submitData.province}
