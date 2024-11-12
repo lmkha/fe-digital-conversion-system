@@ -199,7 +199,9 @@ export default function ReportPage() {
               reportingPeriod={report.reportPeriod}
               updatedAt={report.updatedAt}
               userUpdateName={report.userUpdateName}
-              onView={(reportId) => { }}
+              onView={(reportId) => {
+                router.push(`/management/report/view/${reportId}`);
+              }}
               onEdit={(reportId) => {
                 router.push(`/management/report/edit/${reportId}`);
               }}

@@ -171,8 +171,8 @@ export default function ReportDetail() {
                 reportId={reportId}
                 open={openHistoryModal}
                 onClose={() => setOpenHistoryModal(false)}
-                onViewReportHistory={(reportId) => {
-                    getReportDetailByHistoryId(reportId).then((response) => {
+                onViewReportHistory={(reportHistoryId) => {
+                    getReportDetailByHistoryId({ reportId: reportId, reportHistoryId: reportHistoryId }).then((response) => {
                         if (response.success) {
                             if (!historyPageData) {
                                 setPageData(dataRender);

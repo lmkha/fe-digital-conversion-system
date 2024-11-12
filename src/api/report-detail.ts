@@ -175,9 +175,10 @@ class ReportDetailAPI extends Base {
         }
     }
 
-    async getReportDetailByHistoryId(reportHistoryId: string) {
+    async getReportDetailByHistoryId({ reportId, reportHistoryId }: { reportId: string, reportHistoryId: string }) {
         try {
             const response = await this.get('/report-history/find-by-id', {
+                reportId: reportId,
                 reportHistoryId: reportHistoryId
             });
             return {
