@@ -36,7 +36,7 @@ export default function ReportDetail() {
     const [openHistoryModal, setOpenHistoryModal] = useState(false);
     const [historyPageData, setHistoryPageData] = useState<ReportPageData>();
     const [dataRender, setDataRender] = useState<ReportPageData>();
-
+    const [listChange, setListChange] = useState<string[]>();
 
     function getEmptySectionsIndices(data: ReportPageData): string[] {
         return Object.entries(data)
@@ -177,6 +177,7 @@ export default function ReportDetail() {
                             if (!historyPageData) {
                                 setPageData(dataRender);
                             }
+                            setListChange && setListChange(response.listChange);
                             setHistoryPageData(response.reportDetail);
                         } else {
                             setToastInfo && setToastInfo({
