@@ -212,7 +212,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: '45%',
+                    width: '50%',
                     height: '85%',
                     bgcolor: 'background.paper',
                     boxShadow: 10,

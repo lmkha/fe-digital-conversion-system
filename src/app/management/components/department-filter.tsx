@@ -140,7 +140,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
 
     // Initialize selector data base on user info
     useEffect(() => {
-        if (!userInfo.dept.deptId) {
+        if (!userInfo?.dept?.deptId) {
             return;
         }
         setProvince({

@@ -48,13 +48,14 @@ export default function ReportItem({ reportId, status, departmentName, level, st
                                     <VisibilityOutlinedIcon />
                                 </IconButton>
 
-                                {permissionList?.report?.update && (
-                                    <IconButton disabled={status != 'Nhập liệu'} onClick={() => {
+                                {permissionList?.report?.update && (status === 'Nhập liệu' || status === 'Đã từ chối') && (
+                                    <IconButton onClick={() => {
                                         onEdit && onEdit(reportId || '');
                                     }}>
                                         <CreateIcon />
                                     </IconButton>
                                 )}
+
                             </Stack>
                         </Grid2>
                         {/* Status */}

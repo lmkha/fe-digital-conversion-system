@@ -14,8 +14,10 @@ import { useUserInfo } from "@/contexts/user-info-context";
 import { getReportStatusByReportId, updateReportStatus } from "@/services/report";
 import { ReportStatus } from "@/api/report";
 import ConfirmDialog from "./modals/temp";
+import { usePermission } from '@/contexts/permission-context';
 
 export default function ReportDetailPreview() {
+    const { permissionList } = usePermission();
     const { userInfo } = useUserInfo();
     const { reportId } = useParams<{ reportId: string }>();
     const { setToastInfo } = useAppContext();
@@ -86,31 +88,39 @@ export default function ReportDetailPreview() {
                 sx={{
                     maxHeight: '85vh',
                     overflowY: 'auto',
+                    pt: 4,
                     pr: 1
                 }}
             >
-                {userInfo?.dept.level == 1 && (
-                    <Stack direction={'row'} sx={{
-                        justifyContent: 'start',
-                        gap: '10px',
-                    }}>
-                        <Button
-                            color="success"
-                            variant="contained"
-                            onClick={() => {
-                                setApprovalValue('Đã duyệt');
-                                setOpenChangeStatusModal(true);
-                            }}><Typography fontWeight={'bold'}>Duyệt</Typography></Button>
+                {userInfo?.dept.level == 1 &&
+                    (permissionList?.reportConfig?.create || permissionList?.reportConfig?.update) &&
+                    status !== 'Nhập liệu' && (
+                        <Stack direction={'row'}
+                            sx={{
+                                justifyContent: 'start',
+                                gap: '10px',
+                                position: 'fixed',
+                                top: '65px',
+                                left: '250px',
+                                zIndex: 999,
+                            }}>
+                            <Button
+                                color="success"
+                                variant="contained"
+                                onClick={() => {
+                                    setApprovalValue('Đã duyệt');
+                                    setOpenChangeStatusModal(true);
+                                }}><Typography fontWeight={'bold'}>Duyệt</Typography></Button>
 
-                        <Button
-                            color="error"
-                            variant="contained"
-                            onClick={() => {
-                                setApprovalValue('Đã từ chối');
-                                setOpenChangeStatusModal(true);
-                            }}><Typography fontWeight={'bold'}>Từ chối</Typography></Button>
-                    </Stack>
-                )}
+                            <Button
+                                color="error"
+                                variant="contained"
+                                onClick={() => {
+                                    setApprovalValue('Đã từ chối');
+                                    setOpenChangeStatusModal(true);
+                                }}><Typography fontWeight={'bold'}>Từ chối</Typography></Button>
+                        </Stack>
+                    )}
                 {pdfData ? (
                     <PdfViewer fileData={pdfData} />
                 ) : (

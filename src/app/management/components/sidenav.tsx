@@ -19,6 +19,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import PopupState, { bindTrigger, bindMenu } from 'material-ui-popup-state';
 import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 export default function SideNav() {
   return (
@@ -58,16 +59,23 @@ const TopSideNav = () => {
   );
 };
 
+
+
 const MiddleSideNav = () => {
   const { userInfo } = useUserInfo();
   const { permissionList } = usePermission();
-  /* System toggle, manage department, permission, role, user, report configuration */
   const [activeLink, setActiveLink] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(true);
-  const handleToggle = () => {
-    setIsOpen(!isOpen);
-  };
   const [icon, setIcon] = useState(<IoMdArrowDropright className="text-2xl" />);
+
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && pathname) {
+      const route = pathname.split('/')[2];
+      setActiveLink(route);
+    }
+  }, [pathname]);
 
   useEffect(() => {
     if (isOpen) {
@@ -76,6 +84,10 @@ const MiddleSideNav = () => {
       setIcon(<IoMdArrowDropright className="text-2xl" />);
     }
   }, [isOpen]);
+
+  const handleToggle = () => {
+    setIsOpen(!isOpen);
+  };
 
   const handleLinkClick = (route: string) => {
     setActiveLink(route);
@@ -88,19 +100,18 @@ const MiddleSideNav = () => {
         onClick={handleToggle}
       >
         <div className="flex items-center gap-2">
-          {<IoSettingsOutline />}
+          <IoSettingsOutline />
           <h1>Cài đặt</h1>
         </div>
         {icon}
       </button>
       {isOpen && (
         <ul className="ml-6 max-h-screen">
-          {permissionList.department.read && (
+          {permissionList?.department?.read && (
             <li key={"department"}>
               <Link
                 href={"/management/department"}
-                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === "department" ? "bg-blue-800" : ""
-                  }`}
+                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === "department" ? "bg-blue-800" : ""}`}
                 onClick={() => handleLinkClick("department")}
               >
                 <LuDot />
@@ -112,8 +123,7 @@ const MiddleSideNav = () => {
           <li key={"permission"}>
             <Link
               href={"/management/permission"}
-              className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === "permission" ? "bg-blue-800" : ""
-                }`}
+              className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === "permission" ? "bg-blue-800" : ""}`}
               onClick={() => handleLinkClick("permission")}
             >
               <LuDot />
@@ -121,12 +131,11 @@ const MiddleSideNav = () => {
             </Link>
           </li>
 
-          {permissionList.role.read && (
+          {permissionList?.role?.read && (
             <li key={"role"}>
               <Link
                 href={"/management/role"}
-                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === "role" ? "bg-blue-800" : ""
-                  }`}
+                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === "role" ? "bg-blue-800" : ""}`}
                 onClick={() => handleLinkClick("role")}
               >
                 <LuDot />
@@ -135,12 +144,11 @@ const MiddleSideNav = () => {
             </li>
           )}
 
-          {permissionList.user.read && (
+          {permissionList?.user?.read && (
             <li key={"user"}>
               <Link
                 href={"/management/user"}
-                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === "user" ? "bg-blue-800" : ""
-                  }`}
+                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === "user" ? "bg-blue-800" : ""}`}
                 onClick={() => handleLinkClick("user")}
               >
                 <LuDot />
@@ -149,12 +157,11 @@ const MiddleSideNav = () => {
             </li>
           )}
 
-          {userInfo?.dept?.level === 1 && permissionList.reportConfig.read && (
+          {userInfo?.dept?.level === 1 && permissionList?.reportConfig?.read && (
             <li key={'report-configuration'}>
               <Link
                 href={'/management/report-configuration'}
-                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report-configuration' ? "bg-blue-800" : ""
-                  }`}
+                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report-configuration' ? "bg-blue-800" : ""}`}
                 onClick={() => handleLinkClick('report-configuration')}
               >
                 <LuDot />
@@ -163,12 +170,11 @@ const MiddleSideNav = () => {
             </li>
           )}
 
-          {permissionList.report.read && (
+          {permissionList?.report?.read && (
             <li key={'report'}>
               <Link
                 href={'/management/report'}
-                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report' ? "bg-blue-800" : ""
-                  }`}
+                className={`flex items-center hover:bg-blue-800 py-3 ${activeLink === 'report' ? "bg-blue-800" : ""}`}
                 onClick={() => handleLinkClick('report')}
               >
                 <LuDot />
@@ -180,13 +186,17 @@ const MiddleSideNav = () => {
       )}
     </div>
   );
-}
+};
 
 const BottomSideNav = () => {
   const router = useRouter();
   const { logout, isLoggedIn } = useAuth();
   const [avatar, setAvatar] = useState<string | null>(null);
   const [fullName, setFullName] = useState<string | null>(null);
+  const [activeLink, setActiveLink] = useState<string | null>(null);
+  const pathname = usePathname();
+
+
   useEffect(() => {
     if (isLoggedIn) {
       const userInfo = get("userInfo");
@@ -197,16 +207,21 @@ const BottomSideNav = () => {
     }
   }, [isLoggedIn]);
 
+  useEffect(() => {
+    if (pathname === "/management/profile") {
+      setActiveLink("profile");
+    } else {
+      setActiveLink(null);
+    }
+  }, [pathname]);
+
   return (
     <PopupState variant="popover" popupId="demo-popup-menu">
       {(popupState) => (
         <React.Fragment>
           <button
-            className="flex items-center justify-between text-white border-y-2 border-white mb-1 mx-4 hover:bg-blue-950"
-            // onClick={() => serviceLogout(logout)}
-            onClick={() => {
-              popupState.open();
-            }}
+            className={`flex items-center justify-between text-white border-y-2 border-white mb-1 mx-4 hover:bg-blue-950 ${activeLink === "profile" ? "bg-blue-800" : ""}`}
+            onClick={() => popupState.open()}
           >
             <div className="flex items-center gap-2 py-2">
               {/* Avatar */}
@@ -225,7 +240,6 @@ const BottomSideNav = () => {
               />
               {/* Username */}
               <h1>{fullName}</h1>
-              {/* Action button icon */}
             </div>
             <GrNext />
           </button>
@@ -240,10 +254,17 @@ const BottomSideNav = () => {
               horizontal: 'right',
             }}
           >
-            <MenuItem onClick={() => { router.push('/management/profile') }}>Trang cá nhân</MenuItem>
+            <MenuItem
+              onClick={() => {
+                router.push("/management/profile");
+                setActiveLink("profile");
+                popupState.close();
+              }}
+            >
+              Trang cá nhân
+            </MenuItem>
             <MenuItem onClick={() => serviceLogout(logout)}>Đăng xuất</MenuItem>
           </Menu>
-
         </React.Fragment>
       )}
     </PopupState>

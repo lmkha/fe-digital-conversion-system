@@ -246,7 +246,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                     top: '50%',
                     left: '50%',
                     transform: 'translate(-50%, -50%)',
-                    width: '45%',
+                    width: '50%',
                     height: '81%',
                     bgcolor: 'background.paper',
                     boxShadow: 10,
