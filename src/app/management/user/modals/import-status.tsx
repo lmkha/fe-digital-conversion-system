@@ -11,6 +11,9 @@ import {
 } from "@mui/material";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
+import PersonAddIcon from "@mui/icons-material/PersonAdd";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
+import CloudDownloadIcon from "@mui/icons-material/CloudDownload";
 
 interface ImportStatusDialogProps {
   open: boolean;
@@ -34,8 +37,19 @@ const ImportStatusDialog: React.FC<ImportStatusDialogProps> = ({
   if (isSuccess === null) return null;
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle>Trạng thái nhập người dùng</DialogTitle>
+    <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth>
+      {/* Header Section */}
+      <DialogTitle
+        sx={{
+          fontSize: "1.5rem",
+          fontWeight: "bold",
+          textAlign: "center",
+          color: "#333",
+        }}
+      >
+        Trạng thái nhập người dùng
+      </DialogTitle>
+
       <DialogContent>
         {isSuccess ? (
           countError === 0 ? (
@@ -43,23 +57,15 @@ const ImportStatusDialog: React.FC<ImportStatusDialogProps> = ({
               display="flex"
               flexDirection="column"
               alignItems="center"
-              justifyContent="center"
               textAlign="center"
-              p={4}
-              border="1px solid #4caf50"
-              borderRadius="8px"
-              bgcolor="#e8f5e9"
+              p={2}
             >
-              <CheckCircleIcon sx={{ fontSize: 48, color: "#4caf50" }} />
-              <Typography variant="h6" sx={{ color: "#4caf50", mt: 2 }}>
-                Thành công!
-              </Typography>
-              <Typography variant="body2" color="textSecondary">
-                File của bạn đã được nhập thành công.
-              </Typography>
-              <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                Kiểm tra danh sách người dùng để đảm bảo dữ liệu đã nhập chính
-                xác.
+              <CheckCircleIcon sx={{ fontSize: 60, color: "#4caf50" }} />
+              <Typography
+                variant="h6"
+                sx={{ color: "#4caf50", fontWeight: "medium", mt: 1 }}
+              >
+                Tất cả người dùng đã được thêm thành công!
               </Typography>
             </Box>
           ) : (
@@ -67,48 +73,69 @@ const ImportStatusDialog: React.FC<ImportStatusDialogProps> = ({
               display="flex"
               flexDirection="column"
               alignItems="center"
-              justifyContent="center"
               textAlign="center"
-              sx={{ borderRadius: 4 }}
+              p={2}
             >
-              <Typography
-                variant="h5"
-                sx={{ fontWeight: "medium", color: "black", mb: 2 }}
-              >
-                Kết quả thêm người dùng
-              </Typography>
-              <Stack sx={{ width: "70%", mb: 2 }}>
+              <Stack spacing={1.5} sx={{ width: "100%", px: 2 }}>
                 <Stack
-                  direction={"row"}
-                  sx={{ width: "100%", justifyContent: "space-between" }}
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{
+                    bgcolor: "#e0f2f1",
+                    padding: "8px 12px",
+                    borderRadius: "6px",
+                  }}
                 >
-                  <Typography variant="body2" color="green">
-                    Số lượng người dùng được thêm thành công:
-                  </Typography>
-                  <Typography variant="body2" color="green">
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <PersonAddIcon sx={{ color: "#4caf50" }} />
+                    <Typography variant="body2" color="#4caf50">
+                      Thành công
+                    </Typography>
+                  </Stack>
+                  <Typography variant="body2" color="#4caf50">
                     {countSuccess}
                   </Typography>
                 </Stack>
+
                 <Stack
-                  direction={"row"}
-                  sx={{ width: "100%", justifyContent: "space-between" }}
+                  direction="row"
+                  alignItems="center"
+                  justifyContent="space-between"
+                  sx={{
+                    bgcolor: "#ffebee",
+                    padding: "8px 12px",
+                    borderRadius: "6px",
+                  }}
                 >
-                  <Typography variant="body2" color="red">
-                    Số lượng người dùng không được thêm:
-                  </Typography>
-                  <Typography variant="body2" color="red">
+                  <Stack direction="row" alignItems="center" spacing={1}>
+                    <PersonOffIcon sx={{ color: "#f44336" }} />
+                    <Typography variant="body2" color="#f44336">
+                      Thất bại
+                    </Typography>
+                  </Stack>
+                  <Typography variant="body2" color="#f44336">
                     {countError}
                   </Typography>
                 </Stack>
               </Stack>
-              <Button
-                size="medium"
-                variant="outlined"
-                sx={{ textTransform: "none" }}
-                onClick={onDownloadErrorFile}
-              >
-                Tải file các người dùng bị lỗi
-              </Button>
+
+              {countError > 0 && (
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  sx={{
+                    mt: 3,
+                    textTransform: "none",
+                    borderRadius: "8px",
+                    padding: "6px 16px",
+                  }}
+                  startIcon={<CloudDownloadIcon />}
+                  onClick={onDownloadErrorFile}
+                >
+                  Tải file các người dùng bị lỗi
+                </Button>
+              )}
             </Box>
           )
         ) : (
@@ -116,25 +143,38 @@ const ImportStatusDialog: React.FC<ImportStatusDialogProps> = ({
             display="flex"
             flexDirection="column"
             alignItems="center"
-            justifyContent="center"
             textAlign="center"
-            p={4}
-            border="1px solid #f44336"
-            borderRadius="8px"
-            bgcolor="#ffebee"
+            p={2}
           >
-            <ErrorIcon sx={{ fontSize: 48, color: "#f44336" }} />
-            <Typography variant="h6" sx={{ color: "#f44336", mt: 1 }}>
-              Thất bại!
+            <ErrorIcon sx={{ fontSize: 60, color: "#f44336" }} />
+            <Typography
+              variant="h6"
+              sx={{ color: "#f44336", mt: 1, fontWeight: "medium" }}
+            >
+              Đã xảy ra lỗi!
             </Typography>
-            <Typography variant="body2" color="black">
+            <Typography
+              variant="body2"
+              color="textSecondary"
+              sx={{ mt: 1, px: 2 }}
+            >
               {errorMessage}
             </Typography>
           </Box>
         )}
       </DialogContent>
-      <DialogActions>
-        <Button onClick={onClose} color="primary">
+
+      <DialogActions sx={{ justifyContent: "flex-end", px: 2, pb: 2 }}>
+        <Button
+          onClick={onClose}
+          variant="contained"
+          sx={{
+            fontWeight: "bold",
+            textTransform: "none",
+            borderRadius: "8px",
+            px: 3,
+          }}
+        >
           Đóng
         </Button>
       </DialogActions>
