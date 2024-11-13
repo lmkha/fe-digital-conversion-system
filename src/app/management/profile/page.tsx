@@ -353,7 +353,7 @@ export default function Page() {
                                         </Alert>
                                     )}
                                 </Box>
-                                <Stack direction={'row'} spacing={2} justifyContent={'center'} alignItems={'center'} sx={{
+                                {/* <Stack direction={'row'} spacing={2} justifyContent={'center'} alignItems={'center'} sx={{
                                     pt: 2,
                                 }}>
 
@@ -368,7 +368,7 @@ export default function Page() {
                                         }}
                                         color="primary"
                                     />
-                                </Stack>
+                                </Stack> */}
                             </Stack>
 
                             {/* Form */}

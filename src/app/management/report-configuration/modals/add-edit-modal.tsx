@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, Divider, IconButton, Modal, Stack, TextField, Typography } from "@mui/material";
+import { Box, Button, Divider, Grid2, IconButton, Modal, Stack, TextField, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import AutoComplete from "../../user/components/autocomplete";
 import dayjs from "dayjs";
-import MyDatePicker from "../components/date-picker";
 import ReportConfigItem from "@/services/models/report-config-item";
 import { useEffect, useState } from "react";
 import { useAppContext } from "@/contexts/app-context";
 import { createReportConfiguration, findReportConfigurationById, updateReportConfiguration } from "@/services/report-config";
 import { validateAddReportConfig } from "@/validators/add-report-config";
 import { validateEditReportConfig } from "@/validators/edit-report-config";
+import MyDatePicker from "../../components/date-picker";
 
 interface AddEditReportModalProps {
     open: boolean;
@@ -153,6 +153,7 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                         component="h2"
                         fontWeight={'bold'}
                         fontSize={25}
+                        color='black'
                     >
                         {reportId ? 'Sửa báo cáo' : 'Thêm báo cáo'}
                     </Typography>
@@ -228,34 +229,36 @@ export default function AddEditReportModal({ open, deptId, reportId, onClose }: 
                     </Stack>
 
                     {/* Start date, Finish date */}
-                    <Stack direction={'row'} spacing={4}>
-                        <MyDatePicker
-                            error={validateResult && validateResult?.some((item) => item.field === 'startDate')}
-                            label="Ngày bắt đầu * "
-                            value={submitData?.startDate ? dayjs(submitData.startDate, "DD/MM/YYYY") : null}
-                            onChange={(newValue) => {
-                                submitData && setSubmitData({
-                                    ...submitData,
-                                    startDate: newValue?.format("DD/MM/YYYY") || ''
-                                });
-                            }}
-                            containerWidth="100%"
-                            width="275px"
-                        />
-                        <MyDatePicker
-                            error={validateResult && validateResult?.some((item) => item.field === 'finishDate')}
-                            label="Ngày kết thúc * "
-                            value={submitData?.finishDate ? dayjs(submitData.finishDate, "DD/MM/YYYY") : null}
-                            onChange={(newValue) => {
-                                submitData && setSubmitData({
-                                    ...submitData,
-                                    finishDate: newValue?.format("DD/MM/YYYY") || ''
-                                });
-                            }}
-                            containerWidth="100%"
-                            width="275px"
-                        />
-                    </Stack>
+                    <Grid2 container spacing={4}>
+                        <Grid2 size={6}>
+                            <MyDatePicker
+                                error={validateResult && validateResult?.some((item) => item.field === 'startDate')}
+                                label="Ngày bắt đầu * "
+                                value={submitData?.startDate ? dayjs(submitData.startDate, "DD/MM/YYYY") : null}
+                                onChange={(newValue) => {
+                                    submitData && setSubmitData({
+                                        ...submitData,
+                                        startDate: newValue?.format("DD/MM/YYYY") || ''
+                                    });
+                                }}
+                            />
+                        </Grid2>
+
+                        <Grid2 size={6}>
+                            <MyDatePicker
+                                error={validateResult && validateResult?.some((item) => item.field === 'finishDate')}
+                                label="Ngày kết thúc * "
+                                value={submitData?.finishDate ? dayjs(submitData.finishDate, "DD/MM/YYYY") : null}
+                                onChange={(newValue) => {
+                                    submitData && setSubmitData({
+                                        ...submitData,
+                                        finishDate: newValue?.format("DD/MM/YYYY") || ''
+                                    });
+                                }}
+                            />
+                        </Grid2>
+                    </Grid2>
+
                     {/* Report type */}
                     <AutoComplete
                         label="Trạng thái "

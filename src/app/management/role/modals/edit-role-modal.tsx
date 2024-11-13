@@ -265,6 +265,7 @@ export function EditRoleModal({ isOpen, roleId, onClose, onSubmitted }: AddRoleM
                             component="h2"
                             fontWeight={'bold'}
                             fontSize={30}
+                            color='black'
                         >
                             Sửa vai trò
                         </Typography>

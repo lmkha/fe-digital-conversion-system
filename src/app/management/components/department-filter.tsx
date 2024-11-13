@@ -184,7 +184,7 @@ export default function DepartmentFilter({ refreshData, onRefreshDataFinished, o
             }
         });
         setLevel(userInfo.dept.level || 0);
-    }, [userInfo.dept.deptId]);
+    }, [userInfo?.dept?.deptId]);
 
     // Send data to parent component
     useEffect(() => {

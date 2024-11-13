@@ -165,7 +165,14 @@ export default function Page() {
                 />
                 <Filter
                     isCheck={false}
-                    onCheckAllChange={(isCheck) => { }}
+                    onCheckAllChange={(isCheck) => {
+                        // Handle check all
+                        if (isCheck) {
+                            setCheckedItemIds(departmentList?.map((item) => item.deptId ? item.deptId : ''));
+                        } else {
+                            setCheckedItemIds([]);
+                        }
+                    }}
                     onTextChange={(key, value) => { }}
                     onSubmitted={(filterData) => {
                         console.log(filterData);

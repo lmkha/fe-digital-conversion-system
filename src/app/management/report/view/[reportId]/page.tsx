@@ -7,7 +7,7 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import { downloadReportDetailAsWord, findReportDetailById, getReportDetailPreviewPDF } from "@/services/report-detail";
 import { useEffect, useState } from 'react';
 import { useAppContext } from "@/contexts/app-context";
-import { Box, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, Typography } from "@mui/material";
+import { Button, Stack, Typography } from "@mui/material";
 import PdfViewer from "../../(edit-preview)/preview/components/pdf-preview";
 import { useParams } from "next/navigation";
 import { useUserInfo } from "@/contexts/user-info-context";
@@ -23,7 +23,7 @@ export default function ReportDetailPreview() {
     const router = useRouter();
     const [pdfData, setPdfData] = useState<Uint8Array | null>(null);
     const [openChangeStatusModal, setOpenChangeStatusModal] = useState(false);
-    const [reviewSelectValue, setReviewSelectValue] = useState<string>('');
+    const [approvalValue, setApprovalValue] = useState<'Đã duyệt' | 'Đã từ chối'>();
     const [status, setStatus] = useState<string>();
 
     const handleDownload = () => {
@@ -89,13 +89,27 @@ export default function ReportDetailPreview() {
                     pr: 1
                 }}
             >
-                {userInfo?.dept.level == 1 && status == 'Chờ duyệt' && (
-                    <BasicSelect onChange={(newValue) => {
-                        setReviewSelectValue(newValue);
-                        if (newValue) {
-                            setOpenChangeStatusModal(true);
-                        }
-                    }} />
+                {userInfo?.dept.level == 1 && (
+                    <Stack direction={'row'} sx={{
+                        justifyContent: 'start',
+                        gap: '10px',
+                    }}>
+                        <Button
+                            color="success"
+                            variant="contained"
+                            onClick={() => {
+                                setApprovalValue('Đã duyệt');
+                                setOpenChangeStatusModal(true);
+                            }}><Typography fontWeight={'bold'}>Duyệt</Typography></Button>
+
+                        <Button
+                            color="error"
+                            variant="contained"
+                            onClick={() => {
+                                setApprovalValue('Đã từ chối');
+                                setOpenChangeStatusModal(true);
+                            }}><Typography fontWeight={'bold'}>Từ chối</Typography></Button>
+                    </Stack>
                 )}
                 {pdfData ? (
                     <PdfViewer fileData={pdfData} />
@@ -105,19 +119,18 @@ export default function ReportDetailPreview() {
             </Stack>
 
             <ConfirmDialog
+                title={`Bạn có chắc chắn muốn ${approvalValue == 'Đã duyệt' ? 'duyệt' : 'từ chối'} báo cáo này không?`}
                 open={openChangeStatusModal}
                 onClose={() => setOpenChangeStatusModal(false)}
                 onConfirm={(value) => {
                     if (value == true) {
-                        updateReportStatus({ reportId: reportId, status: reviewSelectValue as ReportStatus }).then(result => {
+                        updateReportStatus({ reportId: reportId, status: approvalValue as ReportStatus }).then(result => {
                             setToastInfo && setToastInfo({
                                 show: true,
                                 message: result.success ? 'Cập nhật trạng thái thành công' : result.message || 'Có lỗi xảy ra',
                                 severity: result.success ? 'success' : 'error'
                             });
                         });
-                    } else {
-                        setReviewSelectValue('');
                     }
                     setOpenChangeStatusModal(false);
                 }}
@@ -126,33 +139,3 @@ export default function ReportDetailPreview() {
     );
 }
 
-const BasicSelect: React.FC<{ onChange: (newValue: string) => void }> = ({ onChange }) => {
-    const [status, setStatus] = useState('');
-
-    const handleChange = (event: SelectChangeEvent) => {
-        setStatus(event.target.value as string);
-        onChange(event.target.value as string);
-    };
-
-    return (
-        <Box sx={{
-            paddingTop: '10px',
-        }}>
-            <FormControl sx={{
-                width: '100px',
-            }} size='small'>
-                <InputLabel id="demo-simple-select-label"><Typography>Duyệt</Typography></InputLabel>
-                <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={status}
-                    label="Age"
-                    onChange={handleChange}
-                >
-                    <MenuItem value={'Đã duyệt'}>Duyệt</MenuItem>
-                    <MenuItem value={'Đã từ chối'}>Từ chối</MenuItem>
-                </Select>
-            </FormControl>
-        </Box>
-    );
-}

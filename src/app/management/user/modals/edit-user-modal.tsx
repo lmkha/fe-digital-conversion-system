@@ -384,6 +384,7 @@ export default function EditUserModal({ open, userId, deptId, onClose, onSubmitt
                                     component="h2"
                                     fontWeight={'bold'}
                                     fontSize={30}
+                                    color='black'
                                 >
                                     Chỉnh sửa người dùng
                                 </Typography>

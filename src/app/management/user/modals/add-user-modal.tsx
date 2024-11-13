@@ -291,6 +291,7 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                         component="h2"
                         fontWeight={'bold'}
                         fontSize={30}
+                        color='black'
                     >
                         Thêm người dùng
                     </Typography>
@@ -442,16 +443,14 @@ export default function AddUserModal({ open, deptId, onClose, onSubmitted }: Add
                                         }}
                                     >
                                         <MUIDatePicker
-                                            sx={{
-                                                width: '100%',
-                                                '.MuiInputBase-root': {
-                                                    height: '40px',
-                                                    fontSize: '14px'
-                                                },
-                                                '.MuiFormLabel-root': {
-                                                    lineHeight: '1.2',
-                                                    padding: 0,
-                                                },
+                                            slotProps={{
+                                                textField: {
+                                                    size: 'small',
+                                                    sx: {
+                                                        backgroundColor: 'white',
+                                                        width: '100%',
+                                                    }
+                                                }
                                             }}
                                             label="Ngày sinh "
                                             format="DD/MM/YYYY"

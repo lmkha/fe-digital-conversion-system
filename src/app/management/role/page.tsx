@@ -272,7 +272,7 @@ export default function Page() {
                                 key={index}
                                 code={item.code || ''}
                                 name={item.name || ''}
-                                selected={item.selected || false}
+                                selected={checkedItems?.includes(item.id || '') || false}
                                 onSelectedChange={(id, isCheck) => {
                                     if (isCheck) {
                                         checkedItems && setCheckedItems([...checkedItems, id]);

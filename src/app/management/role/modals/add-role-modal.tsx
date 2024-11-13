@@ -231,6 +231,7 @@ export function AddRoleModal({ isOpen, deptId, onClose, onSubmitted }: AddRoleMo
                             component="h2"
                             fontWeight={'bold'}
                             fontSize={30}
+                            color='black'
                         >
                             Thêm vai trò
                         </Typography>

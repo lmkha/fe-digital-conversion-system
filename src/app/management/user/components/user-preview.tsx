@@ -2,7 +2,7 @@ import React, { use, useEffect, useRef, useState } from "react";
 import { TextField, MenuItem, TableRow, TableCell } from "@mui/material";
 import UserDescription from "@/services/models/user-description";
 import { PreviewUserList } from "@/contexts/management-user-context";
-import { CircleCheck, CircleX } from "lucide-react";
+import { CircleCheck, CircleAlert } from "lucide-react";
 import {
   ImportUserValidatedField,
   importUserValidator,
@@ -237,7 +237,7 @@ const UserPreview: React.FC<PreviewUsersProps> = ({
       >
         <div className="flex items-center justify-center">
           {!user.success ? (
-            <CircleX size={28} strokeWidth={2.5} color="red" />
+            <CircleAlert size={28} strokeWidth={2.5} color="red" />
           ) : (
             <CircleCheck size={28} strokeWidth={2.5} color="green" />
           )}
