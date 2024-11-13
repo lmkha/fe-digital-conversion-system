@@ -141,7 +141,7 @@ export default function Page() {
 
             // Avatar không thay đổi
             if (imageUploadInfo.file === null) {
-                const result = await updateUserProfile({
+                await updateUserProfile({
                     userId: userInfo?.userId || '',
                     fullName: submitData.name,
                     email: submitData.email || null,
@@ -151,13 +151,11 @@ export default function Page() {
                     provinceId: submitData.province?.id || null,
                     gender: submitData.gender?.id || null,
                     dateOfBirth: submitData.dob ? submitData.dob.format('MM/DD/YYYY') : null,
-                    status: submitData.status || null,
                     jobTitle: submitData.jobTitle || '',
                     deptId: userInfo?.dept?.deptId || '',
                     address: submitData.addressDetail || null,
-                    avatar: 'https://res.cloudinary.com/dfx1kzavc/image/upload/v1729527211/avatars/yx6h61wlbwxfscuqzjpk.jpg'
+                    avatar: submitData.avatar
                 }).then((res) => {
-                    console.log(`Check res: ${res}`)
                     setToastInfo && setToastInfo({
                         show: true,
                         message: res.message,
@@ -166,7 +164,7 @@ export default function Page() {
                 });
             } else {
                 // Avatar thay đổi
-                result = await updateUserProfile({
+                await updateUserProfile({
                     userId: userInfo?.userId || '',
                     fullName: submitData.name,
                     email: submitData.email || null,
@@ -176,13 +174,11 @@ export default function Page() {
                     provinceId: submitData.province?.id || null,
                     gender: submitData.gender?.id || null,
                     dateOfBirth: submitData.dob ? submitData.dob.format('MM/DD/YYYY') : null,
-                    status: submitData.status || null,
                     jobTitle: submitData.jobTitle || '',
                     deptId: userInfo?.dept?.deptId || '',
                     address: submitData.addressDetail || null,
-                    avatar: 'https://res.cloudinary.com/dfx1kzavc/image/upload/v1729527211/avatars/yx6h61wlbwxfscuqzjpk.jpg'
+                    avatarFile: imageUploadInfo.file
                 }).then((res) => {
-                    console.log(`Check res: ${res}`)
                     setToastInfo && setToastInfo({
                         show: true,
                         message: res.message,
@@ -202,6 +198,7 @@ export default function Page() {
         getProvinces().then((res) => {
             setProvinceList(res);
         });
+        setHeaderTitle && setHeaderTitle('Chỉnh sửa thông tin cá nhân');
         setFooterInfo && setFooterInfo({});
         setHeaderButtons && setHeaderButtons([]);
     }, []);
@@ -353,22 +350,6 @@ export default function Page() {
                                         </Alert>
                                     )}
                                 </Box>
-                                {/* <Stack direction={'row'} spacing={2} justifyContent={'center'} alignItems={'center'} sx={{
-                                    pt: 2,
-                                }}>
-
-                                    <Typography fontWeight={'bold'}>Kích hoạt</Typography>
-                                    <Switch
-                                        checked={submitData.status === '1'}
-                                        onChange={() => {
-                                            setSubmitData({
-                                                ...submitData,
-                                                status: submitData.status === '1' ? '0' : '1'
-                                            });
-                                        }}
-                                        color="primary"
-                                    />
-                                </Stack> */}
                             </Stack>
 
                             {/* Form */}
@@ -421,17 +402,6 @@ export default function Page() {
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <DemoContainer components={['DatePicker', 'DatePicker']} sx={{ width: '45%' }}>
                                                 <MUIDatePicker
-                                                    sx={{
-                                                        width: '100%',
-                                                        '.MuiInputBase-root': {
-                                                            height: '40px',
-                                                            fontSize: '14px'
-                                                        },
-                                                        '.MuiFormLabel-root': {
-                                                            lineHeight: '1.2',
-                                                            padding: 0,
-                                                        },
-                                                    }}
                                                     label="Ngày sinh "
                                                     format="DD/MM/YYYY"
                                                     value={submitData.dob}
@@ -440,6 +410,15 @@ export default function Page() {
                                                             ...submitData,
                                                             dob: newValue as Dayjs
                                                         });
+                                                    }}
+                                                    slotProps={{
+                                                        textField: {
+                                                            size: 'small',
+                                                            sx: {
+                                                                backgroundColor: 'white',
+                                                                width: '100%',
+                                                            }
+                                                        }
                                                     }}
                                                 />
                                             </DemoContainer>

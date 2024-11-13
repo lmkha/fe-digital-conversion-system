@@ -14,7 +14,6 @@ class ProfileAPI extends Base {
         provinceId,
         gender,
         dateOfBirth,
-        status,
         address,
     }: {
         userId: string;
@@ -29,7 +28,6 @@ class ProfileAPI extends Base {
         provinceId: string | null;
         gender: string | null;
         dateOfBirth: string | null;
-        status: string | null;
         address: string | null;
     }) {
         try {
@@ -43,7 +41,6 @@ class ProfileAPI extends Base {
                 provinceId: provinceId,
                 gender: gender,
                 dateOfBirth: dateOfBirth,
-                status: status,
                 jobTitle: jobTitle,
                 deptId: deptId,
                 address: address,
