@@ -26,6 +26,7 @@ import ImagePickerForEditModal from "../user/components/image-picker-edit";
 import { updateUserProfile } from "@/services/profile";
 import { useAppContext } from "@/contexts/app-context";
 import { useManagement } from "@/contexts/management-context";
+import { get, set } from "@/hooks/use-local-storage";
 
 export default function Page() {
     const { setUserInfo, userInfo } = useUserInfo();
@@ -166,6 +167,8 @@ export default function Page() {
                             ...userInfo,
                             fullName: submitData.name
                         });
+                        const userInfoTemp = get('userInfo');
+                        set('userInfo', { ...userInfoTemp, fullName: submitData.name });
                     }
                 });
             } else {
@@ -196,6 +199,8 @@ export default function Page() {
                             fullName: submitData.name,
                             avatar: res.newAvatarUrl
                         });
+                        const userInfoTemp = get('userInfo');
+                        set('userInfo', { ...userInfoTemp, fullName: submitData.name, avatar: res.newAvatarUrl });
                     }
                 });
             }
