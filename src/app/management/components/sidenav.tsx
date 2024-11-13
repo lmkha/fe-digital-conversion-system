@@ -189,23 +189,11 @@ const MiddleSideNav = () => {
 };
 
 const BottomSideNav = () => {
+  const { userInfo } = useUserInfo();
   const router = useRouter();
-  const { logout, isLoggedIn } = useAuth();
-  const [avatar, setAvatar] = useState<string | null>(null);
-  const [fullName, setFullName] = useState<string | null>(null);
+  const { logout } = useAuth();
   const [activeLink, setActiveLink] = useState<string | null>(null);
   const pathname = usePathname();
-
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      const userInfo = get("userInfo");
-      if (userInfo) {
-        setAvatar(userInfo.avatar);
-        setFullName(userInfo.fullName);
-      }
-    }
-  }, [isLoggedIn]);
 
   useEffect(() => {
     if (pathname === "/management/profile") {
@@ -228,7 +216,7 @@ const BottomSideNav = () => {
               <CldImage
                 width="50"
                 height="50"
-                src={avatar ? avatar : ""}
+                src={userInfo?.avatar || ""}
                 alt="No avt"
                 style={{
                   borderRadius: "50%",
@@ -239,7 +227,7 @@ const BottomSideNav = () => {
                 }}
               />
               {/* Username */}
-              <h1>{fullName}</h1>
+              <h1>{userInfo?.fullName || 'No name'}</h1>
             </div>
             <GrNext />
           </button>

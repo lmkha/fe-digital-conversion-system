@@ -161,6 +161,12 @@ export default function Page() {
                         message: res.message,
                         severity: res.success ? 'success' : 'error'
                     });
+                    if (res.success) {
+                        setUserInfo && setUserInfo({
+                            ...userInfo,
+                            fullName: submitData.name
+                        });
+                    }
                 });
             } else {
                 // Avatar thay đổi
@@ -184,6 +190,13 @@ export default function Page() {
                         message: res.message,
                         severity: res.success ? 'success' : 'error'
                     });
+                    if (res.success && res.newAvatarUrl) {
+                        setUserInfo && setUserInfo({
+                            ...userInfo,
+                            fullName: submitData.name,
+                            avatar: res.newAvatarUrl
+                        });
+                    }
                 });
             }
         } catch (error) {

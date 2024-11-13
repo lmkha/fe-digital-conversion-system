@@ -1,6 +1,12 @@
 import profileAPI from "@/api/profile";
 import user from "@/api/user";
 
+interface UpdateUserProfileResult {
+    success: boolean;
+    message: string;
+    newAvatarUrl?: string;
+}
+
 export const updateUserProfile = async (data: {
     userId: string;
     jobTitle: string;
@@ -16,15 +22,18 @@ export const updateUserProfile = async (data: {
     address: string | null;
     avatarFile?: File | null;
     avatar?: string | null;
-}) => {
-    console.log(data);
+}): Promise<UpdateUserProfileResult> => {
     if (!data.avatar && data.avatarFile) {
         const avatarUploadResult = await uploadAvatar(data.avatarFile);
         if (avatarUploadResult.success) {
-            return await profileAPI.updateProfile({
+            const updateResult = await profileAPI.updateProfile({
                 ...data,
                 avatar: avatarUploadResult.url,
             });
+            return {
+                ...updateResult,
+                newAvatarUrl: avatarUploadResult.url,
+            }
         } else {
             return {
                 success: false,
