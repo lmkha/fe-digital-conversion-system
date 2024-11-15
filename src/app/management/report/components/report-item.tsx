@@ -1,4 +1,4 @@
-import { Divider, Grid2, IconButton, Stack, TextField, Typography } from "@mui/material";
+import { Box, Divider, Grid2, IconButton, Stack, TextField, Typography } from "@mui/material";
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import CreateIcon from '@mui/icons-material/Create';
 import { UpdatedAtType } from "@/services/models/report-item";
@@ -64,7 +64,20 @@ export default function ReportItem({ reportId, status, departmentName, level, st
                             alignItems: 'center',
                             display: 'flex',
                         }}>
-                            <Typography variant="body1">{status}</Typography>
+                            <Stack direction={'row'} justifyContent={'center'} alignItems={'center'} spacing={1}>
+                                <Box sx={{
+                                    width: 10,
+                                    height: 10,
+                                    borderRadius: '50%',
+                                    backgroundColor:
+                                        status === 'Nhập liệu' ? 'steelblue' :
+                                            status === 'Đã duyệt' ? 'green' :
+                                                status === 'Chờ duyệt' ? 'orange' :
+                                                    status === 'Đã từ chối' ? 'red' : 'gray',
+                                }}
+                                />
+                                <Typography variant="body1">{status}</Typography>
+                            </Stack>
                         </Grid2>
                     </Grid2>
 
