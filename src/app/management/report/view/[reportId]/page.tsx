@@ -26,6 +26,7 @@ export default function ReportDetailPreview() {
     const [pdfData, setPdfData] = useState<Uint8Array | null>(null);
     const [openChangeStatusModal, setOpenChangeStatusModal] = useState(false);
     const [approvalValue, setApprovalValue] = useState<'Đã duyệt' | 'Đã từ chối'>();
+    const [confirmed, setConfirmed] = useState(false);
     const [status, setStatus] = useState<string>();
 
     const handleDownload = () => {
@@ -58,6 +59,11 @@ export default function ReportDetailPreview() {
         reportId && getReportStatusByReportId(reportId).then(result => {
             if (result.success) {
                 setStatus(result.status);
+                if (result.status == 'Đã duyệt') {
+                    setApprovalValue('Đã duyệt');
+                } else if (result.status == 'Đã từ chối') {
+                    setApprovalValue('Đã từ chối');
+                }
             }
         });
     }, [reportId]);
@@ -105,20 +111,38 @@ export default function ReportDetailPreview() {
                                 zIndex: 999,
                             }}>
                             <Button
+                                disabled={
+                                    (!confirmed && approvalValue === 'Đã duyệt') ||
+                                    (confirmed && approvalValue === 'Đã duyệt') ||
+                                    (!confirmed && status === 'Đã duyệt')
+                                }
                                 color="success"
                                 variant="contained"
                                 onClick={() => {
                                     setApprovalValue('Đã duyệt');
                                     setOpenChangeStatusModal(true);
-                                }}><Typography fontWeight={'bold'}>Duyệt</Typography></Button>
+                                }}>
+                                <Typography fontWeight={'bold'}>
+                                    {confirmed && approvalValue === 'Đã duyệt' ? 'Đã duyệt' : 'Duyệt'}
+                                </Typography>
+                            </Button>
 
                             <Button
+                                disabled={
+                                    (!confirmed && approvalValue === 'Đã từ chối') ||
+                                    (confirmed && approvalValue === 'Đã từ chối') ||
+                                    (!confirmed && status === 'Đã từ chối')
+                                }
                                 color="error"
                                 variant="contained"
                                 onClick={() => {
                                     setApprovalValue('Đã từ chối');
                                     setOpenChangeStatusModal(true);
-                                }}><Typography fontWeight={'bold'}>Từ chối</Typography></Button>
+                                }}>
+                                <Typography fontWeight={'bold'}>
+                                    {confirmed && approvalValue === 'Đã từ chối' ? 'Đã từ chối' : 'Từ chối'}
+                                </Typography>
+                            </Button>
                         </Stack>
                     )}
                 {pdfData ? (
@@ -141,6 +165,9 @@ export default function ReportDetailPreview() {
                                 severity: result.success ? 'success' : 'error'
                             });
                         });
+                        setConfirmed(true);
+                    } else {
+                        setApprovalValue(status as 'Đã duyệt' | 'Đã từ chối');
                     }
                     setOpenChangeStatusModal(false);
                 }}
